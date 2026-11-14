@@ -88,7 +88,7 @@ scene.add(new THREE.HemisphereLight(0xffffff, 0x557744, isNight ? 0.35 : 1.0));
 const sun = new THREE.DirectionalLight(isNight ? 0x8899ff : 0xfff2dd, isNight ? 0.4 : 1.6);
 sun.position.set(10, 20, 8); sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -25, right: 25, top: 25, bottom: -25 });
+Object.assign(sun.shadow.camera, { left: -25, right: 25, top: 25, bottom: -25 }); sun.shadow.camera.updateProjectionMatrix();
 scene.add(sun);
 
 const size = world.ground?.size ?? 40;
