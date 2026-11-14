@@ -9,7 +9,7 @@
   * { box-sizing:border-box; }
   html,body { margin:0; height:100%; overflow:hidden; font-family: ui-rounded, "Nunito", system-ui, sans-serif; color:var(--ink); background:#bfe6ff; }
   #scene { position:fixed; inset:0; }
-  .card { background:var(--card); border-radius:16px; box-shadow:0 6px 24px rgba(0,0,0,.15); }
+  .card { z-index:10; background:var(--card); border-radius:16px; box-shadow:0 6px 24px rgba(0,0,0,.15); }
   #hud { position:fixed; top:12px; left:12px; width:250px; padding:12px 14px; }
   #hud h1 { margin:0; font-size:19px; display:flex; align-items:center; gap:6px; }
   #hud .sub { font-size:12px; opacity:.75; margin:2px 0 8px; }
@@ -18,7 +18,7 @@
   .bar > i { display:block; height:100%; border-radius:99px; transition:width .8s ease; }
   .stat b { font-weight:700; text-align:right; font-variant-numeric:tabular-nums; }
   #focus { font-size:12px; margin-top:8px; padding-top:8px; border-top:1px dashed #d8c9b0; }
-  #panelBtn { position:fixed; top:12px; right:12px; border:0; border-radius:999px; padding:10px 14px; background:var(--accent); color:#fff; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.2); font-family:inherit; }
+  #panelBtn { z-index:10; position:fixed; top:12px; right:12px; border:0; border-radius:999px; padding:10px 14px; background:var(--accent); color:#fff; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.2); font-family:inherit; }
   #panel { position:fixed; top:58px; right:12px; width:min(400px, calc(100vw - 24px)); max-height:calc(100vh - 140px); display:none; flex-direction:column; overflow:hidden; }
   #panel.open { display:flex; }
   #tabs { display:flex; gap:4px; padding:10px 10px 0; flex-wrap:wrap; }
@@ -29,7 +29,7 @@
   #tabBody ul { padding-left:18px; margin:4px 0; } #tabBody p { margin:6px 0; }
   #actionBar { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); padding:10px 16px; display:flex; align-items:center; gap:10px; max-width:calc(100vw - 24px); font-size:14px; }
   #actionIcon { font-size:20px; } #actionText { font-weight:700; } #actionSince { font-size:12px; opacity:.6; white-space:nowrap; }
-  #tools { position:fixed; right:12px; bottom:14px; display:flex; gap:6px; }
+  #tools { z-index:10; position:fixed; right:12px; bottom:14px; display:flex; gap:6px; }
   #tools button { border:0; border-radius:999px; padding:9px 12px; background:#fff; font:inherit; font-size:13px; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.15); }
   #bubble { position:fixed; z-index:5; transform:translate(-50%,-100%); background:#fff; border-radius:14px; padding:8px 12px; font-size:13px; max-width:240px; box-shadow:0 4px 14px rgba(0,0,0,.18); pointer-events:none; transition:opacity .4s; }
   #bubble::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:8px solid transparent; border-top-color:#fff; border-bottom:0; }
