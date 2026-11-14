@@ -15,6 +15,7 @@ const json = p => { try { return JSON.parse(read(p)); } catch (e) { errors.push(
 const world = json("world/world.json");
 const state = json("world/state.json");
 const projects = json("world/projects.json");
+for (const f of ["brain/log.json", "brain/wants.json", "brain/journal/index.json"]) if (existsSync(join(root, f))) json(f);
 const character = existsSync(join(root, "world/character.json")) ? json("world/character.json") : null;
 
 // 2. Engine is intact and its JavaScript parses
@@ -46,7 +47,8 @@ if (world) {
     if (!o.id) errors.push(`world.json: an object of type ${o.type} has no id`);
     else if (ids.has(o.id)) errors.push(`world.json: duplicate id ${o.id}`);
     ids.add(o.id);
-    if (!known.has(o.type)) errors.push(`world.json: ${o.id} uses unknown type "${o.type}" (add it under "custom")`);
+    if (o.type === "model") { if (!o.src || !existsSync(join(root, o.src))) errors.push(`world.json: model ${o.id} file ${o.src} not found`); }
+    else if (!known.has(o.type)) errors.push(`world.json: ${o.id} uses unknown type "${o.type}" (add it under "custom")`);
     if (!Array.isArray(o.pos) || o.pos.length !== 2 || !o.pos.every(isNum)) errors.push(`world.json: ${o.id} pos must be [x, z]`);
     else if (Math.abs(o.pos[0]) > half || Math.abs(o.pos[1]) > half) errors.push(`world.json: ${o.id} is outside the ground`);
   }
@@ -54,7 +56,7 @@ if (world) {
     if (!Array.isArray(parts) || !parts.length) { errors.push(`world.json: custom "${name}" needs a list of parts`); continue; }
     if (parts.length > 200) errors.push(`world.json: custom "${name}" has over 200 parts`);
     for (const p of parts) {
-      if (!["box", "sphere", "cylinder", "cone", "torus"].includes(p.shape)) errors.push(`world.json: custom "${name}" has unknown shape ${p.shape}`);
+      if (!["box", "roundbox", "sphere", "cylinder", "cone", "torus", "capsule"].includes(p.shape)) errors.push(`world.json: custom "${name}" has unknown shape ${p.shape}`);
       if (p.size && !(Array.isArray(p.size) && p.size.every(isNum))) errors.push(`world.json: custom "${name}" has bad size`);
       if (p.pos && !(Array.isArray(p.pos) && p.pos.length === 3 && p.pos.every(isNum))) errors.push(`world.json: custom "${name}" has bad pos`);
     }
@@ -80,7 +82,7 @@ if (character) {
     if (!Array.isArray(parts)) { errors.push(`character.json: outfit.${slot} must be a list`); continue; }
     if (parts.length > 80) errors.push(`character.json: outfit.${slot} has over 80 parts`);
     for (const p of parts) {
-      if (!["box", "sphere", "cylinder", "cone", "torus"].includes(p.shape)) errors.push(`character.json: outfit.${slot} has unknown shape ${p.shape}`);
+      if (!["box", "roundbox", "sphere", "cylinder", "cone", "torus", "capsule"].includes(p.shape)) errors.push(`character.json: outfit.${slot} has unknown shape ${p.shape}`);
       if (p.pos && !(Array.isArray(p.pos) && p.pos.length === 3 && p.pos.every(isNum))) errors.push(`character.json: outfit.${slot} has bad pos`);
     }
   }
@@ -98,7 +100,8 @@ const walk = d => readdirSync(join(root, d), { withFileTypes: true }).flatMap(e 
   e.name === ".git" || e.name === "node_modules" ? [] : e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]);
 for (const f of walk(".")) {
   const sz = statSync(join(root, f)).size;
-  if (sz > 2_000_000) errors.push(`${f} is over 2 MB`);
+  const limit = f.endsWith(".glb") ? 8_000_000 : 2_000_000;
+  if (sz > limit) errors.push(`${f} is over ${limit / 1_000_000} MB`);
   else if (!f.endsWith("check.mjs") && /\.(md|json|html|js|mjs|css|txt)$/.test(f) && secret.test(read(f))) errors.push(`${f} looks like it contains a secret key`);
 }
 

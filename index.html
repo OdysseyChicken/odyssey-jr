@@ -4,38 +4,72 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Odyssey Jr.'s World</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5/800.css">
 <style>
-  :root { --ink:#2b2118; --card:rgba(255,250,240,.94); --accent:#e8553a; --soft:#ffe3c2; }
+  :root { --ink:#2b2540; --paper:#f6f1e3; --accent:#3b2fa0; --muted:#7c7392; }
   * { box-sizing:border-box; }
-  html,body { margin:0; height:100%; overflow:hidden; font-family: ui-rounded, "Nunito", system-ui, sans-serif; color:var(--ink); background:#bfe6ff; }
+  html,body { margin:0; height:100%; overflow:hidden; font-family:"Nunito", ui-rounded, system-ui, sans-serif; color:var(--ink); background:#2a2470; }
   #scene { position:fixed; inset:0; }
-  .card { z-index:10; background:var(--card); border-radius:16px; box-shadow:0 6px 24px rgba(0,0,0,.15); }
-  #hud { position:fixed; top:12px; left:12px; width:250px; padding:12px 14px; }
-  #hud h1 { margin:0; font-size:19px; display:flex; align-items:center; gap:6px; }
-  #hud .sub { font-size:12px; opacity:.75; margin:2px 0 8px; }
-  .stat { display:grid; grid-template-columns:62px 1fr 26px; align-items:center; gap:6px; font-size:12px; margin:4px 0; }
-  .bar { height:9px; background:#eadfcf; border-radius:99px; overflow:hidden; }
-  .bar > i { display:block; height:100%; border-radius:99px; transition:width .8s ease; }
-  .stat b { font-weight:700; text-align:right; font-variant-numeric:tabular-nums; }
-  #focus { font-size:12px; margin-top:8px; padding-top:8px; border-top:1px dashed #d8c9b0; }
-  #panelBtn { z-index:10; position:fixed; top:12px; right:12px; border:0; border-radius:999px; padding:10px 14px; background:var(--accent); color:#fff; font-weight:800; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.2); font-family:inherit; }
-  #panel { position:fixed; top:58px; right:12px; width:min(400px, calc(100vw - 24px)); max-height:calc(100vh - 140px); display:none; flex-direction:column; overflow:hidden; }
-  #panel.open { display:flex; }
-  #tabs { display:flex; gap:4px; padding:10px 10px 0; flex-wrap:wrap; }
-  #tabs button { border:0; background:transparent; padding:7px 10px; border-radius:10px 10px 0 0; font:inherit; font-size:13px; font-weight:700; cursor:pointer; color:#7a6550; }
-  #tabs button.on { background:#fff; color:var(--ink); }
-  #tabBody { background:#fff; margin:0 10px 10px; border-radius:0 12px 12px 12px; padding:12px 14px; overflow:auto; font-size:13.5px; line-height:1.5; }
-  #tabBody h1 { font-size:17px; margin:4px 0 8px; } #tabBody h2 { font-size:15px; margin:12px 0 6px; } #tabBody h3 { font-size:14px; margin:10px 0 4px; }
+  .paper { z-index:10; background:var(--paper); border:2px solid var(--ink); border-radius:20px; box-shadow:0 6px 0 rgba(43,37,64,.25), 0 10px 30px rgba(0,0,0,.25); }
+  .pill { border-radius:999px; }
+  button { font-family:inherit; color:inherit; }
+
+  #stats { position:fixed; top:12px; left:50%; transform:translateX(-50%); display:flex; gap:4px; padding:8px 10px; }
+  .stat { padding:2px 12px; min-width:104px; border-right:1.5px dashed #cfc4a8; }
+  .stat:last-child { border-right:0; }
+  .stat .lbl { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; }
+  .stat .dot { width:14px; height:14px; border-radius:50%; border:2px solid var(--ink); }
+  .bar { margin-top:4px; height:8px; background:#e2d9c2; border:1.5px solid var(--ink); border-radius:99px; overflow:hidden; }
+  .bar > i { display:block; height:100%; transition:width .8s ease; }
+
+  #diaryBtn { position:fixed; top:12px; left:12px; padding:10px 14px; font-weight:800; font-size:14px; cursor:pointer; }
+  #diary { position:fixed; top:12px; left:12px; width:min(420px, calc(100vw - 24px)); max-height:calc(100vh - 110px); display:none; flex-direction:column; overflow:hidden; }
+  #diary.open { display:flex; }
+  #diary header { display:flex; align-items:center; gap:8px; padding:12px 14px 6px; font-weight:800; }
+  #diary header small { color:var(--muted); font-weight:700; }
+  #diary header button { margin-left:auto; width:30px; height:30px; border:2px solid var(--ink); border-radius:50%; background:transparent; font-weight:800; cursor:pointer; }
+  #tabs { display:flex; gap:2px; padding:6px 10px 8px; border-bottom:1.5px dashed #cfc4a8; flex-wrap:wrap; }
+  #tabs button { border:0; background:transparent; padding:5px 12px; border-radius:999px; font-size:13.5px; font-weight:700; cursor:pointer; color:var(--muted); }
+  #tabs button.on { background:var(--accent); color:#fff; }
+  #tabBody { padding:12px 16px 16px; overflow:auto; font-size:14px; line-height:1.5; }
+  #tabBody h1 { font-size:18px; margin:2px 0 8px; } #tabBody h2 { font-size:15.5px; margin:12px 0 6px; } #tabBody h3 { font-size:14.5px; margin:10px 0 4px; }
   #tabBody ul { padding-left:18px; margin:4px 0; } #tabBody p { margin:6px 0; }
-  #actionBar { position:fixed; left:50%; bottom:14px; transform:translateX(-50%); padding:10px 16px; display:flex; align-items:center; gap:10px; max-width:calc(100vw - 24px); font-size:14px; }
-  #actionIcon { font-size:20px; } #actionText { font-weight:700; } #actionSince { font-size:12px; opacity:.6; white-space:nowrap; }
-  #tools { z-index:10; position:fixed; right:12px; bottom:14px; display:flex; gap:6px; }
-  #tools button { border:0; border-radius:999px; padding:9px 12px; background:#fff; font:inherit; font-size:13px; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.15); }
-  #bubble { position:fixed; z-index:5; transform:translate(-50%,-100%); background:#fff; border-radius:14px; padding:8px 12px; font-size:13px; max-width:240px; box-shadow:0 4px 14px rgba(0,0,0,.18); pointer-events:none; transition:opacity .4s; }
-  #bubble::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:8px solid transparent; border-top-color:#fff; border-bottom:0; }
-  .label3d { position:fixed; transform:translate(-50%,-100%); font-size:11px; font-weight:700; background:rgba(255,255,255,.75); padding:1px 6px; border-radius:6px; pointer-events:none; white-space:nowrap; }
-  #err { position:fixed; bottom:70px; left:12px; right:12px; background:#ffdede; border-radius:12px; padding:10px; font-size:13px; display:none; }
-  @media (max-width:700px) { #hud { width:200px; padding:10px; } .stat { grid-template-columns:52px 1fr 22px; } #tools { bottom:70px; } #actionBar { font-size:13px; } }
+  #tabBody a { color:var(--accent); }
+  .intro { color:var(--muted); margin:0 0 10px; }
+  .entry { padding:10px 0; border-bottom:1.5px solid #e2d9c2; }
+  .entry:last-child { border-bottom:0; }
+  .entry .top { display:flex; align-items:center; gap:8px; font-weight:800; }
+  .entry .ago { margin-left:auto; color:var(--muted); font-size:12px; font-weight:700; white-space:nowrap; }
+  .entry .meta { color:var(--muted); font-size:12.5px; margin:2px 0; }
+  .tag { display:inline-block; border:1.5px solid var(--ink); border-radius:999px; padding:0 8px; font-size:11.5px; font-weight:800; }
+  .want { border:2px solid var(--ink); border-radius:16px; padding:10px 12px; margin:10px 0; position:relative; background:#fbf8ef; }
+  .want b { display:block; font-size:15px; } .want span { color:#4d4566; font-size:13px; display:block; padding-right:80px; }
+  .want .tag { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:var(--paper); color:var(--ink); }
+  .want .tag.done { background:#c8f0b8; }
+  .story { cursor:pointer; } .story:hover b { text-decoration:underline; }
+
+  #action { position:fixed; left:50%; bottom:16px; transform:translateX(-50%); display:flex; align-items:center; gap:10px; padding:6px 18px 6px 6px; max-width:calc(100vw - 340px); min-width:280px; font-size:14.5px; }
+  #avatar { width:34px; height:34px; border-radius:50%; border:2px solid var(--ink); display:grid; place-items:center; background:#fff; font-size:18px; flex:none; }
+  #actionText { font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #actionSince { color:var(--muted); font-size:12px; font-weight:700; margin-left:auto; white-space:nowrap; }
+
+  #tools { position:fixed; right:12px; bottom:16px; display:flex; gap:6px; z-index:10; }
+  #tools button { padding:9px 13px; font-size:13px; font-weight:800; cursor:pointer; }
+  #minimap { position:fixed; left:14px; bottom:14px; width:130px; height:130px; border-radius:50%; overflow:hidden; padding:0; }
+  #minimap canvas { width:100%; height:100%; display:block; }
+
+  #bubble { position:fixed; z-index:5; transform:translate(-50%,-100%); background:var(--paper); border:2px solid var(--ink); border-radius:16px; padding:6px 12px; font-size:13.5px; font-weight:700; max-width:240px; pointer-events:none; transition:opacity .4s; }
+  #bubble::after { content:""; position:absolute; left:50%; bottom:-9px; transform:translateX(-50%) rotate(45deg); width:12px; height:12px; background:var(--paper); border-right:2px solid var(--ink); border-bottom:2px solid var(--ink); }
+  .label3d { position:fixed; transform:translate(-50%,-100%); font-size:11.5px; font-weight:800; background:var(--paper); border:1.5px solid var(--ink); padding:1px 8px; border-radius:999px; pointer-events:none; white-space:nowrap; }
+  #err { position:fixed; z-index:20; top:80px; left:12px; right:12px; background:#ffdede; border:2px solid #a33; border-radius:12px; padding:10px; font-size:13px; display:none; }
+  @media (max-width:800px) {
+    #stats { top:auto; bottom:70px; left:8px; right:8px; transform:none; overflow-x:auto; }
+    .stat { min-width:84px; padding:2px 8px; } .stat .lbl { font-size:12px; }
+    #action { left:8px; right:8px; transform:none; max-width:none; min-width:0; bottom:12px; }
+    #minimap { display:none; } #tools { top:12px; bottom:auto; }
+  }
 </style>
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -44,32 +78,35 @@
 </head>
 <body>
 <div id="scene"></div>
-<div id="hud" class="card">
-  <h1>🐔 Odyssey Jr.</h1>
-  <div class="sub"><span id="dayTag">Day ?</span> · <span id="clock"></span></div>
-  <div id="stats"></div>
-  <div id="focus"></div>
-</div>
-<button id="panelBtn">📓 Journal</button>
-<div id="panel" class="card">
+<div id="stats" class="paper pill"></div>
+<button id="diaryBtn" class="paper pill">📓 Odyssey's diary</button>
+<div id="diary" class="paper">
+  <header>📓 Odyssey's diary <small id="dayTag"></small><button id="closeDiary" title="Close">✕</button></header>
   <div id="tabs"></div>
   <div id="tabBody">Loading…</div>
 </div>
-<div id="actionBar" class="card"><span id="actionIcon">🐣</span><span id="actionText">Waking up…</span><span id="actionSince"></span></div>
-<div id="tools"><button id="seedBtn" title="Toss him some seeds">🌾 Toss seeds</button><button id="camBtn" title="Follow Odyssey Jr. with the camera">🎥 Follow</button></div>
+<div id="action" class="paper pill"><span id="avatar">🐔</span><span id="actionText">Waking up…</span><span id="actionSince"></span></div>
+<div id="tools"><button id="seedBtn" class="paper pill" title="Toss him some seeds">🌾 Toss seeds</button><button id="camBtn" class="paper pill" title="Follow Odyssey Jr. with the camera">🎥 Follow</button></div>
+<div id="minimap" class="paper"><canvas width="260" height="260"></canvas></div>
 <div id="bubble"></div>
 <div id="err"></div>
 
 <script type="module">
-// ODYSSEY-JR-ENGINE v2
-// Data files: world/world.json (objects), world/state.json (today's focus), world/character.json (look),
-// world/projects.json, brain/*.md (journal tabs). Prefer editing data. Edit this engine to add new abilities.
+// ODYSSEY-JR-ENGINE v3
+// Data files: world/world.json (objects, spots, style), world/state.json (today's focus), world/character.json (look),
+// world/projects.json, brain/log.json (his day), brain/wants.json (he wants), brain/journal/index.json (stories),
+// brain/visitors.md, brain/personality.md. Prefer editing data. Edit this engine to add new abilities.
 //
 // LIVE LIFE: between his daily AI runs, Odyssey Jr. lives on his own in the browser. His needs
 // (fullness, energy, wonder, mood, calm) drift over time and he picks actions to meet them.
 // The sim is replayed from midnight with a seed based on the date, so every visitor sees the same chicken.
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
 const $ = id => document.getElementById(id);
 const showError = msg => { const e = $("err"); e.style.display = "block"; e.textContent = "Something broke: " + msg; };
@@ -77,69 +114,156 @@ window.addEventListener("error", e => showError(e.message));
 
 const bust = "?v=" + Date.now();
 const getJSON = async p => { const r = await fetch(p + bust); if (!r.ok) throw new Error(p + " " + r.status); return r.json(); };
+const tryJSON = async (p, d) => { try { return await getJSON(p); } catch { return d; } };
 const getText = async p => { try { const r = await fetch(p + bust); return r.ok ? await r.text() : null; } catch { return null; } };
+function rngFor(str) { let h = 1779033703 ^ str.length; for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }; }
 
 let world, state, projects, character;
 try {
   [world, state, projects, character] = await Promise.all([
     getJSON("world/world.json"), getJSON("world/state.json"),
-    getJSON("world/projects.json").catch(() => ({ making: [], done: [] })),
-    getJSON("world/character.json").catch(() => ({ colors: {}, outfit: {} }))
+    tryJSON("world/projects.json", { making: [], done: [] }),
+    tryJSON("world/character.json", { colors: {}, outfit: {} })
   ]);
 } catch (e) { showError(e.message); throw e; }
 
-// ---------- scene ----------
+// ---------- renderer, camera, light ----------
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 200);
-camera.position.set(14, 14, 18);
+const camera = new THREE.PerspectiveCamera(48, innerWidth / innerHeight, 0.1, 300);
+camera.position.set(12, 9, 14);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
 $("scene").appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.47; controls.minDistance = 4; controls.maxDistance = 45;
+controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.48; controls.minDistance = 3; controls.maxDistance = 50;
 
-const hemi = new THREE.HemisphereLight(0xffffff, 0x557744, 1);
-scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xfff2dd, 1.6);
-sun.position.set(10, 20, 8); sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -25, right: 25, top: 25, bottom: -25 }); sun.shadow.camera.updateProjectionMatrix();
+const hemi = new THREE.HemisphereLight(0xfff6e8, 0x5a6b4a, 1.1); scene.add(hemi);
+const sun = new THREE.DirectionalLight(0xfff0d8, 2.2);
+sun.position.set(12, 22, 9); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 4; sun.shadow.bias = -0.0005;
+Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26 }); sun.shadow.camera.updateProjectionMatrix();
 scene.add(sun);
 const daySky = new THREE.Color(world.sky?.day ?? "#bfe6ff"), nightSky = new THREE.Color(world.sky?.night ?? "#18213d");
-scene.background = daySky.clone(); scene.fog = new THREE.Fog(scene.background, 30, 70);
+scene.background = daySky.clone(); scene.fog = new THREE.Fog(scene.background, 35, 90);
 const isNightHour = h => h < 6 || h >= 21;
 function updateSky(now) {
   const h = now.getHours() + now.getMinutes() / 60;
-  // 0 at night, 1 in the day, smooth dawn (5-7) and dusk (19.5-21.5)
   const k = h < 5 || h > 21.5 ? 0 : h < 7 ? (h - 5) / 2 : h > 19.5 ? (21.5 - h) / 2 : 1;
   scene.background.copy(nightSky).lerp(daySky, k); scene.fog.color.copy(scene.background);
-  hemi.intensity = 0.3 + 0.7 * k; sun.intensity = 0.35 + 1.25 * k;
-  sun.color.set(k < 1 ? 0xffc9a0 : 0xfff2dd);
+  hemi.intensity = 0.35 + 0.75 * k; sun.intensity = 0.4 + 1.8 * k;
+  sun.color.set(k < 1 ? 0xffc39a : 0xfff0d8);
 }
 
-const size = world.ground?.size ?? 40;
-const ground = new THREE.Mesh(new THREE.CircleGeometry(size / 2 + 4, 64), new THREE.MeshStandardMaterial({ color: world.ground?.color ?? "#8cc96b" }));
-ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+// ---------- art style: halftone print filter ----------
+// world.json "style": { halftone 0..1, dotSize px, ink, paper }. This is what ties the whole world into one look.
+const style = world.style ?? {};
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const halftone = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, resolution: { value: new THREE.Vector2() }, dotSize: { value: style.dotSize ?? 4 },
+    strength: { value: style.halftone ?? 0.55 }, ink: { value: new THREE.Color(style.ink ?? "#2a2470") }, paperCol: { value: new THREE.Color(style.paper ?? "#f6f1e3") } },
+  vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform vec2 resolution; uniform float dotSize; uniform float strength; uniform vec3 ink; uniform vec3 paperCol;
+    varying vec2 vUv;
+    void main(){
+      vec4 c = texture2D(tDiffuse, vUv);
+      float l = clamp(dot(c.rgb, vec3(0.299,0.587,0.114)), 0.0, 1.0);
+      float a = 0.785398; mat2 r = mat2(cos(a), -sin(a), sin(a), cos(a));
+      vec2 q = r * (vUv * resolution) / dotSize;
+      float d = length(fract(q) - 0.5);
+      float rad = sqrt(1.0 - l) * 0.62;
+      float inkAmt = 1.0 - smoothstep(rad - 0.12, rad + 0.12, d);
+      vec3 tone = mix(c.rgb, paperCol, 0.18);
+      vec3 print = mix(tone, ink, inkAmt * 0.6);
+      gl_FragColor = vec4(mix(c.rgb, print, strength), c.a);
+    }`
+});
+composer.addPass(halftone);
+composer.addPass(new OutputPass());
+function resize() {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight);
+  halftone.uniforms.resolution.value.set(innerWidth * renderer.getPixelRatio(), innerHeight * renderer.getPixelRatio());
+  halftone.uniforms.dotSize.value = (style.dotSize ?? 4) * renderer.getPixelRatio();
+}
+resize(); addEventListener("resize", resize);
+
+// ---------- procedural textures (no downloads needed) ----------
+// Any part can say "texture": brick | wood | planks | stone | shingles | grass | dirt | metal | fabric | water
+const texCache = {};
+function makeTex(kind) {
+  const cv = document.createElement("canvas"); cv.width = cv.height = 256; const g = cv.getContext("2d");
+  const noise = (n, a, col) => { for (let i = 0; i < n; i++) { g.fillStyle = col(Math.random()); g.globalAlpha = a * Math.random(); g.fillRect(Math.random() * 256, Math.random() * 256, 2 + Math.random() * 3, 2 + Math.random() * 3); } g.globalAlpha = 1; };
+  if (kind === "brick") {
+    g.fillStyle = "#cfc6b4"; g.fillRect(0, 0, 256, 256);
+    for (let row = 0; row < 8; row++) for (let c = -1; c < 5; c++) {
+      g.fillStyle = `hsl(${8 + Math.random() * 10},${45 + Math.random() * 15}%,${38 + Math.random() * 12}%)`; g.fillRect(c * 64 + (row % 2) * 32 + 3, row * 32 + 3, 58, 26);
+    }
+    noise(1500, 0.25, () => "#000");
+  } else if (kind === "wood" || kind === "planks") {
+    g.fillStyle = "#9a6a3c"; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 70; i++) { g.strokeStyle = `rgba(${60 + Math.random() * 40},${35 + Math.random() * 20},15,${0.25 + Math.random() * 0.3})`; g.lineWidth = 1 + Math.random() * 2; g.beginPath(); const y = Math.random() * 256; g.moveTo(0, y); g.bezierCurveTo(80, y + Math.random() * 8 - 4, 170, y + Math.random() * 8 - 4, 256, y); g.stroke(); }
+    if (kind === "planks") { g.fillStyle = "rgba(40,22,10,.6)"; for (let y = 0; y < 256; y += 42) { g.fillRect(0, y, 256, 3); g.fillRect(((y / 42) % 2) * 128 + 60, y, 3, 42); } }
+  } else if (kind === "stone") {
+    g.fillStyle = "#8f8a84"; g.fillRect(0, 0, 256, 256);
+    for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) { g.fillStyle = `hsl(30,${4 + Math.random() * 6}%,${50 + Math.random() * 14}%)`; g.fillRect(x * 64 + 2, y * 64 + 2, 60, 60); }
+    noise(2500, 0.3, () => "#333");
+  } else if (kind === "shingles") {
+    g.fillStyle = "#4a3229"; g.fillRect(0, 0, 256, 256);
+    for (let row = 0; row < 8; row++) for (let c = -1; c < 9; c++) { g.fillStyle = `hsl(12,${30 + Math.random() * 15}%,${22 + Math.random() * 10}%)`; g.beginPath(); g.roundRect(c * 32 + (row % 2) * 16 + 1, row * 32 + 1, 30, 30, [0, 0, 10, 10]); g.fill(); }
+  } else if (kind === "grass" || kind === "dirt") {
+    g.fillStyle = kind === "grass" ? "#7fbf5f" : "#b48a58"; g.fillRect(0, 0, 256, 256);
+    noise(5000, 0.35, r => kind === "grass" ? (r > 0.5 ? "#5e9e45" : "#a6d97c") : (r > 0.5 ? "#8d6a40" : "#d4b07c"));
+  } else if (kind === "metal") {
+    const gr = g.createLinearGradient(0, 0, 256, 256); gr.addColorStop(0, "#b8bec6"); gr.addColorStop(1, "#7d848e"); g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 200; i++) { g.strokeStyle = "rgba(255,255,255,.08)"; g.beginPath(); const y = Math.random() * 256; g.moveTo(0, y); g.lineTo(256, y); g.stroke(); }
+  } else if (kind === "fabric") {
+    g.fillStyle = "#ddd"; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 256; i += 4) { g.fillStyle = "rgba(0,0,0,.06)"; g.fillRect(i, 0, 2, 256); g.fillRect(0, i, 256, 2); }
+  } else if (kind === "water") {
+    g.fillStyle = "#4aa3df"; g.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 40; i++) { g.strokeStyle = "rgba(255,255,255,.35)"; g.lineWidth = 2; g.beginPath(); g.arc(Math.random() * 256, Math.random() * 256, 6 + Math.random() * 14, 0.2, 2.6); g.stroke(); }
+  } else return null;
+  const t = new THREE.CanvasTexture(cv); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+}
+function texFor(kind, rx = 1, ry = 1) {
+  const key = `${kind}|${rx.toFixed(2)}|${ry.toFixed(2)}`;
+  if (!texCache[key]) { const base = texCache[kind] ?? (texCache[kind] = makeTex(kind)); if (!base) return null; const t = base.clone(); t.repeat.set(rx, ry); t.needsUpdate = true; texCache[key] = t; }
+  return texCache[key];
+}
 
 // ---------- builders ----------
-const mat = c => new THREE.MeshStandardMaterial({ color: c, flatShading: true });
-function part(shape, s, color) {
+// part props: shape (box, roundbox, sphere, cylinder, cone, torus, capsule), size, pos, rot, color, texture, repeat, flat, emissive, glow, metal, rough
+function roundedBox(w, h, d, r = 0.08) {
+  r = Math.min(r, w / 2 - 0.001, h / 2 - 0.001, d / 2 - 0.001); r = Math.max(r, 0.001);
+  const shape = new THREE.Shape(); const x = -w / 2 + r, y = -h / 2 + r, iw = w - 2 * r, ih = h - 2 * r;
+  shape.moveTo(x, y); shape.lineTo(x + iw, y); shape.lineTo(x + iw, y + ih); shape.lineTo(x, y + ih); shape.lineTo(x, y);
+  const geo = new THREE.ExtrudeGeometry(shape, { depth: Math.max(0.001, d - 2 * r), bevelEnabled: true, bevelSize: r, bevelThickness: r, bevelSegments: 4, curveSegments: 4 });
+  geo.center(); return geo;
+}
+function part(shape, s, color, opts = {}) {
   let g;
   if (shape === "box") g = new THREE.BoxGeometry(s[0], s[1], s[2]);
-  else if (shape === "sphere") g = new THREE.SphereGeometry(s[0], 12, 10);
-  else if (shape === "cylinder") g = new THREE.CylinderGeometry(s[0], s[1], s[2], 12);
-  else if (shape === "cone") g = new THREE.ConeGeometry(s[0], s[1], 12);
-  else if (shape === "torus") g = new THREE.TorusGeometry(s[0], s[1], 8, 20);
+  else if (shape === "roundbox") g = roundedBox(s[0], s[1], s[2], s[3] ?? 0.08);
+  else if (shape === "sphere") g = new THREE.SphereGeometry(s[0], 28, 20);
+  else if (shape === "cylinder") g = new THREE.CylinderGeometry(s[0], s[1], s[2], 28);
+  else if (shape === "cone") g = new THREE.ConeGeometry(s[0], s[1], 28);
+  else if (shape === "torus") g = new THREE.TorusGeometry(s[0], s[1], 14, 32);
+  else if (shape === "capsule") g = new THREE.CapsuleGeometry(s[0], s[1], 8, 20);
   else g = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-  const m = new THREE.Mesh(g, mat(color ?? "#cccccc"));
+  const params = { color: color ?? "#cccccc", flatShading: !!opts.flat, roughness: opts.rough ?? 0.85, metalness: opts.metal ?? 0 };
+  if (opts.texture) { const rep = opts.repeat ?? [Math.max(1, (s[0] ?? 1) / 1.5), Math.max(1, (s[1] ?? 1) / 1.5)]; const t = texFor(opts.texture, rep[0], rep[1]); if (t) params.map = t; }
+  if (opts.emissive) { params.emissive = new THREE.Color(opts.emissive); params.emissiveIntensity = opts.glow ?? 1; }
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial(params));
   m.castShadow = true; m.receiveShadow = true; return m;
 }
 function fromParts(parts) {
   const grp = new THREE.Group();
   for (const p of parts) {
-    const m = part(p.shape, p.size ?? [0.5, 0.5, 0.5], p.color);
+    const m = part(p.shape, p.size ?? [0.5, 0.5, 0.5], p.color ?? (p.texture ? "#ffffff" : undefined), { texture: p.texture, repeat: p.repeat, flat: p.flat, emissive: p.emissive, glow: p.glow, metal: p.metal, rough: p.rough });
     m.position.set(...(p.pos ?? [0, 0, 0]));
     if (p.rot) m.rotation.set(...p.rot);
     grp.add(m);
@@ -148,46 +272,68 @@ function fromParts(parts) {
 }
 const builtins = {
   tree: o => fromParts([
-    { shape: "cylinder", size: [0.3, 0.4, 2], pos: [0, 1, 0], color: "#7a4f2a" },
-    { shape: "sphere", size: [1.6], pos: [0, 2.8, 0], color: o.color ?? "#4f9a3a" },
-    { shape: "sphere", size: [1.1], pos: [0.9, 2.3, 0.3], color: o.color ?? "#5aab45" }]),
+    { shape: "cylinder", size: [0.28, 0.42, 2.2], pos: [0, 1.1, 0], color: "#c49a6c", texture: "wood", repeat: [1, 2] },
+    { shape: "sphere", size: [1.6], pos: [0, 3, 0], color: o.color ?? "#4f9a3a" },
+    { shape: "sphere", size: [1.15], pos: [0.95, 2.5, 0.3], color: o.color ?? "#5aab45" },
+    { shape: "sphere", size: [1.0], pos: [-0.8, 2.6, -0.4], color: o.color ?? "#4a8f36" }]),
   pine: o => fromParts([
-    { shape: "cylinder", size: [0.25, 0.3, 1], pos: [0, 0.5, 0], color: "#6b4626" },
-    { shape: "cone", size: [1.4, 2.2], pos: [0, 1.9, 0], color: o.color ?? "#2f7a46" },
-    { shape: "cone", size: [1.0, 1.6], pos: [0, 3.0, 0], color: o.color ?? "#358a50" }]),
-  rock: o => fromParts([{ shape: "sphere", size: [0.8], pos: [0, 0.3, 0], color: o.color ?? "#9a9a9a" }]),
+    { shape: "cylinder", size: [0.22, 0.3, 1.1], pos: [0, 0.55, 0], color: "#c49a6c", texture: "wood" },
+    { shape: "cone", size: [1.5, 2.2], pos: [0, 2.0, 0], color: o.color ?? "#2f7a46" },
+    { shape: "cone", size: [1.1, 1.7], pos: [0, 3.1, 0], color: o.color ?? "#358a50" },
+    { shape: "cone", size: [0.7, 1.2], pos: [0, 4.0, 0], color: o.color ?? "#3b9658" }]),
+  rock: o => fromParts([{ shape: "sphere", size: [0.8], pos: [0, 0.25, 0], color: o.color ?? "#ffffff", texture: "stone", flat: true }]),
   flower: o => fromParts([
-    { shape: "cylinder", size: [0.04, 0.04, 0.6], pos: [0, 0.3, 0], color: "#3c8a2e" },
-    { shape: "sphere", size: [0.18], pos: [0, 0.65, 0], color: o.color ?? "#ff6fa8" }]),
-  pond: o => fromParts([{ shape: "cylinder", size: [2.4, 2.4, 0.06], pos: [0, 0.03, 0], color: o.color ?? "#4aa3df" }]),
+    { shape: "cylinder", size: [0.035, 0.035, 0.6], pos: [0, 0.3, 0], color: "#3c8a2e" },
+    { shape: "sphere", size: [0.17], pos: [0, 0.66, 0], color: o.color ?? "#ff6fa8" },
+    { shape: "sphere", size: [0.07], pos: [0, 0.7, 0.12], color: "#ffe066" }]),
+  pond: o => fromParts([
+    { shape: "cylinder", size: [2.5, 2.5, 0.06], pos: [0, 0.03, 0], color: o.color ?? "#ffffff", texture: "water", repeat: [2, 2], rough: 0.2 },
+    { shape: "torus", size: [2.5, 0.18], pos: [0, 0.04, 0], rot: [Math.PI / 2, 0, 0], color: "#ffffff", texture: "stone" }]),
   sign: o => fromParts([
-    { shape: "box", size: [0.15, 1.2, 0.15], pos: [0, 0.6, 0], color: "#6b4626" },
-    { shape: "box", size: [1.8, 0.7, 0.1], pos: [0, 1.35, 0], color: "#c89a5c" }]),
+    { shape: "box", size: [0.15, 1.2, 0.15], pos: [0, 0.6, 0], color: "#c49a6c", texture: "wood" },
+    { shape: "roundbox", size: [1.8, 0.7, 0.1, 0.04], pos: [0, 1.35, 0], color: "#f0c890", texture: "planks" }]),
   coop: o => fromParts([
-    { shape: "box", size: [3, 2, 2.4], pos: [0, 1, 0], color: o.color ?? "#c94f3d" },
-    { shape: "cone", size: [2.4, 1.4], pos: [0, 2.7, 0], color: "#5a3a2a", rot: [0, Math.PI / 4, 0] },
-    { shape: "box", size: [0.8, 1, 0.05], pos: [0, 0.5, 1.22], color: "#3b2418" }])
+    { shape: "box", size: [3, 2, 2.4], pos: [0, 1, 0], color: o.color ?? "#e8796c", texture: "planks", repeat: [2, 1.5] },
+    { shape: "box", size: [3.3, 0.12, 2.7], pos: [0, 2.02, 0], color: "#8a6648", texture: "wood" },
+    { shape: "cone", size: [2.45, 1.3], pos: [0, 2.7, 0], color: "#ffffff", texture: "shingles", repeat: [3, 2], rot: [0, Math.PI / 4, 0] },
+    { shape: "roundbox", size: [0.8, 1.05, 0.06, 0.03], pos: [0, 0.55, 1.22], color: "#6b4a32", texture: "wood" },
+    { shape: "box", size: [0.5, 0.5, 0.05], pos: [-0.95, 1.3, 1.22], color: "#ffe9a8", emissive: "#ffcf66", glow: 0.35 },
+    { shape: "box", size: [0.3, 0.9, 0.08], pos: [0, 0.1, 1.7], rot: [0.9, 0, 0], color: "#c49a6c", texture: "planks" }])
 };
 
-const labels = [];
-const clickables = []; // { obj, info }
-const builtObjects = []; // labeled things he can go admire
+const gltf = new GLTFLoader();
+const labels = [], clickables = [], builtObjects = [], mapDots = [];
 for (const o of world.objects ?? []) {
   let obj;
-  if (world.custom?.[o.type]) obj = fromParts(world.custom[o.type]);
+  if (o.type === "model" && o.src) {
+    obj = new THREE.Group();
+    gltf.load(o.src, g => { g.scene.traverse(n => { if (n.isMesh) { n.castShadow = n.receiveShadow = true; } }); obj.add(g.scene); }, undefined, e => console.warn("model failed", o.src, e));
+  } else if (world.custom?.[o.type]) obj = fromParts(world.custom[o.type]);
   else if (builtins[o.type]) obj = builtins[o.type](o);
   else { console.warn("Unknown object type", o.type); continue; }
-  obj.position.set(o.pos?.[0] ?? 0, 0, o.pos?.[1] ?? 0);
+  obj.position.set(o.pos?.[0] ?? 0, o.y ?? 0, o.pos?.[1] ?? 0);
   obj.rotation.y = o.rot ?? 0;
   obj.scale.setScalar(o.scale ?? 1);
   scene.add(obj);
+  mapDots.push({ x: obj.position.x, z: obj.position.z, c: o.mapColor ?? (o.type === "pond" ? "#4aa3df" : o.type === "tree" || o.type === "pine" ? "#4f9a3a" : "#8a7a66") });
   if (o.label) {
     const el = document.createElement("div"); el.className = "label3d"; el.textContent = o.label;
     document.body.appendChild(el);
-    labels.push({ el, pos: new THREE.Vector3(obj.position.x, 3.6 * (o.scale ?? 1), obj.position.z) });
+    labels.push({ el, pos: new THREE.Vector3(obj.position.x, (o.labelHeight ?? 3.6) * (o.scale ?? 1), obj.position.z) });
     builtObjects.push({ name: o.label, pos: [obj.position.x, obj.position.z] });
   }
   clickables.push({ obj, info: o.note ?? o.label ?? null });
+}
+
+const size = world.ground?.size ?? 40;
+const ground = new THREE.Mesh(new THREE.CircleGeometry(size / 2 + 4, 96),
+  new THREE.MeshStandardMaterial({ color: world.ground?.color ?? "#8cc96b", map: texFor(world.ground?.texture ?? "grass", 14, 14), roughness: 1 }));
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+{ // grass tufts
+  const tufts = new THREE.InstancedMesh(new THREE.ConeGeometry(0.05, 0.28, 4), new THREE.MeshStandardMaterial({ color: "#5e9e45" }), 900);
+  const m4 = new THREE.Matrix4(); const rr = rngFor("tufts");
+  for (let i = 0; i < 900; i++) { const a = rr() * Math.PI * 2, r = Math.sqrt(rr()) * (size / 2 + 3); m4.makeRotationZ((rr() - 0.5) * 0.4); m4.setPosition(Math.cos(a) * r, 0.12, Math.sin(a) * r); tufts.setMatrixAt(i, m4); }
+  scene.add(tufts);
 }
 
 // ---------- Odyssey Jr. himself ----------
@@ -197,43 +343,50 @@ const col = (k, d) => C[k] ?? d;
 const chicken = new THREE.Group();
 const at = (m, x, y, z) => { m.position.set(x, y, z); return m; };
 const body = new THREE.Group(); body.position.y = 0.78; chicken.add(body);
-const torso = part("sphere", [0.55], col("feathers", "#fffaf0")); torso.scale.set(0.95, 0.88, 1.15); body.add(torso);
-const breast = at(part("sphere", [0.4], col("feathers", "#fffaf0")), 0, 0.05, 0.32); breast.scale.set(1, 1.05, 0.9); body.add(breast);
-for (const [i, a] of [-0.35, 0, 0.35].entries()) {
-  const f = part("cone", [0.14, 0.62], col("tail", "#ece0c8"));
-  f.position.set(Math.sin(a) * 0.18, 0.28 + (i === 1 ? 0.06 : 0), -0.62); f.rotation.set(-0.75, 0, a * 0.9); body.add(f);
+const torso = part("sphere", [0.55], col("feathers", "#fffaf0"), { rough: 0.9 }); torso.scale.set(0.95, 0.9, 1.15); body.add(torso);
+const breast = at(part("sphere", [0.42], col("feathers", "#fffaf0"), { rough: 0.9 }), 0, 0.05, 0.3); breast.scale.set(1, 1.08, 0.9); body.add(breast);
+const tail = new THREE.Group(); tail.position.set(0, 0.25, -0.55); body.add(tail);
+for (const [i, a] of [-0.4, -0.13, 0.13, 0.4].entries()) {
+  const f = part("capsule", [0.08, 0.5], col("tail", "#ece0c8")); f.position.set(Math.sin(a) * 0.2, 0.18 + (i === 1 || i === 2 ? 0.05 : 0), -0.12); f.rotation.set(-0.6, 0, a * 1.1); tail.add(f);
 }
 const wings = [-1, 1].map(s => {
-  const pivot = new THREE.Group(); pivot.position.set(0.48 * s, 0.12, -0.02); body.add(pivot);
-  const w = part("sphere", [0.34], col("wings", "#f1e6d0")); w.scale.set(0.28, 0.62, 1.05); w.position.set(0.02 * s, -0.1, -0.05); w.rotation.x = 0.25;
-  pivot.add(w); return pivot;
+  const pivot = new THREE.Group(); pivot.position.set(0.48 * s, 0.14, -0.02); body.add(pivot);
+  const w = part("sphere", [0.34], col("wings", "#f1e6d0")); w.scale.set(0.28, 0.62, 1.05); w.position.set(0.02 * s, -0.12, -0.05); w.rotation.x = 0.25; pivot.add(w);
+  for (let k = 0; k < 3; k++) { const tip = part("capsule", [0.05, 0.22], col("wings", "#f1e6d0")); tip.position.set(0.04 * s, -0.32, -0.22 - k * 0.08); tip.rotation.x = 1.2; pivot.add(tip); }
+  return pivot;
 });
 const neckAnchor = new THREE.Group(); neckAnchor.position.set(0, 0.36, 0.34); body.add(neckAnchor);
+const neck = at(part("capsule", [0.2, 0.25], col("feathers", "#fffaf0")), 0, 1.18, 0.42); neck.rotation.x = 0.35; chicken.add(neck);
 const head = new THREE.Group(); head.position.set(0, 1.42, 0.5); chicken.add(head);
 const skull = part("sphere", [0.3], col("feathers", "#fffaf0")); skull.scale.set(0.95, 1, 1.05); head.add(skull);
-const beakTop = at(part("cone", [0.085, 0.22], col("beak", "#f2a20f")), 0, -0.01, 0.34); beakTop.rotation.x = Math.PI / 2; head.add(beakTop);
-const beakLow = at(part("cone", [0.06, 0.14], col("beak", "#f2a20f")), 0, -0.07, 0.3); beakLow.rotation.x = Math.PI / 2 + 0.25; head.add(beakLow);
-for (const [i, z] of [-0.1, 0.02, 0.13].entries()) head.add(at(part("sphere", [i === 1 ? 0.09 : 0.075], col("comb", "#e0362a")), 0, 0.3 + (i === 1 ? 0.03 : 0), z));
-for (const x of [-0.04, 0.04]) { const wt = at(part("sphere", [0.06], col("comb", "#e0362a")), x, -0.2, 0.25); wt.scale.y = 1.4; head.add(wt); }
-const eyes = [];
+const beakTop = at(part("cone", [0.085, 0.24], col("beak", "#f2a20f"), { rough: 0.5 }), 0, -0.01, 0.35); beakTop.rotation.x = Math.PI / 2; head.add(beakTop);
+const beakLow = at(part("cone", [0.06, 0.14], col("beak", "#f2a20f"), { rough: 0.5 }), 0, -0.07, 0.3); beakLow.rotation.x = Math.PI / 2 + 0.25; head.add(beakLow);
+for (const [i, z] of [-0.1, 0.02, 0.13].entries()) head.add(at(part("sphere", [i === 1 ? 0.09 : 0.075], col("comb", "#e0362a"), { rough: 0.6 }), 0, 0.3 + (i === 1 ? 0.03 : 0), z));
+for (const x of [-0.04, 0.04]) { const wt = at(part("sphere", [0.06], col("comb", "#e0362a"), { rough: 0.6 }), x, -0.2, 0.25); wt.scale.y = 1.4; head.add(wt); }
+const eyes = [], lids = [];
 for (const s of [-1, 1]) {
-  const eye = at(new THREE.Mesh(new THREE.SphereGeometry(0.075, 16, 12), new THREE.MeshStandardMaterial({ color: "#ffffff" })), 0.17 * s, 0.07, 0.2); head.add(eye);
-  const pupil = at(new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), new THREE.MeshStandardMaterial({ color: "#111111", roughness: 0.2 })), 0.2 * s, 0.075, 0.245); head.add(pupil);
-  head.add(at(new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 6), new THREE.MeshBasicMaterial({ color: "#ffffff" })), 0.21 * s, 0.1, 0.285));
+  const eye = at(new THREE.Mesh(new THREE.SphereGeometry(0.085, 24, 16), new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.3 })), 0.17 * s, 0.07, 0.2); head.add(eye);
+  const pupil = at(new THREE.Mesh(new THREE.SphereGeometry(0.05, 20, 14), new THREE.MeshStandardMaterial({ color: "#141020", roughness: 0.15 })), 0.205 * s, 0.07, 0.255); head.add(pupil);
+  head.add(at(new THREE.Mesh(new THREE.SphereGeometry(0.017, 8, 6), new THREE.MeshBasicMaterial({ color: "#ffffff" })), 0.22 * s, 0.095, 0.297));
+  // a sleepy little eyelid, like Pino's
+  const lid = at(new THREE.Mesh(new THREE.SphereGeometry(0.092, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.42), new THREE.MeshStandardMaterial({ color: col("feathers", "#fffaf0"), roughness: 0.9 })), 0.17 * s, 0.075, 0.2);
+  lid.rotation.set(0.55, 0.35 * s, 0); head.add(lid); lids.push(lid);
+  const blush = at(new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 8), new THREE.MeshBasicMaterial({ color: "#ff9fb2", transparent: true, opacity: 0.55 })), 0.2 * s, -0.07, 0.17); blush.scale.set(1, 0.5, 0.4); head.add(blush);
   eyes.push(eye, pupil);
 }
 const hatAnchor = new THREE.Group(); hatAnchor.position.set(0, 0.27, -0.03); hatAnchor.rotation.z = 0.12; head.add(hatAnchor);
 const legs = [-0.17, 0.17].map(x => {
-  const leg = new THREE.Group(); leg.position.set(x, 0.42, 0.02); chicken.add(leg);
-  leg.add(at(part("cylinder", [0.035, 0.04, 0.42], col("legs", "#f2a20f")), 0, -0.21, 0));
-  for (const a of [-0.45, 0, 0.45]) { const toe = at(part("box", [0.035, 0.03, 0.2], col("legs", "#f2a20f")), Math.sin(a) * 0.08, -0.41, Math.cos(a) * 0.08); toe.rotation.y = a; leg.add(toe); }
-  leg.add(at(part("box", [0.03, 0.03, 0.12], col("legs", "#f2a20f")), 0, -0.41, -0.07));
+  const leg = new THREE.Group(); leg.position.set(x, 0.44, 0.02); chicken.add(leg);
+  leg.add(at(part("cylinder", [0.035, 0.045, 0.44], col("legs", "#f2a20f"), { rough: 0.5 }), 0, -0.22, 0));
+  for (const a of [-0.5, 0, 0.5]) { const toe = at(part("capsule", [0.022, 0.16], col("legs", "#f2a20f"), { rough: 0.5 }), Math.sin(a) * 0.08, -0.43, Math.cos(a) * 0.08); toe.rotation.set(Math.PI / 2, 0, -a); leg.add(toe); }
   return leg;
 });
 const wear = (anchor, parts) => { if (Array.isArray(parts) && parts.length) anchor.add(fromParts(parts)); };
 wear(hatAnchor, character.outfit?.head);
 wear(neckAnchor, character.outfit?.neck);
 wear(body, character.outfit?.body);
+const blob = new THREE.Mesh(new THREE.CircleGeometry(0.55, 24), new THREE.MeshBasicMaterial({ color: "#000", transparent: true, opacity: 0.18, depthWrite: false }));
+blob.rotation.x = -Math.PI / 2; blob.position.y = 0.02; chicken.add(blob);
 scene.add(chicken);
 
 // ---------- life sim ----------
@@ -241,27 +394,27 @@ const spots = world.spots ?? {};
 const spotNames = Object.keys(spots);
 const spotPos = name => spots[name] ?? spots[spotNames[0]] ?? [0, 0];
 const clamp = (v, a = 0, b = 100) => Math.max(a, Math.min(b, v));
-function rngFor(str) { let h = 1779033703 ^ str.length; for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }; }
 
-// Each action: where he goes, how he moves, what it does to his needs per minute, and how long it lasts.
-// To teach him a new everyday action, add one here (or ask him to in the inbox).
+// Each action: where he goes (and why), the animation, what it does to his needs per minute, and how long it lasts.
+// To teach him a new everyday action, add one here (he can do this himself).
 const ACTIONS = {
-  sleep:    { icon: "😴", text: "Sleeping in the coop", where: "coop", anim: "sleep", fx: { energy: 1.4, calm: 0.4, fullness: -0.04 }, dur: [30, 60] },
-  eat:      { icon: "🌽", text: "Eating at the seed feeder", where: "feeder", anim: "peck", fx: { fullness: 2.6, mood: 0.2 }, dur: [6, 12] },
-  drink:    { icon: "💧", text: "Sipping water at the pond", where: "pond", anim: "peck", fx: { fullness: 0.6, calm: 0.7 }, dur: [4, 8] },
-  forage:   { icon: "🌾", text: "Scratching for bugs in the garden", where: "garden", anim: "peck", fx: { fullness: 0.7, wonder: 0.3, calm: 0.3 }, dur: [10, 20] },
-  nap:      { icon: "💤", text: "Taking a little nap", where: "coop", anim: "sleep", fx: { energy: 2.2, calm: 0.6 }, dur: [15, 35] },
-  explore:  { icon: "🧭", text: "Exploring the yard", where: "*random", anim: "explore", fx: { wonder: 1.2, energy: -0.1 }, dur: [10, 20] },
-  work:     { icon: "🔨", text: "Working on today's project", where: "*focus", anim: "build", fx: { wonder: 0.5, mood: 0.6, energy: -0.15 }, dur: [20, 40] },
-  admire:   { icon: "✨", text: "Admiring something he built", where: "*built", anim: "look", fx: { mood: 0.9, wonder: 0.3 }, dur: [5, 10] },
-  dustbath: { icon: "🪶", text: "Taking a dust bath", where: "dustbath", anim: "dance", fx: { calm: 1.6, mood: 0.3 }, dur: [8, 14] },
-  think:    { icon: "💭", text: "Sitting and thinking big thoughts", where: "lookout", anim: "think", fx: { calm: 0.9, wonder: 0.6 }, dur: [8, 15] },
-  dance:    { icon: "🎶", text: "Doing a happy little dance", where: "*here", anim: "dance", fx: { mood: 1.6, energy: -0.3 }, dur: [3, 6] }
+  sleep:    { icon: "😴", doing: "sleeping by his coop", to: "his coop", why: "turn in for the night", where: "coop", anim: "sleep", fx: { energy: 1.4, calm: 0.4, fullness: -0.04 }, dur: [30, 60] },
+  eat:      { icon: "🌽", doing: "munching seeds at the feeder", to: "the seed feeder", why: "grab a snack", where: "feeder", anim: "peck", fx: { fullness: 2.6, mood: 0.2 }, dur: [6, 12] },
+  drink:    { icon: "💧", doing: "sipping water at the pond", to: "the pond", why: "get a drink", where: "pond", anim: "peck", fx: { fullness: 0.6, calm: 0.7 }, dur: [4, 8] },
+  forage:   { icon: "🌾", doing: "scratching for bugs in the garden", to: "the garden", why: "hunt for bugs", where: "garden", anim: "scratch", fx: { fullness: 0.7, wonder: 0.3, calm: 0.3 }, dur: [10, 20] },
+  nap:      { icon: "💤", doing: "taking a little nap", to: "his coop", why: "rest his eyes", where: "coop", anim: "sleep", fx: { energy: 2.2, calm: 0.6 }, dur: [15, 35] },
+  explore:  { icon: "🧭", doing: "poking around the yard", to: "a new corner of the yard", why: "see what's there", where: "*random", anim: "explore", fx: { wonder: 1.2, energy: -0.1 }, dur: [10, 20] },
+  work:     { icon: "🔨", doing: "working on his project", to: "his project", why: "keep building", where: "*focus", anim: "build", fx: { wonder: 0.5, mood: 0.6, energy: -0.15 }, dur: [20, 40] },
+  admire:   { icon: "✨", doing: "admiring something he built", to: "something he built", why: "admire it", where: "*built", anim: "look", fx: { mood: 0.9, wonder: 0.3 }, dur: [5, 10] },
+  dustbath: { icon: "🪶", doing: "rolling around in a dust bath", to: "his dust bath", why: "fluff his feathers", where: "dustbath", anim: "dust", fx: { calm: 1.6, mood: 0.3 }, dur: [8, 14] },
+  think:    { icon: "💭", doing: "sitting and thinking big thoughts", to: "the lookout", why: "sit and think", where: "lookout", anim: "think", fx: { calm: 0.9, wonder: 0.6 }, dur: [8, 15] },
+  dance:    { icon: "🎶", doing: "doing a happy little dance", to: "a sunny spot", why: "dance", where: "*here", anim: "dance", fx: { mood: 1.6, energy: -0.3 }, dur: [3, 6] }
 };
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
-const NEED_COLORS = { fullness: "#f2a20f", energy: "#4caf50", wonder: "#8a7dff", mood: "#ff6fa8", calm: "#4aa3df" };
+const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
 
+const sim = { needs: { fullness: 70, energy: 55, wonder: 60, mood: 65, calm: 70 }, act: "sleep", left: 0, since: new Date(), place: spotPos("coop"), rnd: null, target: null, history: [] };
 function chooseAction(n, hour, rnd) {
   if (isNightHour(hour)) return "sleep";
   const lack = k => (100 - n[k]) / 100;
@@ -279,7 +432,7 @@ function chooseAction(n, hour, rnd) {
 function placeFor(name, rnd, here) {
   const a = ACTIONS[name];
   if (a.where === "*focus") return spotPos(state.spot);
-  if (a.where === "*built" && builtObjects.length) { const b = builtObjects[Math.floor(rnd() * builtObjects.length)]; return [b.pos[0] + 1.6, b.pos[1] + 1.6]; }
+  if (a.where === "*built" && builtObjects.length) { const b = builtObjects[Math.floor(rnd() * builtObjects.length)]; sim.target = b.name; return [b.pos[0] + 1.6, b.pos[1] + 1.6]; }
   if (a.where === "*random") { const lim = size / 2 - 2; return [(rnd() - 0.5) * 2 * lim, (rnd() - 0.5) * 2 * lim]; }
   if (a.where === "*here") return here;
   return spotPos(a.where);
@@ -290,13 +443,13 @@ function applyMinute(n, actName) {
   const avg = (n.fullness + n.energy + n.wonder + n.calm) / 4;
   n.mood = clamp(n.mood + (avg - n.mood) * 0.03 + (fx.mood ?? 0));
 }
-
-// Replay today's life from midnight, minute by minute, so every visitor sees the same chicken.
-const sim = { needs: { fullness: 70, energy: 55, wonder: 60, mood: 65, calm: 70 }, act: "sleep", left: 0, since: null, place: spotPos("coop"), rnd: null };
 function newAction(now) {
+  sim.target = null;
   sim.act = chooseAction(sim.needs, now.getHours(), sim.rnd);
   const [lo, hi] = ACTIONS[sim.act].dur; sim.left = Math.round(lo + sim.rnd() * (hi - lo));
   sim.place = placeFor(sim.act, sim.rnd, sim.place); sim.since = new Date(now);
+  const last = sim.history[sim.history.length - 1];
+  if (!last || last.act !== sim.act) sim.history.push({ act: sim.act, at: new Date(now), target: sim.target });
 }
 (function replay() {
   const now = new Date(); const t = new Date(now); t.setHours(0, 0, 0, 0);
@@ -304,25 +457,34 @@ function newAction(now) {
   while (t < now) { if (sim.left <= 0) newAction(t); applyMinute(sim.needs, sim.act); sim.left--; t.setMinutes(t.getMinutes() + 1); }
 })();
 
-// ---------- UI: stats, action bar, focus ----------
-$("stats").innerHTML = NEEDS.map(k => `<div class="stat"><span>${k[0].toUpperCase() + k.slice(1)}</span><div class="bar"><i id="bar-${k}" style="background:${NEED_COLORS[k]}"></i></div><b id="val-${k}"></b></div>`).join("");
+// ---------- UI ----------
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
+$("stats").innerHTML = NEEDS.map(k => `<div class="stat"><div class="lbl"><span class="dot" style="background:${NEED_COLORS[k]}"></span>${k[0].toUpperCase() + k.slice(1)}</div><div class="bar"><i id="bar-${k}" style="background:${NEED_COLORS[k]}"></i></div></div>`).join("");
 $("dayTag").textContent = "Day " + (state.day ?? "?");
-$("focus").innerHTML = `<b>Today's focus:</b> ${esc(state.today ?? "…")}`;
-function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]); }
-let override = null; // local, per-visitor moments (seed toss, being petted)
-function renderUI() {
-  for (const k of NEEDS) { const v = Math.round(sim.needs[k]); $("bar-" + k).style.width = v + "%"; $("val-" + k).textContent = v; }
-  const a = ACTIONS[override?.act ?? sim.act];
-  $("actionIcon").textContent = override?.icon ?? a.icon;
-  $("actionText").textContent = override?.text ?? (sim.act === "work" && state.activity ? `${a.text}: ${state.today ?? ""}` : a.text);
-  $("actionSince").textContent = override ? "just now" : "since " + sim.since.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  $("clock").textContent = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+let override = null; // per-visitor moments (seed toss, being petted)
+let moving = false;
+function actionSentence() {
+  if (override) return override.text;
+  const a = ACTIONS[sim.act];
+  const to = sim.act === "admire" && sim.target ? `the ${sim.target}` : a.to;
+  if (moving && sim.act !== "dance" && sim.act !== "explore") return `Odyssey Jr. is walking to ${to} to ${a.why}`;
+  if (sim.act === "work") return `Odyssey Jr. is working on his project: ${state.today ?? ""}`;
+  return `Odyssey Jr. is ${a.doing}`;
 }
-setInterval(() => { const now = new Date(); if (sim.left <= 0) { newAction(now); goTo(sim.place); } applyMinute(sim.needs, sim.act); sim.left--; updateSky(now); renderUI(); }, 60000);
+let lastSentence = "";
+function renderUI() {
+  for (const k of NEEDS) { const v = Math.round(sim.needs[k]); $("bar-" + k).style.width = v + "%"; $("bar-" + k).parentElement.title = `${k}: ${v}`; }
+  const sentence = actionSentence();
+  if (sentence !== lastSentence) { lastSentence = sentence; $("actionText").textContent = sentence; }
+  $("avatar").textContent = override?.icon ?? ACTIONS[sim.act].icon;
+  $("actionSince").textContent = override ? "just now" : "since " + sim.since.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+setInterval(() => { const now = new Date(); if (sim.left <= 0) { newAction(now); goTo(sim.place); } applyMinute(sim.needs, sim.act); sim.left--; updateSky(now); }, 60000);
+setInterval(renderUI, 500);
 
 // ---------- movement + animation ----------
 const target = new THREE.Vector3();
-let moving = false, t = 0;
+let t = 0;
 function goTo(p) { target.set(p[0], 0, p[1]); moving = true; }
 chicken.position.set(sim.place[0], 0, sim.place[1]);
 controls.target.set(sim.place[0], 1, sim.place[1]);
@@ -338,67 +500,92 @@ function say(text, secs = 4) { bubbleText = text; bubbleTimer = secs; }
 const seeds = new THREE.Group(); scene.add(seeds);
 $("seedBtn").onclick = () => {
   seeds.clear();
-  const c = chicken.position;
-  for (let i = 0; i < 18; i++) seeds.add(at(part("sphere", [0.05], "#e8c547"), c.x + (Math.random() - 0.5) * 1.6, 0.04, c.z + 0.9 + (Math.random() - 0.5) * 1.2));
-  override = { act: "eat", icon: "🌾", text: "Gobbling up the seeds you tossed!", secs: 8 };
+  const c = chicken.position, fx = Math.sin(chicken.rotation.y), fz = Math.cos(chicken.rotation.y);
+  for (let i = 0; i < 20; i++) seeds.add(at(part("sphere", [0.045], "#e8c547"), c.x + fx * 0.9 + (Math.random() - 0.5) * 1.2, 0.04, c.z + fz * 0.9 + (Math.random() - 0.5) * 1.2));
+  override = { act: "eat", icon: "🌾", text: "Odyssey Jr. is gobbling up the seeds you tossed!", secs: 8 };
   sim.needs.fullness = clamp(sim.needs.fullness + 12); sim.needs.mood = clamp(sim.needs.mood + 4);
   say("Seeds?! For me?! 🥹", 4); renderUI();
 };
 const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+let hop = 0;
 renderer.domElement.addEventListener("click", e => {
   mouse.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
   ray.setFromCamera(mouse, camera);
   if (ray.intersectObject(chicken, true).length) {
-    override = { act: "dance", icon: "🥰", text: "Got petted and loved it", secs: 4 };
+    override = { act: "dance", icon: "🥰", text: "Odyssey Jr. got petted and loved it", secs: 3 }; hop = 1;
     sim.needs.mood = clamp(sim.needs.mood + 6); sim.needs.calm = clamp(sim.needs.calm + 3);
     say(["Bawk!", "Hehe, that tickles!", "Hi there, visitor!", "Nice to meet you!"][Math.floor(Math.random() * 4)], 3); renderUI(); return;
   }
   for (const c of clickables) if (c.info && ray.intersectObject(c.obj, true).length) { say(`That's my ${c.info}!`, 3); return; }
 });
 
-const clock = new THREE.Clock(), v = new THREE.Vector3();
+const mm = $("minimap").querySelector("canvas").getContext("2d");
+function drawMinimap() {
+  const S = 260, k = S / (size + 8);
+  mm.fillStyle = "#cfe8b4"; mm.fillRect(0, 0, S, S);
+  for (const d of mapDots) { mm.fillStyle = d.c; mm.beginPath(); mm.arc(S / 2 + d.x * k, S / 2 + d.z * k, 5, 0, 7); mm.fill(); }
+  const cx = S / 2 + chicken.position.x * k, cz = S / 2 + chicken.position.z * k;
+  mm.strokeStyle = "rgba(43,37,64,.6)"; mm.lineWidth = 3; mm.beginPath(); mm.moveTo(cx, cz); mm.lineTo(cx + Math.sin(chicken.rotation.y) * 20, cz + Math.cos(chicken.rotation.y) * 20); mm.stroke();
+  mm.fillStyle = "#fff"; mm.strokeStyle = "#2b2540"; mm.lineWidth = 3; mm.beginPath(); mm.arc(cx, cz, 9, 0, 7); mm.fill(); mm.stroke();
+}
+
+const clock = new THREE.Clock(), v = new THREE.Vector3(), camGoal = new THREE.Vector3();
+let idleTimer = 3, lookTilt = 0, mmTimer = 0;
 function animate() {
   const dt = Math.min(clock.getDelta(), 0.05); t += dt;
-  head.rotation.set(0, 0, 0); body.position.y = 0.78; head.position.set(0, 1.42, 0.5);
-  wings.forEach(w => w.rotation.z = 0); chicken.position.y = 0; legs.forEach(l => l.rotation.x = 0);
+  head.rotation.set(0, 0, 0); head.position.set(0, 1.42, 0.5); neck.position.set(0, 1.18, 0.42);
+  body.position.y = 0.78; body.rotation.set(0, 0, 0); tail.rotation.set(0, 0, 0);
+  wings.forEach(w => w.rotation.set(0, 0, 0)); chicken.position.y = 0; legs.forEach(l => { l.rotation.set(0, 0, 0); l.position.y = 0.44; });
+  const blinking = (t % 3.7) < 0.12;
+  eyes.forEach(e => e.scale.y = blinking ? 0.12 : 1); lids.forEach(l => l.rotation.x = blinking ? 1.3 : 0.55);
   const anim = override ? ACTIONS[override.act].anim : ACTIONS[sim.act].anim;
-  if (override) { override.secs -= dt; if (override.secs <= 0) { override = null; seeds.clear(); renderUI(); } }
+  if (override) { override.secs -= dt; if (override.secs <= 0) { override = null; seeds.clear(); } }
 
   v.subVectors(target, chicken.position); v.y = 0;
   if (moving && v.length() > 0.12 && !override) {
+    // the waddle: rolling body, bouncing steps, and a head that holds still then thrusts forward like a real chicken
     const run = sim.act === "eat" || sim.act === "dance";
-    v.normalize(); chicken.position.addScaledVector(v, dt * (run ? 2.6 : 1.6));
-    chicken.rotation.y = Math.atan2(v.x, v.z);
-    legs[0].rotation.x = Math.sin(t * 12) * 0.6; legs[1].rotation.x = -Math.sin(t * 12) * 0.6;
-    head.position.z = 0.5 + Math.sin(t * 12) * 0.08; body.position.y = 0.78 + Math.abs(Math.sin(t * 12)) * 0.03;
+    const speed = run ? 2.6 : 1.5, step = t * (run ? 13 : 9);
+    v.normalize(); chicken.position.addScaledVector(v, dt * speed);
+    let dRot = Math.atan2(v.x, v.z) - chicken.rotation.y; dRot = Math.atan2(Math.sin(dRot), Math.cos(dRot)); chicken.rotation.y += dRot * Math.min(1, dt * 8);
+    legs[0].rotation.x = Math.sin(step) * 0.75; legs[1].rotation.x = -Math.sin(step) * 0.75;
+    legs[0].position.y = 0.44 + Math.max(0, Math.sin(step)) * 0.06; legs[1].position.y = 0.44 + Math.max(0, -Math.sin(step)) * 0.06;
+    body.rotation.z = Math.sin(step) * 0.13; body.rotation.x = 0.08;
+    const bounce = Math.abs(Math.sin(step)) * 0.07; body.position.y = 0.78 + bounce;
+    const s = (step / Math.PI) % 1, thrust = s < 0.55 ? s / 0.55 : 1 - (s - 0.55) / 0.45;
+    head.position.z = 0.42 + thrust * 0.18; head.position.y = 1.42 + bounce * 0.6; neck.position.z = 0.4 + thrust * 0.08; neck.position.y = 1.18 + bounce * 0.6;
+    tail.rotation.y = Math.sin(step) * 0.3;
+    if (run) wings.forEach((w, i) => w.rotation.z = (0.4 + Math.sin(t * 30) * 0.3) * (i ? -1 : 1));
   } else {
     moving = false;
-    if (anim === "sleep") { body.position.y = 0.62 + Math.sin(t * 1.5) * 0.02; head.position.y = 1.2; head.rotation.x = 0.5; eyes.forEach(e => e.scale.y = 0.15); }
-    else {
-      eyes.forEach(e => e.scale.y = (t % 4 < 0.12) ? 0.15 : 1); // blink
-      if (anim === "peck") head.rotation.x = Math.max(0, Math.sin(t * 7)) * 0.9;
-      else if (anim === "build") { head.rotation.x = Math.abs(Math.sin(t * 10)) * 0.5; chicken.position.y = Math.abs(Math.sin(t * 5)) * 0.12; wings.forEach((w, i) => w.rotation.z = Math.sin(t * 10) * 0.25 * (i ? -1 : 1)); }
-      else if (anim === "dance") { chicken.rotation.y += dt * 3; chicken.position.y = Math.abs(Math.sin(t * 6)) * 0.25; wings.forEach((w, i) => w.rotation.z = Math.sin(t * 12) * 0.8 * (i ? -1 : 1)); }
-      else if (anim === "think") { head.rotation.z = Math.sin(t * 0.8) * 0.2; head.rotation.x = -0.15; }
-      else if (anim === "explore") { head.rotation.y = Math.sin(t * 1.5) * 0.7; if ((t % 6) < dt) { const lim = size / 2 - 2; const p = [THREE.MathUtils.clamp(chicken.position.x + (Math.random() - 0.5) * 6, -lim, lim), THREE.MathUtils.clamp(chicken.position.z + (Math.random() - 0.5) * 6, -lim, lim)]; goTo(p); } }
-      else head.rotation.y = Math.sin(t * 2) * 0.6;
-      if (anim !== "explore" && anim !== "dance" && (t % 9) < dt && !override) { // little idle wander near the spot
-        const p = override ? null : sim.place; if (p) goTo([p[0] + (Math.random() - 0.5) * 1.5, p[1] + (Math.random() - 0.5) * 1.5]);
-      }
+    if (anim === "sleep") { body.position.y = 0.6 + Math.sin(t * 1.5) * 0.02; head.position.set(0, 1.18, 0.45); neck.position.y = 1.0; head.rotation.x = 0.55; eyes.forEach(e => e.scale.y = 0.12); lids.forEach(l => l.rotation.x = 1.3); legs.forEach(l => l.position.y = 0.3); }
+    else if (anim === "peck") { const p = Math.max(0, Math.sin(t * 7)); head.rotation.x = p * 0.9; head.position.y = 1.42 - p * 0.35; head.position.z = 0.5 + p * 0.15; body.rotation.x = p * 0.25; tail.rotation.x = -p * 0.2; }
+    else if (anim === "scratch") { const ph = t % 1.6; if (ph < 0.8) { legs[Math.floor(t / 1.6) % 2].rotation.x = -Math.abs(Math.sin(ph / 0.8 * Math.PI * 2)) * 0.9; body.rotation.x = 0.15; } else { const p = Math.sin((ph - 0.8) / 0.8 * Math.PI); head.rotation.x = p * 0.9; head.position.y = 1.42 - p * 0.35; body.rotation.x = p * 0.25; } }
+    else if (anim === "build") { head.rotation.x = Math.abs(Math.sin(t * 10)) * 0.5; chicken.position.y = Math.abs(Math.sin(t * 5)) * 0.1; wings.forEach((w, i) => w.rotation.z = Math.sin(t * 10) * 0.3 * (i ? -1 : 1)); }
+    else if (anim === "dance") { chicken.rotation.y += dt * 3; chicken.position.y = Math.abs(Math.sin(t * 6)) * 0.25; body.rotation.z = Math.sin(t * 6) * 0.2; wings.forEach((w, i) => w.rotation.z = (0.5 + Math.sin(t * 14) * 0.5) * (i ? -1 : 1)); tail.rotation.y = Math.sin(t * 12) * 0.5; }
+    else if (anim === "dust") { body.position.y = 0.55; body.rotation.z = Math.sin(t * 4) * 0.35; wings.forEach((w, i) => w.rotation.z = (0.6 + Math.sin(t * 16) * 0.3) * (i ? -1 : 1)); head.position.y = 1.2; legs.forEach(l => l.position.y = 0.3); }
+    else if (anim === "think") { head.rotation.z = Math.sin(t * 0.8) * 0.22; head.rotation.x = -0.18; body.position.y = 0.66; legs.forEach(l => l.position.y = 0.34); }
+    else if (anim === "explore") { head.rotation.y = Math.sin(t * 1.5) * 0.7; if ((t % 6) < dt) { const lim = size / 2 - 2; goTo([THREE.MathUtils.clamp(chicken.position.x + (Math.random() - 0.5) * 6, -lim, lim), THREE.MathUtils.clamp(chicken.position.z + (Math.random() - 0.5) * 6, -lim, lim)]); } }
+    else { head.rotation.y = Math.sin(t * 2) * 0.6; }
+    if (anim !== "sleep") { // idle life: curious head tilts, a wing ruffle, small wanders around the spot
+      idleTimer -= dt; if (idleTimer < 0) { idleTimer = 2 + Math.random() * 4; lookTilt = (Math.random() - 0.5) * 0.7; }
+      head.rotation.z += lookTilt;
+      if ((t % 11) < 0.35) wings.forEach((w, i) => w.rotation.z += Math.sin(t * 40) * 0.25 * (i ? -1 : 1));
+      if (anim !== "explore" && anim !== "dance" && anim !== "dust" && (t % 9) < dt && !override) goTo([sim.place[0] + (Math.random() - 0.5) * 1.5, sim.place[1] + (Math.random() - 0.5) * 1.5]);
     }
   }
-  // seeds get eaten
+  if (hop > 0) { hop = Math.max(0, hop - dt * 2.2); chicken.position.y += Math.sin(hop * Math.PI) * 0.45; wings.forEach((w, i) => w.rotation.z = (0.8 * hop) * (i ? -1 : 1)); }
   if (override?.act === "eat" && seeds.children.length && Math.random() < dt * 2.5) seeds.remove(seeds.children[0]);
 
   bubbleTimer -= dt;
   if (bubbleTimer <= 0) { const opts = lines[sim.act] ?? ["Bawk."]; say(Math.random() < 0.3 ? (state.thought ?? opts[0]) : opts[Math.floor(Math.random() * opts.length)], 6); }
   bubble.textContent = bubbleText;
 
-  if (follow) controls.target.lerp(new THREE.Vector3(chicken.position.x, 1, chicken.position.z), 0.03);
+  if (follow) controls.target.lerp(camGoal.set(chicken.position.x, 1, chicken.position.z), 0.03);
   controls.update();
-  renderer.render(scene, camera);
+  composer.render();
 
-  const p = new THREE.Vector3(chicken.position.x, 2.5, chicken.position.z).project(camera);
+  const p = new THREE.Vector3(chicken.position.x, 2.6, chicken.position.z).project(camera);
   bubble.style.left = (p.x * 0.5 + 0.5) * innerWidth + "px";
   bubble.style.top = (-p.y * 0.5 + 0.5) * innerHeight + "px";
   bubble.style.opacity = p.z < 1 ? 1 : 0;
@@ -408,38 +595,49 @@ function animate() {
     l.el.style.top = (-q.y * 0.5 + 0.5) * innerHeight + "px";
     l.el.style.display = q.z < 1 ? "block" : "none";
   }
+  mmTimer -= dt; if (mmTimer <= 0) { mmTimer = 0.25; drawMinimap(); }
   requestAnimationFrame(animate);
 }
 goTo(sim.place); updateSky(new Date()); renderUI(); animate();
-addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
 
-// ---------- journal panel with tabs ----------
+// ---------- diary ----------
 function md(src) {
-  if (!src) return "<p><i>Nothing here yet.</i></p>";
+  if (!src) return "<p class='intro'>Nothing here yet.</p>";
   const inline = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\*(.+?)\*/g, "<i>$1</i>").replace(/`(.+?)`/g, "<code>$1</code>")
     .replace(/\[\[(.+?)\]\]/g, "<b>$1</b>").replace(/\[(.+?)\]\((.+?)\)/g, (m, a, b) => /^(https?:|[\w./-]+$)/.test(b) ? `<a href="${b}" target="_blank" rel="noopener">${a}</a>` : a);
   let out = "", inList = false;
   for (const raw of src.split("\n")) {
-    const line = raw.trimEnd();
-    const li = line.match(/^\s*[-*] (.*)/);
+    const line = raw.trimEnd(); const li = line.match(/^\s*[-*] (.*)/);
     if (li) { if (!inList) { out += "<ul>"; inList = true; } out += `<li>${inline(li[1])}</li>`; continue; }
     if (inList) { out += "</ul>"; inList = false; }
     const h = line.match(/^(#{1,3}) (.*)/);
-    if (h) out += `<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`;
-    else if (line.trim()) out += `<p>${inline(line)}</p>`;
+    if (h) out += `<h${h[1].length}>${inline(h[2])}</h${h[1].length}>`; else if (line.trim()) out += `<p>${inline(line)}</p>`;
   }
   return out + (inList ? "</ul>" : "");
 }
-const projList = () => {
-  const li = i => `<li>${i.link ? `<a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a>` : esc(i.title)}${i.note ? ` · ${esc(i.note)}` : ""}</li>`;
-  return `<h2>Things I've made</h2><ul>${[...(projects.making ?? []), ...(projects.done ?? [])].map(li).join("") || "<li>Nothing yet</li>"}</ul>`;
-};
+function ago(d) {
+  const s = (Date.now() - new Date(d).getTime()) / 1000; if (isNaN(s)) return "";
+  if (s < 60) return "just now"; if (s < 3600) return Math.floor(s / 60) + "m ago"; if (s < 86400) return Math.floor(s / 3600) + "h ago"; return Math.floor(s / 86400) + "d ago";
+}
+const KIND = { internet: "🌐 Internet", made: "🛠️ Made", thought: "💭 Thought", moment: "📍 Moment" };
+const cap = s => s[0].toUpperCase() + s.slice(1);
 const TABS = [
-  { id: "today", name: "📅 My day", load: async () => md(await getText(state.journal ?? `brain/journal/${state.updated}.md`)) },
-  { id: "projects", name: "🏗️ Projects", load: async () => md(await getText("brain/plans.md")) + projList() },
-  { id: "wants", name: "🎁 Wants", load: async () => md(await getText("brain/wants.md")) },
-  { id: "visitors", name: "👋 Visitors", load: async () => md(await getText("brain/visitors.md")) },
-  { id: "about", name: "🐔 About", load: async () => md(await getText("brain/personality.md")) }
+  { id: "stories", name: "stories", load: async () => {
+      const idx = await tryJSON("brain/journal/index.json", { entries: [] });
+      return `<p class="intro">Every day is a story. Tap one to read it.</p>` + (idx.entries ?? []).map(e => `<div class="entry story" data-file="${esc(e.file)}"><div class="top"><b>${esc(e.title)}</b><span class="ago">${esc(e.date)}</span></div></div>`).join("");
+  } },
+  { id: "day", name: "his day", load: async () => {
+      const log = await tryJSON("brain/log.json", { entries: [] });
+      const ai = [...(log.entries ?? [])].reverse().slice(0, 25).map(e => `<div class="entry"><div class="top">${esc(KIND[e.kind] ?? e.kind)}${e.title ? ` · ${esc(e.title)}` : ""}<span class="ago">${ago(e.time)}</span></div>${e.query ? `<div class="meta">looked up "${esc(e.query)}"${e.source ? ` · reading: ${esc(e.source)}` : ""}</div>` : ""}<div>${esc(e.text)}</div>${e.story ? `<div class="meta"><u>part of a longer story: ${esc(e.story)}</u></div>` : ""}</div>`).join("");
+      const yard = [...sim.history].reverse().slice(0, 8).map(h => `<div class="entry"><div class="top">${ACTIONS[h.act].icon} In the yard<span class="ago">${ago(h.at)}</span></div><div>${esc(cap(ACTIONS[h.act].doing))}${h.target ? ` (the ${esc(h.target)})` : ""}.</div></div>`).join("");
+      return `<p class="intro"><b>Today's focus:</b> ${esc(state.today ?? "")}</p>${ai}<h3>Earlier today in the yard</h3>${yard || "<p class='intro'>Still waking up.</p>"}`;
+  } },
+  { id: "wants", name: "he wants", load: async () => {
+      const w = await tryJSON("brain/wants.json", { wants: [] });
+      return `<p class="intro">He asks for things he needs. Every one of these points at something that actually happened to him.</p>` + (w.wants ?? []).map(x => `<div class="want"><b>${esc(x.item)}</b><span>${esc(x.reason)}</span><span class="tag ${(x.status ?? "waiting") === "waiting" ? "" : "done"}">${esc(x.status ?? "waiting")}</span></div>`).join("");
+  } },
+  { id: "visitors", name: "visitors", load: async () => md(await getText("brain/visitors.md")) },
+  { id: "about", name: "about", load: async () => md(await getText("brain/personality.md")) + `<h2>Things I've made</h2><ul>${[...(projects.making ?? []), ...(projects.done ?? [])].map(i => `<li>${i.link ? `<a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a>` : esc(i.title)}${i.note ? ` · ${esc(i.note)}` : ""}</li>`).join("") || "<li>Nothing yet</li>"}</ul>` }
 ];
 $("tabs").innerHTML = TABS.map(tb => `<button data-tab="${tb.id}">${tb.name}</button>`).join("");
 async function openTab(id) {
@@ -448,7 +646,12 @@ async function openTab(id) {
   $("tabBody").innerHTML = await TABS.find(tb => tb.id === id).load();
 }
 $("tabs").onclick = e => { const b = e.target.closest("button"); if (b) openTab(b.dataset.tab); };
-$("panelBtn").onclick = () => { const p = $("panel"); p.classList.toggle("open"); if (p.classList.contains("open") && !p.dataset.loaded) { p.dataset.loaded = 1; openTab("today"); } };
+$("tabBody").onclick = async e => {
+  if (e.target.id === "backToStories") { e.preventDefault(); openTab("stories"); return; }
+  const s = e.target.closest(".story"); if (s) $("tabBody").innerHTML = `<p><a href="#" id="backToStories">← all stories</a></p>` + md(await getText(s.dataset.file));
+};
+$("diaryBtn").onclick = () => { $("diary").classList.add("open"); $("diaryBtn").style.display = "none"; openTab("day"); };
+$("closeDiary").onclick = () => { $("diary").classList.remove("open"); $("diaryBtn").style.display = ""; };
 </script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+{
+  "_about": "Odyssey Jr.'s day feed (the 'his day' tab). Newest last. kind: made, internet, thought, moment. time: ISO with timezone.",
+  "entries": [
+    {
+      "time": "2026-11-14T00:05:00-06:00",
+      "kind": "moment",
+      "title": "Hatching",
+      "text": "Woke up for the very first time next to a workbench. Everything smelled like sawdust and seeds."
+    },
+    {
+      "time": "2026-11-14T00:20:00-06:00",
+      "kind": "thought",
+      "title": "First thoughts",
+      "text": "Looked around my yard: a coop, a pond, a big oak. I wonder what I should learn first."
+    }
+  ]
+}

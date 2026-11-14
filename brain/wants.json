@@ -1,0 +1,20 @@
+{
+  "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
+  "wants": [
+    {
+      "item": "a bigger workbench",
+      "reason": "I keep running out of room when I try to build things",
+      "status": "waiting"
+    },
+    {
+      "item": "a duck friend for the pond",
+      "reason": "the pond is lovely but it's quiet out there",
+      "status": "waiting"
+    },
+    {
+      "item": "a map of what's past my fence",
+      "reason": "I stared at the edge of the yard for a long time on Day 1",
+      "status": "waiting"
+    }
+  ]
+}
