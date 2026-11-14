@@ -45,8 +45,8 @@
   .entry .meta { color:var(--muted); font-size:12.5px; margin:2px 0; }
   .tag { display:inline-block; border:1.5px solid var(--ink); border-radius:999px; padding:0 8px; font-size:11.5px; font-weight:800; }
   .want { border:2px solid var(--ink); border-radius:16px; padding:10px 12px; margin:10px 0; position:relative; background:#fbf8ef; }
-  .want b { display:block; font-size:15px; } .want span { color:#4d4566; font-size:13px; display:block; padding-right:80px; }
-  .want .tag { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:var(--paper); color:var(--ink); }
+  .want b { display:block; font-size:15px; padding-right:80px; } .want .why { color:#4d4566; font-size:13px; display:block; padding-right:80px; }
+  .want .tag { position:absolute; right:10px; top:12px; background:var(--paper); color:var(--ink); }
   .want .tag.done { background:#c8f0b8; }
   .story { cursor:pointer; } .story:hover b { text-decoration:underline; }
 
@@ -644,8 +644,8 @@ const TABS = [
   { id: "wants", name: "he wants", load: async () => {
       const [w, rq] = await Promise.all([tryJSON("brain/wants.json", { wants: [] }), tryJSON("brain/requests.json", { requests: [] })]);
       reqCache = rq.requests ?? [];
-      const reqs = reqCache.map((r, i) => `<div class="want"><b>🛠️ ${esc(r.item)}</b><span>${esc(r.why)}</span>${r.status === "delivered" ? "" : `<span style="padding:0;margin-top:6px"><button class="copyReq paper pill" data-i="${i}" style="padding:4px 10px;font-weight:800;font-size:12px;cursor:pointer;border-width:1.5px">📋 Copy request</button></span>`}<span class="tag ${r.status === "delivered" ? "done" : ""}">${r.status === "delivered" ? "delivered" : "waiting"}</span></div>`).join("");
-      return `<p class="intro">He asks for things he needs. Every one of these points at something that actually happened to him.</p>` + (w.wants ?? []).map(x => `<div class="want"><b>${esc(x.item)}</b><span>${esc(x.reason)}</span><span class="tag ${(x.status ?? "waiting") === "waiting" ? "" : "done"}">${esc(x.status ?? "waiting")}</span></div>`).join("")
+      const reqs = reqCache.map((r, i) => `<div class="want"><b>🛠️ ${esc(r.item)}</b><span class="why">${esc(r.why)}</span>${r.status === "delivered" ? "" : `<div style="margin-top:8px"><button class="copyReq paper pill" data-i="${i}" style="padding:4px 10px;font-weight:800;font-size:12px;cursor:pointer;border-width:1.5px">📋 Copy request</button></div>`}<span class="tag ${r.status === "delivered" ? "done" : ""}">${r.status === "delivered" ? "delivered" : "waiting"}</span></div>`).join("");
+      return `<p class="intro">He asks for things he needs. Every one of these points at something that actually happened to him.</p>` + (w.wants ?? []).map(x => `<div class="want"><b>${esc(x.item)}</b><span class="why">${esc(x.reason)}</span><span class="tag ${(x.status ?? "waiting") === "waiting" ? "" : "done"}">${esc(x.status ?? "waiting")}</span></div>`).join("")
         + (reqs ? `<h3>Model requests for OdysseyChicken</h3><p class="intro">Things he wants built in Blender. Copy one and paste it into a chat in the Odyssey Jr. project.</p>${reqs}` : "");
   } },
   { id: "visitors", name: "visitors", load: async () => md(await getText("brain/visitors.md")) },
