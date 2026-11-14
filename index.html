@@ -59,11 +59,12 @@ window.addEventListener("error", e => showError(e.message));
 const bust = "?v=" + Date.now();
 const getJSON = async p => { const r = await fetch(p + bust); if (!r.ok) throw new Error(p + " " + r.status); return r.json(); };
 
-let world, state, projects;
+let world, state, projects, character;
 try {
-  [world, state, projects] = await Promise.all([
+  [world, state, projects, character] = await Promise.all([
     getJSON("world/world.json"), getJSON("world/state.json"),
-    getJSON("world/projects.json").catch(() => ({ making: [], done: [] }))
+    getJSON("world/projects.json").catch(() => ({ making: [], done: [] })),
+    getJSON("world/character.json").catch(() => ({ colors: {}, outfit: {} }))
   ]);
 } catch (e) { showError(e.message); throw e; }
 
@@ -159,19 +160,59 @@ for (const o of world.objects ?? []) {
 }
 
 // ---------- Odyssey Jr. himself ----------
+// His look comes from world/character.json (colors + outfit), so he can restyle himself without touching code.
+const C = character.colors ?? {};
+const col = (k, d) => C[k] ?? d;
 const chicken = new THREE.Group();
-const body = part("sphere", [0.55], "#fffaf0"); body.scale.set(1, 0.9, 1.2); body.position.y = 0.75; chicken.add(body);
-const head = new THREE.Group(); head.position.set(0, 1.35, 0.45); chicken.add(head);
-head.add(Object.assign(part("sphere", [0.32], "#fffaf0")));
-const beak = part("cone", [0.09, 0.22], "#f2a20f"); beak.rotation.x = Math.PI / 2; beak.position.set(0, -0.03, 0.34); head.add(beak);
-const comb = part("box", [0.08, 0.2, 0.3], "#e0362a"); comb.position.set(0, 0.32, 0); head.add(comb);
-const wattle = part("sphere", [0.07], "#e0362a"); wattle.position.set(0, -0.18, 0.26); head.add(wattle);
-for (const x of [-0.13, 0.13]) { const eye = part("sphere", [0.05], "#111"); eye.position.set(x, 0.07, 0.27); head.add(eye); }
-const wings = [-1, 1].map(s => { const w = part("sphere", [0.32], "#f3ead8"); w.scale.set(0.35, 0.7, 1); w.position.set(0.5 * s, 0.8, 0); chicken.add(w); return w; });
-const tail = part("cone", [0.25, 0.5], "#f3ead8"); tail.position.set(0, 1.0, -0.7); tail.rotation.x = -0.9; chicken.add(tail);
-const legs = [-0.18, 0.18].map(x => { const l = part("cylinder", [0.04, 0.04, 0.4], "#f2a20f"); l.position.set(x, 0.2, 0); chicken.add(l); return l; });
-// a tiny explorer's scarf, because he's Odyssey Jr.
-const scarf = part("torus", [0.3, 0.07], "#2f6fd6"); scarf.rotation.x = Math.PI / 2; scarf.position.set(0, 1.12, 0.3); chicken.add(scarf);
+const at = (m, x, y, z) => { m.position.set(x, y, z); return m; };
+
+// body: round, a little plump in front
+const body = new THREE.Group(); body.position.y = 0.78; chicken.add(body);
+const torso = part("sphere", [0.55], col("feathers", "#fffaf0")); torso.scale.set(0.95, 0.88, 1.15); body.add(torso);
+const breast = at(part("sphere", [0.4], col("feathers", "#fffaf0")), 0, 0.05, 0.32); breast.scale.set(1, 1.05, 0.9); body.add(breast);
+
+// tail: a fan of feathers
+for (const [i, a] of [-0.35, 0, 0.35].entries()) {
+  const f = part("cone", [0.14, 0.62], col("tail", "#ece0c8"));
+  f.position.set(Math.sin(a) * 0.18, 0.28 + (i === 1 ? 0.06 : 0), -0.62); f.rotation.set(-0.75, 0, a * 0.9); body.add(f);
+}
+
+// wings: flattened ovals that can flap
+const wings = [-1, 1].map(s => {
+  const pivot = new THREE.Group(); pivot.position.set(0.48 * s, 0.12, -0.02); body.add(pivot);
+  const w = part("sphere", [0.34], col("wings", "#f1e6d0")); w.scale.set(0.28, 0.62, 1.05); w.position.set(0.02 * s, -0.1, -0.05); w.rotation.x = 0.25;
+  pivot.add(w); return pivot;
+});
+
+// neck + head
+const neckAnchor = new THREE.Group(); neckAnchor.position.set(0, 0.36, 0.34); body.add(neckAnchor);
+const head = new THREE.Group(); head.position.set(0, 1.42, 0.5); chicken.add(head);
+const skull = part("sphere", [0.3], col("feathers", "#fffaf0")); skull.scale.set(0.95, 1, 1.05); head.add(skull);
+const beakTop = at(part("cone", [0.085, 0.22], col("beak", "#f2a20f")), 0, -0.01, 0.34); beakTop.rotation.x = Math.PI / 2; head.add(beakTop);
+const beakLow = at(part("cone", [0.06, 0.14], col("beak", "#f2a20f")), 0, -0.07, 0.3); beakLow.rotation.x = Math.PI / 2 + 0.25; head.add(beakLow);
+for (const [i, z] of [-0.1, 0.02, 0.13].entries()) head.add(at(part("sphere", [i === 1 ? 0.09 : 0.075], col("comb", "#e0362a")), 0, 0.3 + (i === 1 ? 0.03 : 0), z));
+for (const x of [-0.04, 0.04]) { const wt = at(part("sphere", [0.06], col("comb", "#e0362a")), x, -0.2, 0.25); wt.scale.y = 1.4; head.add(wt); }
+for (const s of [-1, 1]) {
+  const eye = at(new THREE.Mesh(new THREE.SphereGeometry(0.075, 16, 12), new THREE.MeshStandardMaterial({ color: "#ffffff" })), 0.17 * s, 0.07, 0.2); head.add(eye);
+  const pupil = at(new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 12), new THREE.MeshStandardMaterial({ color: "#111111", roughness: 0.2 })), 0.2 * s, 0.075, 0.245); head.add(pupil);
+  head.add(at(new THREE.Mesh(new THREE.SphereGeometry(0.016, 8, 6), new THREE.MeshBasicMaterial({ color: "#ffffff" })), 0.21 * s, 0.1, 0.285));
+}
+const hatAnchor = new THREE.Group(); hatAnchor.position.set(0, 0.27, -0.03); hatAnchor.rotation.z = 0.12; head.add(hatAnchor);
+
+// legs with little toes
+const legs = [-0.17, 0.17].map(x => {
+  const leg = new THREE.Group(); leg.position.set(x, 0.42, 0.02); chicken.add(leg);
+  leg.add(at(part("cylinder", [0.035, 0.04, 0.42], col("legs", "#f2a20f")), 0, -0.21, 0));
+  for (const a of [-0.45, 0, 0.45]) { const toe = at(part("box", [0.035, 0.03, 0.2], col("legs", "#f2a20f")), Math.sin(a) * 0.08, -0.41, Math.cos(a) * 0.08); toe.rotation.y = a; leg.add(toe); }
+  leg.add(at(part("box", [0.03, 0.03, 0.12], col("legs", "#f2a20f")), 0, -0.41, -0.07));
+  return leg;
+});
+
+// outfit
+const wear = (anchor, parts) => { if (Array.isArray(parts) && parts.length) anchor.add(fromParts(parts)); };
+wear(hatAnchor, character.outfit?.head);
+wear(neckAnchor, character.outfit?.neck);
+wear(body, character.outfit?.body);
 scene.add(chicken);
 
 const spots = world.spots ?? {};
@@ -201,10 +242,10 @@ const v = new THREE.Vector3();
 function animate() {
   const dt = Math.min(clock.getDelta(), 0.05); t += dt; timer -= dt;
   // reset pose
-  head.rotation.set(0, 0, 0); body.position.y = 0.75; wings.forEach(w => w.rotation.z = 0); chicken.position.y = 0;
+  head.rotation.set(0, 0, 0); body.position.y = 0.78; head.position.set(0, 1.42, 0.5); wings.forEach(w => w.rotation.z = 0); chicken.position.y = 0;
 
   if (activity === "sleep" || (isNight && activity !== "dance")) {
-    mode = "rest"; head.rotation.x = 0.6; body.position.y = 0.6 + Math.sin(t * 1.5) * 0.02;
+    mode = "rest"; head.rotation.x = 0.6; body.position.y = 0.62 + Math.sin(t * 1.5) * 0.02; head.position.y = 1.2;
     bubble.textContent = "Zzz… " + (state.thought ?? "");
   } else if (mode === "walk") {
     v.subVectors(target, chicken.position); v.y = 0;
@@ -214,7 +255,7 @@ function animate() {
       v.normalize(); chicken.position.addScaledVector(v, Math.min(d, dt * 1.6));
       chicken.rotation.y = Math.atan2(v.x, v.z);
       legs[0].rotation.x = Math.sin(t * 12) * 0.6; legs[1].rotation.x = -Math.sin(t * 12) * 0.6;
-      head.position.z = 0.45 + Math.sin(t * 12) * 0.06;
+      head.position.z = 0.5 + Math.sin(t * 12) * 0.08;
     }
   } else if (mode === "act") {
     if (activity === "peck" || activity === "explore") head.rotation.x = Math.max(0, Math.sin(t * 8)) * 0.9;
@@ -230,7 +271,7 @@ function animate() {
   renderer.render(scene, camera);
 
   // project HTML overlays
-  const p = new THREE.Vector3(chicken.position.x, 2.1, chicken.position.z).project(camera);
+  const p = new THREE.Vector3(chicken.position.x, 2.5, chicken.position.z).project(camera);
   bubble.style.left = (p.x * 0.5 + 0.5) * innerWidth + "px";
   bubble.style.top = (-p.y * 0.5 + 0.5) * innerHeight + "px";
   bubble.style.opacity = p.z < 1 ? 1 : 0;

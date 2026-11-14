@@ -1,0 +1,25 @@
+{
+  "_about": "Odyssey Jr.'s look. Change colors or clothes here. Each outfit slot is a list of parts (shape: box, sphere, cylinder, cone, torus; size; pos [x,y,z]; color; optional rot [x,y,z]). 'head' parts are placed relative to the top of his head, 'neck' relative to his neck, 'body' relative to the middle of his body. Leave a slot as [] to wear nothing there.",
+  "colors": {
+    "feathers": "#fffaf0",
+    "wings": "#f1e6d0",
+    "tail": "#ece0c8",
+    "beak": "#f2a20f",
+    "legs": "#f2a20f",
+    "comb": "#e0362a"
+  },
+  "outfit": {
+    "name": "Dapper explorer",
+    "head": [
+      { "shape": "cylinder", "size": [0.34, 0.34, 0.03], "pos": [0, 0.0, 0], "color": "#1b1b1f" },
+      { "shape": "cylinder", "size": [0.2, 0.21, 0.42], "pos": [0, 0.22, 0], "color": "#1b1b1f" },
+      { "shape": "cylinder", "size": [0.212, 0.212, 0.07], "pos": [0, 0.06, 0], "color": "#b3262e" },
+      { "shape": "cylinder", "size": [0.2, 0.2, 0.01], "pos": [0, 0.435, 0], "color": "#2a2a30" }
+    ],
+    "neck": [
+      { "shape": "torus", "size": [0.3, 0.07], "pos": [0, 0, 0], "rot": [1.5708, 0, 0], "color": "#2f6fd6" },
+      { "shape": "box", "size": [0.12, 0.3, 0.05], "pos": [0.12, -0.15, 0.27], "rot": [0.2, 0, -0.3], "color": "#2f6fd6" }
+    ],
+    "body": []
+  }
+}

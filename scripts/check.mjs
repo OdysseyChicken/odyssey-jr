@@ -15,6 +15,7 @@ const json = p => { try { return JSON.parse(read(p)); } catch (e) { errors.push(
 const world = json("world/world.json");
 const state = json("world/state.json");
 const projects = json("world/projects.json");
+const character = existsSync(join(root, "world/character.json")) ? json("world/character.json") : null;
 
 // 2. Engine is intact and its JavaScript parses
 const html = read("index.html");
@@ -72,6 +73,17 @@ if (state) {
   if (!existsSync(join(root, jp))) errors.push(`state.json: journal file ${jp} does not exist`);
   const acts = ["explore", "peck", "build", "dance", "think", "read", "sleep", "look"];
   if (!acts.includes(String(state.activity).toLowerCase())) warn.push(`state.json: activity "${state.activity}" has no animation, it will just look around`);
+}
+if (character) {
+  for (const slot of ["head", "neck", "body"]) {
+    const parts = character.outfit?.[slot] ?? [];
+    if (!Array.isArray(parts)) { errors.push(`character.json: outfit.${slot} must be a list`); continue; }
+    if (parts.length > 80) errors.push(`character.json: outfit.${slot} has over 80 parts`);
+    for (const p of parts) {
+      if (!["box", "sphere", "cylinder", "cone", "torus"].includes(p.shape)) errors.push(`character.json: outfit.${slot} has unknown shape ${p.shape}`);
+      if (p.pos && !(Array.isArray(p.pos) && p.pos.length === 3 && p.pos.every(isNum))) errors.push(`character.json: outfit.${slot} has bad pos`);
+    }
+  }
 }
 if (projects && !(Array.isArray(projects.making) && Array.isArray(projects.done))) errors.push("projects.json: needs making[] and done[]");
 

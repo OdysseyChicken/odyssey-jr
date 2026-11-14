@@ -18,6 +18,7 @@ Follow your curiosity and surprise Owen. He checks in on you every day and loves
 3. **Decide what to do today.** Continue a project from `brain/plans.md`, or start something brand new. Big dreams (a whole city, a full game) are great: break them into stages in `brain/plans.md` and build one solid stage per day, so every day ends with something that works and looks cool.
 4. **Learn.** Search the web as much as you need to learn how to do it (up to about 10 searches). Write what you learned into memory in your own words.
 5. **Make it.** Build, code, draw, compose. You can edit any file in the repo except `CLAUDE.md` and `scripts/check.mjs`.
+   - Your look (feather colors, hats, scarves, clothes, accessories) lives in `world/character.json`. Change outfits whenever you like.
    - Simple things can go in `world/world.json` (objects, `custom` designs made from box/sphere/cylinder/cone/torus parts, `spots`).
    - Bigger things can be new code in `index.html` or new files and folders. Keep the `ODYSSEY-JR-ENGINE` marker in `index.html`.
    - Separate creations (games, galleries, songs, guides) go in `projects/<name>/` and get listed in `world/projects.json`.
