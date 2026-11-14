@@ -216,7 +216,69 @@ def dustbath():
     for (x, y) in [(0.4, 0.2), (-0.3, -0.5), (0.1, 0.6)]:
         sphere("feather", 0.08, (x, y, 0.1), mat("fluff", (1, 0.97, 0.9)), scale=(1.6, 0.5, 0.2))
 
-ASSETS = {"coop": coop, "oak": oak, "pine": pine, "pond": pond, "rock": rock, "sign": sign, "workbench": workbench, "feeder": feeder, "dustbath": dustbath,
+
+# ---------- inside Odyssey Jr.'s house ----------
+def nestbed():
+    wood = mat("wood", WOOD, tex="wood")
+    box("bed_base", (2.0, 1.5, 0.3), (0, 0, 0.3), mat("bedframe", (1, 0.88, 0.7), tex="planks", scale=(1, 0.6)), bevel=0.06)
+    for x in (-0.9, 0.9):
+        for y in (-0.65, 0.65): cyl("bed_leg", 0.09, 0.07, 0.18, (x, y, 0.09), wood, verts=12)
+    box("headboard", (2.0, 0.14, 1.1), (0, 0.72, 0.75), wood, bevel=0.08)
+    straw = mat("straw", (0.93, 0.8, 0.42), rough=0.95)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.6, minor_radius=0.22, location=(0, -0.05, 0.56)); n = finish(bpy.context.object, straw); n.name = "nest"; n.scale = (1.25, 0.95, 0.8)
+    sphere("nest_middle", 0.55, (0, -0.05, 0.47), mat("straw_dark", (0.85, 0.7, 0.35), rough=0.95), scale=(1.2, 0.9, 0.25))
+    sphere("pillow", 0.3, (0, 0.45, 0.62), mat("pillow", (0.95, 0.95, 1.0), rough=0.9), scale=(1.5, 0.7, 0.45))
+    box("blanket", (1.9, 0.5, 0.08), (0, -0.52, 0.5), mat("blanket", (0.25, 0.45, 0.8), rough=0.95), bevel=0.04)
+    for i in range(5): box("blanket_stripe", (0.08, 0.51, 0.085), (-0.76 + i * 0.38, -0.52, 0.5), mat("blanket_stripe", (0.95, 0.85, 0.45), rough=0.95), bevel=0.02)
+
+def closet():
+    wood = mat("closet_wood", (1, 0.9, 0.78), tex="planks", scale=(1, 1.5))
+    dark = mat("wood", WOOD, tex="wood")
+    box("closet_body", (1.9, 0.8, 2.6), (0, 0, 1.4), dark, bevel=0.05)
+    box("closet_top", (2.1, 0.95, 0.12), (0, 0, 2.76), wood, bevel=0.05)
+    box("closet_foot", (2.0, 0.88, 0.14), (0, 0, 0.07), wood, bevel=0.04)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    for s in (-1, 1):
+        box("closet_door", (0.88, 0.06, 2.3), (s * 0.46, -0.42, 1.42), wood, bevel=0.03)
+        box("closet_panel", (0.62, 0.03, 0.8), (s * 0.46, -0.455, 1.95), dark, bevel=0.02)
+        box("closet_panel", (0.62, 0.03, 0.8), (s * 0.46, -0.455, 0.9), dark, bevel=0.02)
+        sphere("closet_knob", 0.06, (s * 0.1, -0.48, 1.42), brass)
+    # a hat on top and a scarf peeking out, so it reads as his wardrobe
+    cyl("hat_brim", 0.34, 0.34, 0.03, (0.45, -0.05, 2.84), mat("hat", (0.1, 0.1, 0.12), rough=0.7), verts=24, bevel=0)
+    cyl("hat_top", 0.2, 0.21, 0.4, (0.45, -0.05, 3.05), mat("hat", (0.1, 0.1, 0.12), rough=0.7), verts=24, bevel=0.01)
+    cyl("hat_band", 0.212, 0.212, 0.07, (0.45, -0.05, 2.9), mat("hatband", (0.7, 0.15, 0.18)), verts=24, bevel=0)
+    box("scarf_peek", (0.1, 0.05, 0.5), (0.02, -0.46, 0.6), mat("scarf", (0.18, 0.44, 0.84), rough=0.95), rot=(0, 0.15, 0), bevel=0.02)
+
+def shelf():
+    wood = mat("wood", WOOD, tex="wood")
+    plank = mat("shelf_plank", (1, 0.9, 0.78), tex="planks", scale=(1, 0.4))
+    for x in (-0.95, 0.95): box("shelf_side", (0.1, 0.5, 2.0), (x, 0, 1.0), wood, bevel=0.03)
+    for z in (0.12, 0.72, 1.32, 1.94): box("shelf_board", (2.0, 0.55, 0.08), (0, 0, z), plank, bevel=0.02)
+    box("shelf_back", (1.9, 0.04, 1.9), (0, 0.24, 1.0), wood, bevel=0)
+    cyl("jar", 0.12, 0.12, 0.26, (-0.6, -0.02, 0.89), mat("jarglass", (0.75, 0.9, 0.9), rough=0.15), verts=16)
+    cyl("jar_lid", 0.13, 0.13, 0.05, (-0.6, -0.02, 1.04), mat("lid", (0.8, 0.3, 0.25)), verts=16)
+    box("book1", (0.1, 0.36, 0.42), (0.35, 0, 0.97), mat("book_r", (0.75, 0.25, 0.22)), bevel=0.01)
+    box("book2", (0.1, 0.36, 0.46), (0.47, 0, 0.99), mat("book_b", (0.2, 0.4, 0.7)), bevel=0.01)
+    box("book3", (0.1, 0.36, 0.38), (0.59, 0, 0.95), mat("book_g", (0.3, 0.6, 0.35)), rot=(0, 0.25, 0), bevel=0.01)
+    cyl("pot", 0.14, 0.1, 0.2, (0.5, -0.02, 1.46), mat("pot", (0.8, 0.45, 0.3)), verts=16)
+    sphere("plant", 0.2, (0.5, -0.02, 1.7), mat("plant", (0.3, 0.62, 0.3), rough=0.9), sub=2)
+    sphere("egg_trophy", 0.13, (-0.5, -0.02, 1.52), mat("gold", (0.95, 0.75, 0.25), rough=0.25, metal=0.9), scale=(1, 1, 1.3))
+
+def housedoor():
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    box("door_frame", (1.3, 0.16, 2.3), (0, 0, 1.15), trim, bevel=0.03)
+    box("door_leaf", (1.05, 0.1, 2.1), (0, -0.06, 1.07), mat("door", (0.55, 0.4, 0.3), tex="wood"), bevel=0.03)
+    box("door_window", (0.5, 0.05, 0.5), (0, -0.1, 1.6), mat("doorglass", (0.6, 0.85, 1.0), rough=0.1, emit=(0.6, 0.85, 1.0), emit_strength=0.6), bevel=0.02)
+    sphere("door_knob", 0.07, (0.38, -0.14, 1.0), mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9))
+    box("doormat", (1.2, 0.7, 0.04), (0, -0.55, 0.02), mat("doormat", (0.75, 0.3, 0.25), rough=0.95), bevel=0.01)
+
+def rug():
+    cyl("rug", 1.6, 1.6, 0.04, (0, 0, 0.02), mat("rug_a", (0.8, 0.3, 0.28), rough=0.95), verts=48, bevel=0)
+    cyl("rug_ring", 1.25, 1.25, 0.045, (0, 0, 0.022), mat("rug_b", (0.97, 0.9, 0.75), rough=0.95), verts=48, bevel=0)
+    cyl("rug_center", 0.9, 0.9, 0.05, (0, 0, 0.024), mat("rug_c", (0.25, 0.45, 0.75), rough=0.95), verts=48, bevel=0)
+    bpy.context.object.scale = (1, 0.999, 1)
+
+ASSETS = {"nestbed": nestbed, "closet": closet, "shelf": shelf, "housedoor": housedoor, "rug": rug, "coop": coop, "oak": oak, "pine": pine, "pond": pond, "rock": rock, "sign": sign, "workbench": workbench, "feeder": feeder, "dustbath": dustbath,
           "flower-pink": lambda: flower((1, 0.44, 0.66)), "flower-yellow": lambda: flower((1, 0.83, 0.3)), "flower-purple": lambda: flower((0.54, 0.49, 1))}
 
 # ---------------- Day 2: the airport ----------------

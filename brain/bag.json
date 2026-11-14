@@ -1,0 +1,91 @@
+{
+  "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
+  "slots": 9,
+  "synced": "2026-11-13",
+  "bag": [
+    {
+      "id": "seed-pouch",
+      "name": "A pouch of seeds",
+      "icon": "🌾",
+      "from": "Filled up at the seed feeder",
+      "got": "2026-11-14",
+      "note": "For emergencies. And snacks. Mostly snacks."
+    },
+    {
+      "id": "oj1-key",
+      "name": "The key to OJ-1",
+      "icon": "🗝️",
+      "from": "Made it when I built my plane",
+      "got": "2026-11-14",
+      "note": "A pilot never leaves home without it."
+    }
+  ],
+  "shelves": {
+    "home": {
+      "name": "His shelf at home",
+      "items": []
+    }
+  },
+  "findables": [
+    {
+      "name": "A shiny pebble",
+      "icon": "🪨",
+      "where": "by the pond",
+      "weight": 3
+    },
+    {
+      "name": "A blue feather",
+      "icon": "🪶",
+      "where": "under the big oak",
+      "weight": 2
+    },
+    {
+      "name": "An acorn",
+      "icon": "🌰",
+      "where": "under the big oak",
+      "weight": 3
+    },
+    {
+      "name": "A four-leaf clover",
+      "icon": "🍀",
+      "where": "in the grass",
+      "weight": 1
+    },
+    {
+      "name": "A snail shell",
+      "icon": "🐚",
+      "where": "in the garden",
+      "weight": 2
+    },
+    {
+      "name": "A lost button",
+      "icon": "🔘",
+      "where": "near the runway",
+      "weight": 2
+    },
+    {
+      "name": "A glass marble",
+      "icon": "🔮",
+      "where": "in the dust bath",
+      "weight": 1
+    },
+    {
+      "name": "A wildflower",
+      "icon": "🌼",
+      "where": "at the edge of the yard",
+      "weight": 3
+    },
+    {
+      "name": "A rusty bolt",
+      "icon": "🔩",
+      "where": "behind the hangar",
+      "weight": 2
+    },
+    {
+      "name": "A smooth stick",
+      "icon": "🥢",
+      "where": "by the lookout",
+      "weight": 2
+    }
+  ]
+}

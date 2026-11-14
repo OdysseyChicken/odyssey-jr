@@ -59,8 +59,14 @@
         -7
       ],
       "rot": 0.3,
-      "label": "My coop",
-      "src": "assets/models/coop.glb"
+      "label": "My house",
+      "src": "assets/models/coop.glb",
+      "door": "home",
+      "doorAt": [
+        -7.0,
+        -4.3
+      ],
+      "note": "house. Click it to come inside!"
     },
     {
       "id": "big-oak",
@@ -497,6 +503,103 @@
         -14
       ],
       "secs": 5
+    }
+  },
+  "interiors": {
+    "_about": "Rooms you can step inside. An object anywhere with \"door\": \"<room id>\" leads into that room (\"door\": \"outside\" leads back out). size is [width, depth]; positions inside a room run from -width/2..width/2 and -depth/2..depth/2, with the back wall at -depth/2. door is where he walks in. spots can have a third number: how high he sits there. Objects with \"panel\": \"closet\" or \"bag\" open those panels when clicked.",
+    "home": {
+      "name": "Odyssey Jr.'s house",
+      "size": [
+        10,
+        8
+      ],
+      "height": 3.6,
+      "floor": "planks",
+      "floorColor": "#e8c9a0",
+      "wall": "#f6e7c8",
+      "trim": "#b3262e",
+      "light": "#ffd9a0",
+      "door": [
+        -3.6,
+        1.5
+      ],
+      "spots": {
+        "bed": [
+          2.9,
+          -2.95,
+          0.42
+        ],
+        "closet": [
+          -2.9,
+          -2.0
+        ],
+        "shelf": [
+          0,
+          -2.2
+        ],
+        "rug": [
+          0,
+          0.6
+        ]
+      },
+      "objects": [
+        {
+          "id": "home-door",
+          "type": "model",
+          "src": "assets/models/housedoor.glb",
+          "pos": [
+            -4.92,
+            1.5
+          ],
+          "rot": 1.5708,
+          "door": "outside",
+          "label": "Go outside",
+          "labelHeight": 2.7
+        },
+        {
+          "id": "home-bed",
+          "type": "model",
+          "src": "assets/models/nestbed.glb",
+          "pos": [
+            2.9,
+            -3.0
+          ],
+          "note": "nest bed. Softest straw in the yard."
+        },
+        {
+          "id": "home-closet",
+          "type": "model",
+          "src": "assets/models/closet.glb",
+          "pos": [
+            -2.9,
+            -3.5
+          ],
+          "panel": "closet",
+          "label": "Closet",
+          "labelHeight": 3.5
+        },
+        {
+          "id": "home-shelf",
+          "type": "model",
+          "src": "assets/models/shelf.glb",
+          "pos": [
+            0,
+            -3.7
+          ],
+          "panel": "bag",
+          "label": "Shelf",
+          "labelHeight": 2.5
+        },
+        {
+          "id": "home-rug",
+          "type": "model",
+          "src": "assets/models/rug.glb",
+          "pos": [
+            0,
+            0.6
+          ]
+        }
+      ]
     }
   }
 }

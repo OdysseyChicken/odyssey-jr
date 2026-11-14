@@ -1,0 +1,423 @@
+{
+  "_about": "Odyssey Jr.'s closet: every outfit he has made. 'wearing' is the id of the one he has on. Each outfit has head, neck and body lists of parts (shape: box, roundbox, sphere, cylinder, cone, torus, capsule; size; pos [x,y,z]; color; optional rot). 'head' parts sit on top of his head, 'neck' around his neck, 'body' on the middle of his body. Add a new outfit here to add it to the closet.",
+  "wearing": "aviator",
+  "outfits": [
+    {
+      "id": "aviator",
+      "name": "Aviator",
+      "icon": "\ud83e\udd7d",
+      "made": "2026-11-14",
+      "note": "Flying cap and goggles for OJ Air, plus the radio headset OdysseyChicken gave me so I can hear 'cleared for takeoff!'",
+      "head": [
+        {
+          "shape": "sphere",
+          "size": [
+            0.3
+          ],
+          "pos": [
+            0,
+            -0.06,
+            -0.04
+          ],
+          "scale": [
+            1,
+            0.62,
+            1.05
+          ],
+          "color": "#7a4a2a"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.29,
+            0.025
+          ],
+          "pos": [
+            0,
+            -0.14,
+            -0.04
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#5a341c"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.075,
+            0.022
+          ],
+          "pos": [
+            -0.1,
+            0.02,
+            0.22
+          ],
+          "rot": [
+            -0.5,
+            0,
+            0
+          ],
+          "color": "#c9a24a"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.075,
+            0.022
+          ],
+          "pos": [
+            0.1,
+            0.02,
+            0.22
+          ],
+          "rot": [
+            -0.5,
+            0,
+            0
+          ],
+          "color": "#c9a24a"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.06
+          ],
+          "pos": [
+            -0.1,
+            0.02,
+            0.22
+          ],
+          "color": "#8fd0ff"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.06
+          ],
+          "pos": [
+            0.1,
+            0.02,
+            0.22
+          ],
+          "color": "#8fd0ff"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.06,
+            0.025,
+            0.03
+          ],
+          "pos": [
+            0,
+            0.03,
+            0.25
+          ],
+          "color": "#c9a24a"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.1,
+            0.1,
+            0.08
+          ],
+          "pos": [
+            -0.31,
+            -0.24,
+            -0.02
+          ],
+          "rot": [
+            0,
+            0,
+            1.5708
+          ],
+          "color": "#2b2f3a",
+          "_headset": true
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.1,
+            0.1,
+            0.08
+          ],
+          "pos": [
+            0.31,
+            -0.24,
+            -0.02
+          ],
+          "rot": [
+            0,
+            0,
+            1.5708
+          ],
+          "color": "#2b2f3a",
+          "_headset": true
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.07,
+            0.018
+          ],
+          "pos": [
+            -0.355,
+            -0.24,
+            -0.02
+          ],
+          "rot": [
+            0,
+            1.5708,
+            0
+          ],
+          "color": "#c9a24a",
+          "_headset": true
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.07,
+            0.018
+          ],
+          "pos": [
+            0.355,
+            -0.24,
+            -0.02
+          ],
+          "rot": [
+            0,
+            1.5708,
+            0
+          ],
+          "color": "#c9a24a",
+          "_headset": true
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.014,
+            0.014,
+            0.33
+          ],
+          "pos": [
+            -0.255,
+            -0.27,
+            0.155
+          ],
+          "rot": [
+            1.5708,
+            0,
+            -0.33
+          ],
+          "color": "#2b2f3a",
+          "_headset": true
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.04
+          ],
+          "pos": [
+            -0.2,
+            -0.3,
+            0.31
+          ],
+          "color": "#1d1f26",
+          "_headset": true
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.008,
+            0.008,
+            0.22
+          ],
+          "pos": [
+            0.33,
+            -0.12,
+            -0.04
+          ],
+          "rot": [
+            0,
+            0,
+            -0.2
+          ],
+          "color": "#9aa0a8",
+          "_headset": true
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.03
+          ],
+          "pos": [
+            0.352,
+            -0.01,
+            -0.04
+          ],
+          "color": "#e0362a",
+          "_headset": true
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.3,
+            0.07
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#2f6fd6"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.12,
+            0.42,
+            0.05
+          ],
+          "pos": [
+            0.16,
+            -0.1,
+            -0.3
+          ],
+          "rot": [
+            -0.9,
+            0,
+            -0.4
+          ],
+          "color": "#2f6fd6"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "dapper-explorer",
+      "name": "Dapper explorer",
+      "icon": "\ud83c\udfa9",
+      "made": "2026-11-14",
+      "note": "My very first outfit: a black top hat and a blue explorer's scarf.",
+      "head": [
+        {
+          "shape": "cylinder",
+          "size": [
+            0.34,
+            0.34,
+            0.03
+          ],
+          "pos": [
+            0,
+            0.0,
+            0
+          ],
+          "color": "#1b1b1f"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.2,
+            0.21,
+            0.42
+          ],
+          "pos": [
+            0,
+            0.22,
+            0
+          ],
+          "color": "#1b1b1f"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.212,
+            0.212,
+            0.07
+          ],
+          "pos": [
+            0,
+            0.06,
+            0
+          ],
+          "color": "#b3262e"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.2,
+            0.2,
+            0.01
+          ],
+          "pos": [
+            0,
+            0.435,
+            0
+          ],
+          "color": "#2a2a30"
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.3,
+            0.07
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#2f6fd6"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.12,
+            0.3,
+            0.05
+          ],
+          "pos": [
+            0.12,
+            -0.15,
+            0.27
+          ],
+          "rot": [
+            0.2,
+            0,
+            -0.3
+          ],
+          "color": "#2f6fd6"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "just-feathers",
+      "name": "Just feathers",
+      "icon": "\ud83e\udeb6",
+      "made": "2026-11-14",
+      "note": "Nothing at all. Sometimes a chicken just wants to be a chicken.",
+      "head": [],
+      "neck": [],
+      "body": []
+    }
+  ]
+}

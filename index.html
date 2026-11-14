@@ -55,10 +55,28 @@
   #actionText { font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   #actionSince { color:var(--muted); font-size:12px; font-weight:700; margin-left:auto; white-space:nowrap; }
 
-  #tools { position:fixed; right:12px; bottom:16px; display:flex; gap:6px; z-index:10; }
+  #tools { position:fixed; right:12px; bottom:16px; display:flex; gap:6px; z-index:10; flex-wrap:wrap; justify-content:flex-end; max-width:calc(50vw - 150px); }
   #tools button { padding:9px 13px; font-size:13px; font-weight:800; cursor:pointer; }
   #minimap { position:fixed; left:14px; bottom:14px; width:130px; height:130px; border-radius:50%; overflow:hidden; padding:0; }
   #minimap canvas { width:100%; height:100%; display:block; }
+  #modal { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); width:min(720px, calc(100vw - 24px)); max-height:calc(100vh - 120px); display:none; flex-direction:column; overflow:hidden; z-index:15; }
+  #modal.open { display:flex; }
+  #modal header { display:flex; align-items:flex-start; gap:8px; padding:14px 18px 10px; border-bottom:1.5px dashed #cfc4a8; }
+  #modal header b { font-size:19px; display:block; } #modal header span { color:var(--muted); font-size:13.5px; }
+  #modal header button { margin-left:auto; width:30px; height:30px; border:2px solid var(--ink); border-radius:50%; background:transparent; font-weight:800; cursor:pointer; flex:none; }
+  #modalBody { padding:14px 18px 18px; overflow:auto; font-size:14px; }
+  .slots { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; max-width:300px; }
+  .slot { aspect-ratio:1; border:2px solid var(--ink); border-radius:14px; background:#fbf8ef; display:grid; place-items:center; font-size:38px; cursor:pointer; position:relative; padding:0; }
+  .slot.empty { border-style:dashed; border-color:#cfc4a8; cursor:default; } .slot.on { box-shadow:0 0 0 3px #f5a742; }
+  .slot.small { width:54px; font-size:26px; border-radius:12px; } .slot .new { position:absolute; top:-7px; right:-7px; font-size:10px; font-weight:800; background:#c8f0b8; border:1.5px solid var(--ink); border-radius:99px; padding:0 5px; }
+  .bagCols { display:grid; grid-template-columns:minmax(0, 300px) 1fr; gap:18px; } @media (max-width:640px) { .bagCols { grid-template-columns:1fr; } }
+  .detail { border:2px solid var(--ink); border-radius:16px; padding:10px 12px; margin-top:10px; background:#fbf8ef; min-height:74px; }
+  .detail b { font-size:15.5px; display:block; } .detail span { color:#4d4566; font-size:13px; display:block; }
+  .shelfRow { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 12px; } .secLabel { color:var(--muted); font-weight:800; font-size:12.5px; }
+  .outfit { border:2px solid var(--ink); border-radius:16px; padding:10px 12px; margin:10px 0; background:#fbf8ef; display:flex; gap:12px; align-items:center; }
+  .outfit .ico { font-size:34px; } .outfit b { font-size:15.5px; } .outfit p { margin:2px 0 0; color:#4d4566; font-size:13px; }
+  .outfit .side { margin-left:auto; display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex:none; }
+  .btn { padding:5px 11px; font-weight:800; font-size:12.5px; cursor:pointer; border-width:1.5px; box-shadow:0 3px 0 rgba(43,37,64,.25); }
 
   #bubble { position:fixed; z-index:5; transform:translate(-50%,-100%); background:var(--paper); border:2px solid var(--ink); border-radius:16px; padding:6px 12px; font-size:13.5px; font-weight:700; max-width:240px; pointer-events:none; transition:opacity .4s; }
   #bubble::after { content:""; position:absolute; left:50%; bottom:-9px; transform:translateX(-50%) rotate(45deg); width:12px; height:12px; background:var(--paper); border-right:2px solid var(--ink); border-bottom:2px solid var(--ink); }
@@ -68,7 +86,7 @@
     #stats { top:auto; bottom:70px; left:8px; right:8px; transform:none; overflow-x:auto; }
     .stat { min-width:84px; padding:2px 8px; } .stat .lbl { font-size:12px; }
     #action { left:8px; right:8px; transform:none; max-width:none; min-width:0; bottom:12px; }
-    #minimap { display:none; } #tools { top:12px; bottom:auto; }
+    #minimap { display:none; } #tools { top:12px; bottom:auto; max-width:calc(100vw - 190px); }
   }
 </style>
 <script type="importmap">
@@ -86,8 +104,9 @@
   <div id="tabBody">Loading…</div>
 </div>
 <div id="action" class="paper pill"><span id="avatar">🐔</span><span id="actionText">Waking up…</span><span id="actionSince"></span></div>
-<div id="tools"><button id="seedBtn" class="paper pill" title="Toss him some seeds">🌾 Toss seeds</button><button id="camBtn" class="paper pill" title="Follow Odyssey Jr. with the camera">🎥 Follow</button></div>
+<div id="tools"><button id="seedBtn" class="paper pill" title="Toss him some seeds">🌾 Toss seeds</button><button id="outBtn" class="paper pill" style="display:none" title="Step back outside">🚪 Go outside</button><button id="bagBtn" class="paper pill" title="See what he is carrying">🎒 Bag</button><button id="camBtn" class="paper pill" title="Follow Odyssey Jr. with the camera">🎥 Follow</button></div>
 <div id="minimap" class="paper"><canvas width="260" height="260"></canvas></div>
+<div id="modal" class="paper"><header><div><b id="modalTitle"></b><span id="modalSub"></span></div><button id="closeModal" title="Close">✕</button></header><div id="modalBody"></div></div>
 <div id="bubble"></div>
 <div id="err"></div>
 
@@ -107,6 +126,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { findsFor } from "./world/finds.js";
 
 const $ = id => document.getElementById(id);
 const showError = msg => { const e = $("err"); e.style.display = "block"; e.textContent = "Something broke: " + msg; };
@@ -118,12 +138,13 @@ const tryJSON = async (p, d) => { try { return await getJSON(p); } catch { retur
 const getText = async p => { try { const r = await fetch(p + bust); return r.ok ? await r.text() : null; } catch { return null; } };
 function rngFor(str) { let h = 1779033703 ^ str.length; for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296; }; }
 
-let world, state, projects, character;
+let world, state, projects, character, wardrobe, bagData;
 try {
-  [world, state, projects, character] = await Promise.all([
+  [world, state, projects, character, wardrobe, bagData] = await Promise.all([
     getJSON("world/world.json"), getJSON("world/state.json"),
     tryJSON("world/projects.json", { making: [], done: [] }),
-    tryJSON("world/character.json", { colors: {}, outfit: {} })
+    tryJSON("world/character.json", { colors: {}, outfit: {} }),
+    tryJSON("world/wardrobe.json", null), tryJSON("brain/bag.json", { slots: 9, bag: [], shelves: {}, findables: [] })
   ]);
 } catch (e) { showError(e.message); throw e; }
 
@@ -300,28 +321,62 @@ const builtins = {
 
 const gltf = new GLTFLoader();
 const objById = {}, labels = [], clickables = [], builtObjects = [], mapDots = [], behaviorQueue = [], behaviors = [];
-for (const o of world.objects ?? []) {
+// ---------- rooms ----------
+// "outside" is the yard. world.interiors holds rooms you can step inside (his house, and any others he builds).
+// Each room is built far away from the yard, like a pocket dimension, and doors hop between them.
+const rooms = { outside: { name: "the yard", origin: [0, 0], parent: null } };
+function addObject(o, room) {
+  const [ox, oz] = rooms[room].origin;
   let obj;
   if (o.type === "model" && o.src) {
     obj = new THREE.Group();
     gltf.load(o.src, g => { g.scene.traverse(n => { if (n.isMesh) { n.castShadow = n.receiveShadow = true; } }); obj.add(g.scene); }, undefined, e => console.warn("model failed", o.src, e));
   } else if (world.custom?.[o.type]) obj = fromParts(world.custom[o.type]);
   else if (builtins[o.type]) obj = builtins[o.type](o);
-  else { console.warn("Unknown object type", o.type); continue; }
-  obj.position.set(o.pos?.[0] ?? 0, o.y ?? 0, o.pos?.[1] ?? 0);
+  else { console.warn("Unknown object type", o.type); return; }
+  obj.position.set(ox + (o.pos?.[0] ?? 0), o.y ?? 0, oz + (o.pos?.[1] ?? 0));
   obj.rotation.y = o.rot ?? 0;
   obj.scale.setScalar(o.scale ?? 1);
   scene.add(obj); if (o.id) objById[o.id] = obj;
-  mapDots.push({ x: obj.position.x, z: obj.position.z, c: o.mapColor ?? (o.type === "pond" ? "#4aa3df" : o.type === "tree" || o.type === "pine" ? "#4f9a3a" : "#8a7a66") });
+  if (room === "outside") mapDots.push({ x: obj.position.x, z: obj.position.z, c: o.mapColor ?? (o.type === "pond" ? "#4aa3df" : o.type === "tree" || o.type === "pine" ? "#4f9a3a" : "#8a7a66") });
   if (o.label) {
     const el = document.createElement("div"); el.className = "label3d"; el.textContent = o.label;
     document.body.appendChild(el);
-    labels.push({ el, pos: new THREE.Vector3(obj.position.x, (o.labelHeight ?? 3.6) * (o.scale ?? 1), obj.position.z) });
-    builtObjects.push({ name: o.label, pos: [obj.position.x, obj.position.z] });
+    labels.push({ el, room, pos: new THREE.Vector3(obj.position.x, (o.labelHeight ?? 3.6) * (o.scale ?? 1), obj.position.z) });
+    if (room === "outside") builtObjects.push({ name: o.label, pos: [obj.position.x, obj.position.z] });
   }
-  clickables.push({ obj, info: o.note ?? o.label ?? null });
+  clickables.push({ obj, o, room, info: o.note ?? o.label ?? null });
   if (o.script) behaviorQueue.push({ o, obj });
+  // a door: remember which room it leads to and where he stands to use it
+  if (o.door && o.door !== "outside" && rooms[o.door] && !rooms[o.door].parent) {
+    rooms[o.door].parent = room;
+    rooms[o.door].outerDoor = o.doorAt ? [ox + o.doorAt[0], oz + o.doorAt[1]] : [obj.position.x + Math.sin(obj.rotation.y) * 2, obj.position.z + Math.cos(obj.rotation.y) * 2];
+  }
 }
+{
+  let i = 0;
+  for (const [id, R] of Object.entries(world.interiors ?? {})) {
+    if (id.startsWith("_") || !R || typeof R !== "object") continue;
+    const [W, D] = R.size ?? [10, 8], H = R.height ?? 3.6, origin = [1000 + 300 * i++, 0];
+    rooms[id] = { ...R, origin, parent: null, W, D };
+    const g = new THREE.Group(); g.position.set(origin[0], 0, origin[1]); scene.add(g);
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(W, 0.3, D), new THREE.MeshStandardMaterial({ color: R.floorColor ?? "#e8c9a0", map: texFor(R.floor ?? "planks", W / 2.5, D / 2.5), roughness: 0.9 }));
+    floor.position.y = -0.15; floor.receiveShadow = true; g.add(floor);
+    // three walls that only show from the inside, so you can always see into the room like a dollhouse
+    const wallMat = new THREE.MeshStandardMaterial({ color: R.wall ?? "#f6e7c8", map: R.wallTexture ? texFor(R.wallTexture, W / 2, H / 2) : null, roughness: 0.95 });
+    const trimMat = new THREE.MeshStandardMaterial({ color: R.trim ?? "#b3262e", roughness: 0.8 });
+    for (const [w, x, z, ry] of [[W, 0, -D / 2, 0], [D, -W / 2, 0, Math.PI / 2], [D, W / 2, 0, -Math.PI / 2]]) {
+      const wall = new THREE.Mesh(new THREE.PlaneGeometry(w, H), wallMat); wall.position.set(x, H / 2, z); wall.rotation.y = ry; wall.receiveShadow = true; g.add(wall);
+      const base = new THREE.Mesh(new THREE.PlaneGeometry(w, 0.28), trimMat); base.position.set(x + Math.sin(ry) * 0.01, 0.14, z + Math.cos(ry) * 0.01); base.rotation.y = ry; g.add(base);
+      const top = base.clone(); top.position.y = H - 0.14; g.add(top);
+    }
+    const lamp = new THREE.PointLight(R.light ?? "#ffd9a0", R.lightPower ?? 40, 30); lamp.position.set(0, H - 0.5, 1); g.add(lamp);
+  }
+}
+for (const o of world.objects ?? []) addObject(o, "outside");
+for (const id of Object.keys(rooms)) if (id !== "outside") for (const o of rooms[id].objects ?? []) addObject(o, id);
+for (const id of Object.keys(rooms)) if (id !== "outside" && !rooms[id].parent) { rooms[id].parent = "outside"; rooms[id].outerDoor = [0, 0]; } // a room nobody built a door to yet
+const roomXZ = (p, room) => { const o = (rooms[room] ?? rooms.outside).origin; return [o[0] + p[0], o[1] + p[1]]; };
 
 const size = world.ground?.size ?? 40;
 const ground = new THREE.Mesh(new THREE.CircleGeometry(size / 2 + 4, 96),
@@ -379,10 +434,17 @@ const legs = [-0.17, 0.17].map(x => {
   for (const a of [-0.5, 0, 0.5]) { const toe = at(part("capsule", [0.022, 0.16], col("legs", "#f2a20f"), { rough: 0.5 }), Math.sin(a) * 0.08, -0.43, Math.cos(a) * 0.08); toe.rotation.set(Math.PI / 2, 0, -a); leg.add(toe); }
   return leg;
 });
-const wear = (anchor, parts) => { if (Array.isArray(parts) && parts.length) anchor.add(fromParts(parts)); };
-wear(hatAnchor, character.outfit?.head);
-wear(neckAnchor, character.outfit?.neck);
-wear(body, character.outfit?.body);
+// clothes come from world/wardrobe.json (his closet); "wearing" is the outfit he has on
+const outfits = wardrobe?.outfits ?? (character.outfit ? [{ id: "current", name: character.outfit.name ?? "My outfit", ...character.outfit }] : []);
+const wearingId = wardrobe?.wearing ?? outfits[0]?.id;
+const outfitGroups = [];
+function dress(id) {
+  const outfit = outfits.find(x => x.id === id) ?? {};
+  outfitGroups.forEach(g => g.parent?.remove(g)); outfitGroups.length = 0;
+  for (const [anchor, parts] of [[hatAnchor, outfit.head], [neckAnchor, outfit.neck], [body, outfit.body]])
+    if (Array.isArray(parts) && parts.length) { const g = fromParts(parts); anchor.add(g); outfitGroups.push(g); }
+}
+dress(wearingId);
 const blob = new THREE.Mesh(new THREE.CircleGeometry(0.55, 24), new THREE.MeshBasicMaterial({ color: "#000", transparent: true, opacity: 0.18, depthWrite: false }));
 blob.rotation.x = -Math.PI / 2; blob.position.y = 0.02; chicken.add(blob);
 scene.add(chicken);
@@ -398,11 +460,11 @@ const clamp = (v, a = 0, b = 100) => Math.max(a, Math.min(b, v));
 // Each action: where he goes (and why), the animation, what it does to his needs per minute, and how long it lasts.
 // To teach him a new everyday action, add one here (he can do this himself).
 const ACTIONS = {
-  sleep:    { icon: "😴", doing: "sleeping by his coop", to: "his coop", why: "turn in for the night", where: "coop", anim: "sleep", fx: { energy: 1.4, calm: 0.4, fullness: -0.04 }, dur: [30, 60] },
+  sleep:    { icon: "😴", doing: "fast asleep in his nest bed, inside his house", to: "his house", why: "turn in for the night", room: "home", where: "bed", anim: "sleep", fx: { energy: 1.4, calm: 0.4, fullness: -0.04 }, dur: [30, 60] },
   eat:      { icon: "🌽", doing: "munching seeds at the feeder", to: "the seed feeder", why: "grab a snack", where: "feeder", anim: "peck", fx: { fullness: 2.6, mood: 0.2 }, dur: [6, 12] },
   drink:    { icon: "💧", doing: "sipping water at the pond", to: "the pond", why: "get a drink", where: "pond", anim: "peck", fx: { fullness: 0.6, calm: 0.7 }, dur: [4, 8] },
   forage:   { icon: "🌾", doing: "scratching for bugs in the garden", to: "the garden", why: "hunt for bugs", where: "garden", anim: "scratch", fx: { fullness: 0.7, wonder: 0.3, calm: 0.3 }, dur: [10, 20] },
-  nap:      { icon: "💤", doing: "taking a little nap", to: "his coop", why: "rest his eyes", where: "coop", anim: "sleep", fx: { energy: 2.2, calm: 0.6 }, dur: [15, 35] },
+  nap:      { icon: "💤", doing: "taking a little nap in his nest bed, inside his house", to: "his house", why: "rest his eyes", room: "home", where: "bed", anim: "sleep", fx: { energy: 2.2, calm: 0.6 }, dur: [15, 35] },
   explore:  { icon: "🧭", doing: "poking around the yard", to: "a new corner of the yard", why: "see what's there", where: "*random", anim: "explore", fx: { wonder: 1.2, energy: -0.1 }, dur: [10, 20] },
   work:     { icon: "🔨", doing: "working on his project", to: "his project", why: "keep building", where: "*focus", anim: "build", fx: { wonder: 0.5, mood: 0.6, energy: -0.15 }, dur: [20, 40] },
   admire:   { icon: "✨", doing: "admiring something he built", to: "something he built", why: "admire it", where: "*built", anim: "look", fx: { mood: 0.9, wonder: 0.3 }, dur: [5, 10] },
@@ -417,7 +479,7 @@ const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
 const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
 
-const sim = { needs: { fullness: 70, energy: 55, wonder: 60, mood: 65, calm: 70 }, act: "sleep", left: 0, since: new Date(), place: spotPos("coop"), rnd: null, target: null, history: [] };
+const sim = { needs: { fullness: 70, energy: 55, wonder: 60, mood: 65, calm: 70 }, act: "sleep", left: 0, since: new Date(), place: spotPos("coop"), room: "outside", rnd: null, target: null, history: [] };
 function chooseAction(n, hour, rnd) {
   if (isNightHour(hour)) return "sleep";
   const lack = k => (100 - n[k]) / 100;
@@ -433,11 +495,14 @@ function chooseAction(n, hour, rnd) {
   return "explore";
 }
 function placeFor(name, rnd, here) {
+  const prevRoom = sim.room;
   const a = ACTIONS[name];
+  if (a.room && rooms[a.room]) { sim.room = a.room; return rooms[a.room].spots?.[a.where] ?? rooms[a.room].door ?? [0, 0]; } // an action that happens indoors
+  sim.room = "outside";
   if (a.where === "*focus") return spotPos(state.spot);
   if (a.where === "*built" && builtObjects.length) { const b = builtObjects[Math.floor(rnd() * builtObjects.length)]; sim.target = b.name; return [b.pos[0] + 1.6, b.pos[1] + 1.6]; }
   if (a.where === "*random") { const lim = size / 2 - 2; return [(rnd() - 0.5) * 2 * lim, (rnd() - 0.5) * 2 * lim]; }
-  if (a.where === "*here") return here;
+  if (a.where === "*here") return prevRoom === "outside" ? here : spotPos("coop");
   return spotPos(a.where);
 }
 function applyMinute(n, actName) {
@@ -488,13 +553,48 @@ setInterval(renderUI, 500);
 // ---------- movement + animation ----------
 const target = new THREE.Vector3();
 let t = 0;
-function goTo(p) { target.set(p[0], 0, p[1]); moving = true; }
-chicken.position.set(sim.place[0], 0, sim.place[1]);
-controls.target.set(sim.place[0], 1, sim.place[1]);
+// He can be in any room. To get to a spot in another room he walks to the door, pops through, and carries on.
+let chickenRoom = sim.room, viewRoom = "outside", route = [];
+const chainUp = r => { const c = []; while (r && r !== "outside" && rooms[r]) { c.push(r); r = rooms[r].parent; } return c; };
+function goTo(p, room = sim.room) {
+  if (!rooms[room]) room = "outside";
+  route = [];
+  if (room !== chickenRoom) {
+    const up = chainUp(chickenRoom), down = chainUp(room);
+    while (up.length && down.length && up[up.length - 1] === down[down.length - 1]) { up.pop(); down.pop(); }
+    for (const r of up) route.push({ pos: roomXZ(rooms[r].door ?? [0, 0], r) }, { warp: rooms[r].parent, pos: rooms[r].outerDoor });
+    for (const r of down.reverse()) route.push({ pos: rooms[r].outerDoor }, { warp: r, pos: roomXZ(rooms[r].door ?? [0, 0], r) });
+  }
+  route.push({ pos: roomXZ(p, room) });
+  target.set(route[0].pos[0], 0, route[0].pos[1]); moving = true;
+}
+function advanceRoute() {
+  route.shift();
+  if (route[0]?.warp) { chickenRoom = route[0].warp; chicken.position.set(route[0].pos[0], 0, route[0].pos[1]); route.shift(); }
+  if (route[0]) { target.set(route[0].pos[0], 0, route[0].pos[1]); moving = true; }
+}
+{ const p = roomXZ(sim.place, sim.room); chicken.position.set(p[0], 0, p[1]); target.set(p[0], 0, p[1]); }
 let follow = true;
+function setView(room) {
+  if (!rooms[room]) room = "outside";
+  viewRoom = room;
+  const R = rooms[room], inside = room !== "outside";
+  if (inside) {
+    controls.target.set(R.origin[0], 1.3, R.origin[1] - 0.5); camera.position.set(R.origin[0], 6, R.origin[1] + R.D / 2 + 8);
+    controls.maxDistance = Math.max(R.W, R.D) + 10; controls.maxPolarAngle = Math.PI * 0.49;
+  } else {
+    const c = chickenRoom === "outside" ? [chicken.position.x, chicken.position.z] : (rooms[chainUp(chickenRoom).pop()]?.outerDoor ?? [0, 0]);
+    controls.target.set(c[0], 1, c[1]); camera.position.set(c[0] + 9, 8, c[1] + 12); controls.maxDistance = 50;
+  }
+  $("outBtn").style.display = inside ? "" : "none"; $("minimap").style.visibility = inside ? "hidden" : "";
+  controls.update();
+}
 function setFollow(on) { follow = on; $("camBtn").textContent = follow ? "🎥 Follow" : "🎥 Free cam"; }
 $("camBtn").onclick = () => setFollow(!follow);
+$("outBtn").onclick = () => enterRoom(rooms[viewRoom]?.parent ?? "outside");
+function enterRoom(room) { if (chickenRoom !== room) setFollow(false); setView(room); }
 controls.addEventListener("start", () => { if (follow) { follow = false; $("camBtn").textContent = "🎥 Free cam"; } });
+setView(chickenRoom);
 
 const bubble = $("bubble");
 const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"] };
@@ -510,18 +610,26 @@ $("seedBtn").onclick = () => {
   sim.needs.fullness = clamp(sim.needs.fullness + 12); sim.needs.mood = clamp(sim.needs.mood + 4);
   say("Seeds?! For me?! 🥹", 4); renderUI();
 };
-const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+const ray = new THREE.Raycaster(), mouse = new THREE.Vector2(); ray.far = 150; // rooms are far apart, so a click never reaches into another one
 let hop = 0;
 renderer.domElement.addEventListener("click", e => {
   mouse.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
   ray.setFromCamera(mouse, camera);
-  if (ray.intersectObject(chicken, true).length) {
+  if (chickenRoom === viewRoom && ray.intersectObject(chicken, true).length) {
     override = { act: "dance", icon: "🥰", text: "Odyssey Jr. got petted and loved it", secs: 3 }; hop = 1;
     sim.needs.mood = clamp(sim.needs.mood + 6); sim.needs.calm = clamp(sim.needs.calm + 3);
     say(["Bawk!", "Hehe, that tickles!", "Hi there, visitor!", "Nice to meet you!"][Math.floor(Math.random() * 4)], 3); renderUI(); return;
   }
   for (const b of behaviors) if (b.onClick && ray.intersectObject(b.obj, true).length) { b.onClick(); return; }
-  for (const c of clickables) if (c.info && ray.intersectObject(c.obj, true).length) { say(`That's my ${c.info}!`, 3); return; }
+  // nearest thing under the pointer: doors lead to rooms, some furniture opens a panel, the rest he just talks about
+  let best = null;
+  for (const c of clickables) { if (c.room !== viewRoom) continue; const hit = ray.intersectObject(c.obj, true)[0]; if (hit && (!best || hit.distance < best.d)) best = { c, d: hit.distance }; }
+  if (!best) return;
+  const o = best.c.o;
+  if (o.door) { enterRoom(o.door); return; }
+  if (o.panel === "closet") { openCloset(); return; }
+  if (o.panel === "bag") { openBag(); return; }
+  if (best.c.info) say(`That's my ${best.c.info}`.replace(/[.!]?$/, m => m || "!"), 3);
 });
 
 const mm = $("minimap").querySelector("canvas").getContext("2d");
@@ -554,6 +662,7 @@ function animate() {
   const wantUp = !!(P && perches[pName] && (climbPerch === pName || climbPerch === null) && override?.act !== "eat" && (climb > 0 || (atFoot && !moving)));
   const climbing = P && (wantUp || climb > 0);
   if (climbing) { climbPerch = climbPerch ?? pName; climb = THREE.MathUtils.clamp(climb + (wantUp ? 1 : -1) * dt / (P.secs ?? 4), 0, 1); }
+  if (route.length > 1 && Math.hypot(target.x - chicken.position.x, target.z - chicken.position.z) <= 0.14) advanceRoute();
   v.subVectors(target, chicken.position); v.y = 0;
   if (climbing && climb < 1) {
     // on the ladder: hop up rung by rung, wings flapping for balance
@@ -579,6 +688,7 @@ function animate() {
     if (run) wings.forEach((w, i) => w.rotation.z = (0.4 + Math.sin(t * 30) * 0.3) * (i ? -1 : 1));
   } else {
     moving = false;
+    if (chickenRoom === sim.room && sim.place[2] && !override) chicken.position.y += sim.place[2]; // sitting up on something, like his nest bed
     if (anim === "sleep") { body.position.y = 0.6 + Math.sin(t * 1.5) * 0.02; head.position.set(0, 1.18, 0.45); neck.position.y = 1.0; head.rotation.x = 0.55; eyes.forEach(e => e.scale.y = 0.1); legs.forEach(l => l.position.y = 0.3); }
     else if (anim === "peck") { const p = Math.max(0, Math.sin(t * 7)); head.rotation.x = p * 0.9; head.position.y = 1.42 - p * 0.35; head.position.z = 0.5 + p * 0.15; body.rotation.x = p * 0.25; tail.rotation.x = -p * 0.2; }
     else if (anim === "scratch") { const ph = t % 1.6; if (ph < 0.8) { legs[Math.floor(t / 1.6) % 2].rotation.x = -Math.abs(Math.sin(ph / 0.8 * Math.PI * 2)) * 0.9; body.rotation.x = 0.15; } else { const p = Math.sin((ph - 0.8) / 0.8 * Math.PI); head.rotation.x = p * 0.9; head.position.y = 1.42 - p * 0.35; body.rotation.x = p * 0.25; } }
@@ -586,13 +696,13 @@ function animate() {
     else if (anim === "dance") { chicken.rotation.y += dt * 3; chicken.position.y = Math.abs(Math.sin(t * 6)) * 0.25; body.rotation.z = Math.sin(t * 6) * 0.2; wings.forEach((w, i) => w.rotation.z = (0.5 + Math.sin(t * 14) * 0.5) * (i ? -1 : 1)); tail.rotation.y = Math.sin(t * 12) * 0.5; }
     else if (anim === "dust") { body.position.y = 0.55; body.rotation.z = Math.sin(t * 4) * 0.35; wings.forEach((w, i) => w.rotation.z = (0.6 + Math.sin(t * 16) * 0.3) * (i ? -1 : 1)); head.position.y = 1.2; legs.forEach(l => l.position.y = 0.3); }
     else if (anim === "think") { head.rotation.z = Math.sin(t * 0.8) * 0.22; head.rotation.x = -0.18; body.position.y = 0.66; legs.forEach(l => l.position.y = 0.34); }
-    else if (anim === "explore") { head.rotation.y = Math.sin(t * 1.5) * 0.7; if ((t % 6) < dt) { const lim = size / 2 - 2; goTo([THREE.MathUtils.clamp(chicken.position.x + (Math.random() - 0.5) * 6, -lim, lim), THREE.MathUtils.clamp(chicken.position.z + (Math.random() - 0.5) * 6, -lim, lim)]); } }
+    else if (anim === "explore") { head.rotation.y = Math.sin(t * 1.5) * 0.7; if ((t % 6) < dt && chickenRoom === "outside") { const lim = size / 2 - 2; goTo([THREE.MathUtils.clamp(chicken.position.x + (Math.random() - 0.5) * 6, -lim, lim), THREE.MathUtils.clamp(chicken.position.z + (Math.random() - 0.5) * 6, -lim, lim)]); } }
     else { head.rotation.y = Math.sin(t * 2) * 0.6; }
     if (anim !== "sleep") { // idle life: curious head tilts, a wing ruffle, small wanders around the spot
       idleTimer -= dt; if (idleTimer < 0) { idleTimer = 2 + Math.random() * 4; lookTilt = (Math.random() - 0.5) * 0.7; }
       head.rotation.z += lookTilt;
       if ((t % 11) < 0.35) wings.forEach((w, i) => w.rotation.z += Math.sin(t * 40) * 0.25 * (i ? -1 : 1));
-      if (anim !== "explore" && anim !== "dance" && anim !== "dust" && (t % 9) < dt && !override) goTo([sim.place[0] + (Math.random() - 0.5) * 1.5, sim.place[1] + (Math.random() - 0.5) * 1.5]);
+      if (anim !== "explore" && anim !== "dance" && anim !== "dust" && (t % 9) < dt && !override && chickenRoom === sim.room) goTo([sim.place[0] + (Math.random() - 0.5) * 1.5, sim.place[1] + (Math.random() - 0.5) * 1.5]);
     }
   }
   if (climbing && climb >= 1) { // up on the perch: stand still and look out
@@ -606,6 +716,7 @@ function animate() {
   if (bubbleTimer <= 0) { const opts = lines[sim.act] ?? ["Bawk."]; say(Math.random() < 0.3 ? (state.thought ?? opts[0]) : opts[Math.floor(Math.random() * opts.length)], 6); }
   bubble.textContent = bubbleText;
 
+  if (follow && chickenRoom !== viewRoom) setView(chickenRoom);
   if (follow) controls.target.lerp(camGoal.set(chicken.position.x, 1 + chicken.position.y, chicken.position.z), 0.03);
   controls.update();
   composer.render();
@@ -613,15 +724,15 @@ function animate() {
   const p = new THREE.Vector3(chicken.position.x, 2.6 + chicken.position.y, chicken.position.z).project(camera);
   bubble.style.left = (p.x * 0.5 + 0.5) * innerWidth + "px";
   bubble.style.top = (-p.y * 0.5 + 0.5) * innerHeight + "px";
-  bubble.style.opacity = p.z < 1 ? 1 : 0;
+  bubble.style.opacity = p.z < 1 && chickenRoom === viewRoom ? 1 : 0;
   for (const l of labels) {
     const q = l.pos.clone().project(camera);
     l.el.style.left = (q.x * 0.5 + 0.5) * innerWidth + "px";
     l.el.style.top = (-q.y * 0.5 + 0.5) * innerHeight + "px";
-    l.el.style.display = q.z < 1 ? "block" : "none";
+    l.el.style.display = q.z < 1 && l.room === viewRoom ? "block" : "none";
   }
   for (const b of behaviors) { try { b.update?.(dt, t); } catch (e) { console.warn("behavior error", e); b.update = null; } }
-  mmTimer -= dt; if (mmTimer <= 0) { mmTimer = 0.25; drawMinimap(); }
+  mmTimer -= dt; if (mmTimer <= 0 && viewRoom === "outside") { mmTimer = 0.25; drawMinimap(); }
   requestAnimationFrame(animate);
 }
 // ---------- object behaviors ----------
@@ -630,11 +741,54 @@ function animate() {
 // scene, say(text, secs), chicken, sim, world, state, part (shape builder) and texFor (textures).
 for (const { o, obj } of behaviorQueue) {
   import("./" + o.script + bust).then(m => {
-    const api = m.default?.({ THREE, obj, data: o, scene, say, chicken, sim, world, state, part, texFor, camera, controls, objects: objById, setFollow });
+    const api = m.default?.({ THREE, obj, data: o, scene, say, chicken, sim, world, state, part, texFor, camera, controls, objects: objById, setFollow, rooms, enterRoom, openBag, openCloset, dress, bag: bagData });
     if (api) behaviors.push({ ...api, obj });
   }).catch(e => console.warn("behavior failed to load", o.script, e));
 }
 goTo(sim.place); updateSky(new Date()); renderUI(); animate();
+
+// ---------- closet + bag panels ----------
+function openModal(title, sub, html) { $("modalTitle").textContent = title; $("modalSub").textContent = sub; $("modalBody").innerHTML = html; $("modal").classList.add("open"); }
+$("closeModal").onclick = () => $("modal").classList.remove("open");
+let tryingOn = null;
+function openCloset() {
+  const cards = outfits.map(x => `<div class="outfit"><span class="ico">${esc(x.icon ?? "👕")}</span><div><b>${esc(x.name ?? x.id)}</b><p>${esc(x.note ?? "")}</p>${x.made ? `<p style="font-size:12px;color:var(--muted)">made ${esc(x.made)}</p>` : ""}</div>
+    <div class="side">${x.id === wearingId ? `<span class="tag" style="background:#c8f0b8">wearing now</span>` : ""}${(tryingOn ?? wearingId) === x.id ? (tryingOn ? `<span class="tag">trying on</span>` : "") : `<button class="btn paper pill" data-try="${esc(x.id)}">👀 Try it on</button>`}</div></div>`).join("");
+  openModal("Odyssey Jr.'s closet", `Every outfit he has made (${outfits.length}). Trying one on is just a peek for you; he picks what he really wears.`,
+    cards + (tryingOn ? `<button class="btn paper pill" data-try="">↩ Back to what he picked</button>` : ""));
+}
+function bagNow() {
+  // what he carries: his kept things, plus anything he has found since his last daily run (if there is room)
+  const pad = n => String(n).padStart(2, "0"), dstr = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const now = new Date(), items = [...(bagData.bag ?? [])], slots = bagData.slots ?? 9;
+  for (let back = 3; back >= 0; back--) {
+    const d = new Date(now); d.setDate(d.getDate() - back); const ds = dstr(d);
+    if (bagData.synced && ds <= bagData.synced) continue;
+    for (const f of findsFor(ds, bagData.findables)) {
+      if (back === 0 && f.minute > now.getHours() * 60 + now.getMinutes()) continue;
+      if (items.length < slots) items.push({ ...f, got: ds, fresh: true, note: `Picked it up at ${new Date(2000, 0, 1, Math.floor(f.minute / 60), f.minute % 60).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}.` });
+    }
+  }
+  return items;
+}
+let bagItems = [], bagSel = 0;
+function itemDetail(it) { return it ? `<b>${esc(it.icon ?? "📦")} ${esc(it.name)}</b><span>${esc(it.from ?? "")}${it.got ? `, ${ago(it.got + "T12:00:00") === "just now" ? "today" : esc(it.got)}` : ""}</span>${it.note ? `<span>${esc(it.note)}</span>` : ""}` : `<span>Tap something to see where it came from.</span>`; }
+function openBag() {
+  bagItems = bagNow(); const slots = bagData.slots ?? 9, carried = bagItems.length; let all = [...bagItems];
+  const grid = Array.from({ length: slots }, (_, i) => bagItems[i] ? `<button class="slot ${i === bagSel ? "on" : ""}" data-item="${i}" title="${esc(bagItems[i].name)}">${esc(bagItems[i].icon ?? "📦")}${bagItems[i].fresh ? `<span class="new">new</span>` : ""}</button>` : `<div class="slot empty"></div>`).join("");
+  const shelves = Object.values(bagData.shelves ?? {}).filter(s => s && typeof s === "object").map(sh => {
+    const row = (sh.items ?? []).map(it => { all.push(it); return `<button class="slot small" data-item="${all.length - 1}" title="${esc(it.name)}">${esc(it.icon ?? "📦")}</button>`; }).join("");
+    return `<div class="secLabel">${esc(sh.name ?? "A shelf")}</div><div class="shelfRow">${row || `<span style="color:var(--muted);font-size:13px">Empty for now.</span>`}</div>`;
+  }).join("");
+  bagItems = all;
+  openModal("Odyssey Jr.'s bag", `What he has with him. His bag has ${slots} places.`,
+    `<div class="bagCols"><div><div class="slots">${grid}</div><p style="font-size:12.5px;color:var(--muted);margin:8px 0 0">${carried >= slots ? "His bag is full." : `${carried} of ${slots} places used.`}</p><div class="detail" id="itemDetail">${itemDetail(bagItems[bagSel])}</div></div><div>${shelves}</div></div>`);
+}
+$("bagBtn").onclick = () => { bagSel = 0; openBag(); };
+$("modalBody").onclick = e => {
+  const tr = e.target.closest("[data-try]"); if (tr) { tryingOn = tr.dataset.try || null; dress(tryingOn ?? wearingId); openCloset(); return; }
+  const it = e.target.closest("[data-item]"); if (it) { bagSel = +it.dataset.item; document.querySelectorAll("#modalBody .slot").forEach(x => x.classList.toggle("on", x === it)); $("itemDetail").innerHTML = itemDetail(bagItems[bagSel]); }
+};
 
 // ---------- diary ----------
 function md(src) {

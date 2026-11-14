@@ -86,16 +86,72 @@ if (state) {
   const acts = ["explore", "peck", "build", "dance", "think", "read", "sleep", "look"];
   if (!acts.includes(String(state.activity).toLowerCase())) warn.push(`state.json: activity "${state.activity}" has no animation, it will just look around`);
 }
-if (character) {
+const SHAPES = ["box", "roundbox", "sphere", "cylinder", "cone", "torus", "capsule"];
+const checkOutfit = (where, outfit) => {
   for (const slot of ["head", "neck", "body"]) {
-    const parts = character.outfit?.[slot] ?? [];
-    if (!Array.isArray(parts)) { errors.push(`character.json: outfit.${slot} must be a list`); continue; }
-    if (parts.length > 80) errors.push(`character.json: outfit.${slot} has over 80 parts`);
+    const parts = outfit?.[slot] ?? [];
+    if (!Array.isArray(parts)) { errors.push(`${where}: ${slot} must be a list`); continue; }
+    if (parts.length > 80) errors.push(`${where}: ${slot} has over 80 parts`);
     for (const p of parts) {
-      if (!["box", "roundbox", "sphere", "cylinder", "cone", "torus", "capsule"].includes(p.shape)) errors.push(`character.json: outfit.${slot} has unknown shape ${p.shape}`);
-      if (p.pos && !(Array.isArray(p.pos) && p.pos.length === 3 && p.pos.every(isNum))) errors.push(`character.json: outfit.${slot} has bad pos`);
+      if (!SHAPES.includes(p.shape)) errors.push(`${where}: ${slot} has unknown shape ${p.shape}`);
+      if (p.pos && !(Array.isArray(p.pos) && p.pos.length === 3 && p.pos.every(isNum))) errors.push(`${where}: ${slot} has bad pos`);
     }
   }
+};
+if (character?.outfit) checkOutfit("character.json outfit", character.outfit);
+// his closet
+if (existsSync(join(root, "world/wardrobe.json"))) {
+  const wd = json("world/wardrobe.json");
+  if (wd) {
+    if (!Array.isArray(wd.outfits) || !wd.outfits.length) errors.push("wardrobe.json: needs at least one outfit");
+    const ids = new Set();
+    for (const x of wd.outfits ?? []) {
+      if (!x.id || !x.name) errors.push("wardrobe.json: every outfit needs an id and a name");
+      if (ids.has(x.id)) errors.push(`wardrobe.json: duplicate outfit id ${x.id}`); ids.add(x.id);
+      checkOutfit(`wardrobe.json outfit ${x.id}`, x);
+    }
+    if (!ids.has(wd.wearing)) errors.push(`wardrobe.json: "wearing" (${wd.wearing}) is not one of the outfits`);
+  }
+}
+// his bag and shelves
+if (existsSync(join(root, "brain/bag.json"))) {
+  const bg = json("brain/bag.json");
+  if (bg) {
+    const slots = bg.slots ?? 9;
+    if (!Array.isArray(bg.bag)) errors.push("bag.json: bag must be a list");
+    else if (bg.bag.length > slots) errors.push(`bag.json: the bag holds ${slots} things but has ${bg.bag.length}. Put some on a shelf.`);
+    const okItem = (it, where) => { if (!it || !it.name || !it.icon) errors.push(`bag.json: an item in ${where} needs a name and an icon`); };
+    for (const it of bg.bag ?? []) okItem(it, "the bag");
+    for (const [k, sh] of Object.entries(bg.shelves ?? {})) { if (!Array.isArray(sh?.items)) errors.push(`bag.json: shelf ${k} needs an items list`); else for (const it of sh.items) okItem(it, `shelf ${k}`); }
+    for (const f of bg.findables ?? []) if (!f.name || !f.icon) errors.push("bag.json: every findable needs a name and an icon");
+    if (bg.synced && !/^\d{4}-\d{2}-\d{2}$/.test(bg.synced)) errors.push("bag.json: synced must be a date like 2026-11-14");
+  }
+}
+if (!existsSync(join(root, "world/finds.js"))) errors.push("world/finds.js is missing (the site needs it)");
+// rooms you can walk into
+if (world) {
+  const roomIds = Object.keys(world.interiors ?? {}).filter(k => !k.startsWith("_"));
+  const doorOk = d => d === "outside" || roomIds.includes(d);
+  for (const o of world.objects ?? []) if (o.door && !doorOk(o.door)) errors.push(`world.json: ${o.id} has a door to "${o.door}", which is not a room in interiors`);
+  for (const id of roomIds) {
+    const R = world.interiors[id];
+    if (!(Array.isArray(R.size) && R.size.length === 2 && R.size.every(isNum))) { errors.push(`world.json: room ${id} needs size [width, depth]`); continue; }
+    const [W, D] = R.size;
+    if (W > 60 || D > 60) errors.push(`world.json: room ${id} is bigger than 60 units`);
+    if (!Array.isArray(R.objects)) errors.push(`world.json: room ${id} needs an objects list`);
+    let wayOut = false;
+    for (const o of R.objects ?? []) {
+      if (!o.id) errors.push(`world.json: an object in room ${id} has no id`);
+      if (!Array.isArray(o.pos) || o.pos.length !== 2 || !o.pos.every(isNum)) errors.push(`world.json: ${o.id} in room ${id} needs pos [x, z]`);
+      else if (Math.abs(o.pos[0]) > W / 2 + 0.01 || Math.abs(o.pos[1]) > D / 2 + 0.01) errors.push(`world.json: ${o.id} is outside room ${id}`);
+      if (o.type === "model") { if (!o.src || !existsSync(join(root, o.src))) errors.push(`world.json: model ${o.id} file ${o.src} not found`); }
+      else if (!(o.type in (world.custom ?? {})) && !builtinTypes.includes(o.type)) errors.push(`world.json: ${o.id} in room ${id} uses unknown type "${o.type}"`);
+      if (o.door) { if (!doorOk(o.door)) errors.push(`world.json: ${o.id} has a door to unknown room "${o.door}"`); else wayOut = true; }
+      if (o.panel && !["closet", "bag"].includes(o.panel)) errors.push(`world.json: ${o.id} has unknown panel "${o.panel}"`);
+    }
+    if (!wayOut) errors.push(`world.json: room ${id} has no door out (add an object with "door": "outside")`);
+  }
+  if (roomIds.includes("home") && !(world.interiors.home.objects ?? []).some(o => o.panel === "closet")) errors.push("world.json: his house must keep its closet (an object with \"panel\": \"closet\")");
 }
 if (projects && !(Array.isArray(projects.making) && Array.isArray(projects.done))) errors.push("projects.json: needs making[] and done[]");
 
