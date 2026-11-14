@@ -51,14 +51,14 @@ if (world) {
   }
   for (const [name, parts] of Object.entries(world.custom ?? {})) {
     if (!Array.isArray(parts) || !parts.length) { errors.push(`world.json: custom "${name}" needs a list of parts`); continue; }
-    if (parts.length > 60) errors.push(`world.json: custom "${name}" has over 60 parts`);
+    if (parts.length > 200) errors.push(`world.json: custom "${name}" has over 200 parts`);
     for (const p of parts) {
       if (!["box", "sphere", "cylinder", "cone", "torus"].includes(p.shape)) errors.push(`world.json: custom "${name}" has unknown shape ${p.shape}`);
       if (p.size && !(Array.isArray(p.size) && p.size.every(isNum))) errors.push(`world.json: custom "${name}" has bad size`);
       if (p.pos && !(Array.isArray(p.pos) && p.pos.length === 3 && p.pos.every(isNum))) errors.push(`world.json: custom "${name}" has bad pos`);
     }
   }
-  if ((world.objects ?? []).length > 300) errors.push("world.json: over 300 objects, the page will get slow");
+  if ((world.objects ?? []).length > 2000) errors.push("world.json: over 2000 objects, the page will get slow");
   for (const [k, v] of Object.entries(world.spots ?? {}))
     if (!Array.isArray(v) || v.length !== 2 || !v.every(isNum)) errors.push(`world.json: spot ${k} must be [x, z]`);
 }
