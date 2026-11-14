@@ -36,6 +36,14 @@
     "dustbath": [
       -11,
       -2
+    ],
+    "airport": [
+      -12,
+      -11
+    ],
+    "runway": [
+      0,
+      -11.6
     ]
   },
   "objects": [
@@ -170,6 +178,55 @@
         -2
       ],
       "src": "assets/models/dustbath.glb"
+    },
+    {
+      "id": "runway",
+      "type": "model",
+      "pos": [
+        0,
+        -14
+      ],
+      "src": "assets/models/runway.glb",
+      "script": "behaviors/runway.js",
+      "mapColor": "#5a5a60",
+      "note": "Runway 9/27. 28 units of fresh asphalt. My very first big build!"
+    },
+    {
+      "id": "hangar",
+      "type": "model",
+      "pos": [
+        -16,
+        -8
+      ],
+      "rot": 3.14159,
+      "label": "OJ Air hangar",
+      "labelHeight": 4.2,
+      "src": "assets/models/hangar.glb",
+      "mapColor": "#c94f3d"
+    },
+    {
+      "id": "plane-oj1",
+      "type": "model",
+      "pos": [
+        -11,
+        -14
+      ],
+      "rot": 1.5708,
+      "src": "assets/models/plane.glb",
+      "script": "behaviors/plane.js",
+      "mapColor": "#ffd23f",
+      "note": "OJ-1, my little yellow plane. Click her to fly!"
+    },
+    {
+      "id": "windsock",
+      "type": "model",
+      "pos": [
+        15,
+        -17
+      ],
+      "src": "assets/models/windsock.glb",
+      "script": "behaviors/windsock.js",
+      "mapColor": "#ff6a2b"
     }
   ],
   "custom": {

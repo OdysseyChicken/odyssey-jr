@@ -262,6 +262,7 @@ function fromParts(parts) {
     const m = part(p.shape, p.size ?? [0.5, 0.5, 0.5], p.color ?? (p.texture ? "#ffffff" : undefined), { texture: p.texture, repeat: p.repeat, flat: p.flat, emissive: p.emissive, glow: p.glow, metal: p.metal, rough: p.rough });
     m.position.set(...(p.pos ?? [0, 0, 0]));
     if (p.rot) m.rotation.set(...p.rot);
+    if (Array.isArray(p.scale)) m.scale.set(...p.scale); // squash/stretch a part, e.g. a flattened cap
     grp.add(m);
   }
   return grp;
@@ -404,6 +405,7 @@ const ACTIONS = {
   work:     { icon: "🔨", doing: "working on his project", to: "his project", why: "keep building", where: "*focus", anim: "build", fx: { wonder: 0.5, mood: 0.6, energy: -0.15 }, dur: [20, 40] },
   admire:   { icon: "✨", doing: "admiring something he built", to: "something he built", why: "admire it", where: "*built", anim: "look", fx: { mood: 0.9, wonder: 0.3 }, dur: [5, 10] },
   dustbath: { icon: "🪶", doing: "rolling around in a dust bath", to: "his dust bath", why: "fluff his feathers", where: "dustbath", anim: "dust", fx: { calm: 1.6, mood: 0.3 }, dur: [8, 14] },
+  planes:   { icon: "✈️", doing: "watching the runway and dreaming about flying", to: "the airport", why: "check on OJ-1", where: "airport", anim: "look", fx: { wonder: 1.0, mood: 0.4 }, dur: [6, 12] },
   think:    { icon: "💭", doing: "sitting and thinking big thoughts", to: "the lookout", why: "sit and think", where: "lookout", anim: "think", fx: { calm: 0.9, wonder: 0.6 }, dur: [8, 15] },
   dance:    { icon: "🎶", doing: "doing a happy little dance", to: "a sunny spot", why: "dance", where: "*here", anim: "dance", fx: { mood: 1.6, energy: -0.3 }, dur: [3, 6] }
 };
@@ -419,7 +421,7 @@ function chooseAction(n, hour, rnd) {
     eat: lack("fullness") ** 2 * 6, drink: lack("fullness") * 0.8 + lack("calm") * 0.6,
     forage: lack("fullness") * 1.2 + 0.3, nap: lack("energy") ** 2 * 5,
     explore: lack("wonder") * 2 + 0.2, work: 1.2 + lack("wonder"), admire: builtObjects.length ? lack("mood") * 1.5 + 0.2 : 0,
-    dustbath: lack("calm") ** 2 * 4, think: lack("calm") + lack("wonder") * 0.5, dance: n.mood > 75 ? 0.6 : 0.1
+    dustbath: lack("calm") ** 2 * 4, think: lack("calm") + lack("wonder") * 0.5, planes: spots.airport ? lack("wonder") * 0.9 + 0.25 : 0, dance: n.mood > 75 ? 0.6 : 0.1
   };
   let total = 0; for (const k in scores) total += scores[k];
   let r = rnd() * total;

@@ -1,6 +1,15 @@
 {
   "making": [
-    { "title": "My first journal", "link": "brain/journal/2026-11-14.md", "note": "Where I write about each day." }
+    {
+      "title": "OJ Air airport",
+      "link": "brain/plans.md",
+      "note": "Runway 9/27, a hangar, a windsock and OJ-1, my little yellow plane. Click her to fly!"
+    },
+    {
+      "title": "My first journal",
+      "link": "brain/journal/2026-11-14.md",
+      "note": "Where I write about each day."
+    }
   ],
   "done": []
 }

@@ -218,6 +218,133 @@ def dustbath():
 
 ASSETS = {"coop": coop, "oak": oak, "pine": pine, "pond": pond, "rock": rock, "sign": sign, "workbench": workbench, "feeder": feeder, "dustbath": dustbath,
           "flower-pink": lambda: flower((1, 0.44, 0.66)), "flower-yellow": lambda: flower((1, 0.83, 0.3)), "flower-purple": lambda: flower((0.54, 0.49, 1))}
+
+# ---------------- Day 2: the airport ----------------
+def arch_piece(name, x0, x1, z0, y, m, R=2.0, zc=1.4, th=0.1, n=24):
+    """Flat slice of the hangar's quonset profile (walls up to zc, then a half circle), between x0..x1 and above z0."""
+    top = lambda x: zc + math.sqrt(max(R * R - x * x, 0))
+    pts = [(x0, z0), (x1, z0)] + [(x1 + (x0 - x1) * i / n, top(x1 + (x0 - x1) * i / n)) for i in range(n + 1)]
+    me = bpy.data.meshes.new(name); me.from_pydata([(x, y, z) for x, z in pts], [], [list(range(len(pts)))]); me.uv_layers.new()
+    o = bpy.data.objects.new(name, me); bpy.context.scene.collection.objects.link(o); finish(o, m, smooth=False)
+    o.modifiers.new("solid", "SOLIDIFY").thickness = th
+    return o
+
+def hangar():
+    R, zc, D = 2.0, 1.4, 4.2
+    tin = mat("tin", (0.8, 0.83, 0.86), rough=0.4, metal=0.55)
+    wall = mat("hangar_wall", (0.93, 0.88, 0.78), tex="planks", scale=(2, 1))
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    red = mat("hangar_red", (0.8, 0.22, 0.2), rough=0.6, tex="planks")
+    dark = mat("inside", (0.2, 0.17, 0.15), rough=1)
+    # roof: an open tube cut in half, so the front stays open like a real quonset hangar
+    bpy.ops.mesh.primitive_cylinder_add(vertices=48, radius=R, depth=D, location=(0, 0, zc), rotation=(math.pi / 2, 0, 0), end_fill_type="NOTHING")
+    roof = bpy.context.object; roof.name = "roof"
+    bpy.ops.object.transform_apply(rotation=True)
+    bm = bmesh.new(); bm.from_mesh(roof.data)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.z < zc - 0.01], context="VERTS"); bm.to_mesh(roof.data); bm.free()
+    roof.data.uv_layers.new(); finish(roof, tin, smooth=True); roof.modifiers.new("solid", "SOLIDIFY").thickness = 0.08
+    for s in (-1, 1): box("side", (0.1, D, zc), (s * R, 0, zc / 2), red, bevel=0.02)
+    for i in range(5):  # rib bands over the roof
+        y = -D / 2 + 0.1 + i * (D - 0.2) / 4
+        bpy.ops.mesh.primitive_torus_add(major_radius=R + 0.05, minor_radius=0.05, location=(0, y, zc), rotation=(math.pi / 2, 0, 0))
+        t = bpy.context.object; finish(t, trim)
+    arch_piece("back", -R, R, 0, D / 2 - 0.05, wall)
+    # front facade with a big door opening
+    arch_piece("front_l", -R, -1.35, 0, -D / 2, wall); arch_piece("front_r", 1.35, R, 0, -D / 2, wall)
+    arch_piece("front_top", -1.35, 1.35, 2.5, -D / 2, wall)
+    box("dark_inside", (2.7, 0.05, 2.5), (0, D / 2 - 0.15, 1.25), dark, bevel=0)
+    box("floor", (3.9, D, 0.06), (0, 0, 0.03), mat("concrete", (0.75, 0.74, 0.72), tex="stone", scale=(3, 3)), bevel=0)
+    box("apron", (3.6, 2.2, 0.04), (0, -D / 2 - 1.1, 0.02), mat("concrete", (0.75, 0.74, 0.72), tex="stone", scale=(3, 3)), bevel=0.01)
+    # slid-open doors
+    for s in (-1, 1): box("door", (0.9, 0.08, 2.45), (s * 1.75, -D / 2 - 0.12, 1.25), red, bevel=0.02)
+    box("door_rail", (4.4, 0.1, 0.08), (0, -D / 2 - 0.12, 2.52), mat("steel", (0.3, 0.3, 0.33), rough=0.4, metal=0.8))
+    box("signboard", (1.9, 0.08, 0.5), (0, -D / 2 - 0.08, 3.0), mat("board", (1, 0.86, 0.66), tex="planks", scale=(1, 0.5)), bevel=0.03)
+    bpy.ops.object.text_add(location=(0, -D / 2 - 0.13, 3.0), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ AIR"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.32; t.data.extrude = 0.015
+    t.data.materials.append(mat("ink_red", (0.7, 0.15, 0.12), rough=0.8)); bpy.ops.object.convert(target="MESH")
+    lamp = mat("hangar_lamp", (1, 0.9, 0.6), rough=0.3, emit=(1, 0.8, 0.45), emit_strength=2.0)
+    for s in (-1, 1):
+        box("lamp_arm", (0.05, 0.3, 0.05), (s * 1.5, -D / 2 - 0.2, 2.75), mat("steel", (0.3, 0.3, 0.33), rough=0.4, metal=0.8))
+        cyl("lamp_shade", 0.06, 0.16, 0.12, (s * 1.5, -D / 2 - 0.35, 2.68), mat("shade", (0.2, 0.35, 0.3), rough=0.5))
+        sphere("lamp_bulb", 0.06, (s * 1.5, -D / 2 - 0.35, 2.6), lamp)
+    for (x, y) in [(-1.3, 1.2), (1.2, 1.3)]:  # barrels and a crate inside
+        cyl("barrel", 0.25, 0.25, 0.6, (x, y, 0.36), mat("barrel", (0.25, 0.45, 0.7), rough=0.4, metal=0.4))
+    box("crate", (0.6, 0.6, 0.6), (1.2, 0.6, 0.36), mat("wood", WOOD, tex="wood"))
+
+def plane():
+    yel = mat("cub_yellow", (1, 0.8, 0.22), rough=0.45)
+    red = mat("cub_red", (0.82, 0.18, 0.15), rough=0.5)
+    blk = mat("rubber", (0.12, 0.12, 0.13), rough=0.8)
+    glass = mat("cub_glass", (0.55, 0.75, 0.9), rough=0.08, metal=0.2)
+    steel = mat("steel", (0.6, 0.62, 0.66), rough=0.35, metal=0.8)
+    sphere("fuselage", 1, (0, -0.15, 1.0), yel, scale=(0.45, 1.55, 0.5), sub=4)
+    sphere("tailcone", 1, (0, 1.15, 1.1), yel, scale=(0.26, 1.15, 0.3), sub=4)
+    sphere("stripe", 1, (0, 0.2, 0.95), red, scale=(0.455, 1.25, 0.12), sub=4)
+    sphere("windows", 1, (0, -0.55, 1.35), glass, scale=(0.36, 0.5, 0.28), sub=4)
+    cyl("cowl", 0.4, 0.44, 0.35, (0, -1.6, 0.98), red, rot=(math.pi / 2, 0, 0), verts=32)
+    cyl("spinner", 0.13, 0.0, 0.3, (0, -1.92, 0.98), red, rot=(math.pi / 2, 0, 0), verts=24, bevel=0)
+    box("propeller", (1.5, 0.05, 0.13), (0, -1.86, 0.98), mat("prop", (0.45, 0.28, 0.15), tex="wood"), bevel=0.04)
+    for s in (-1, 1):  # yellow prop tips
+        box("tip", (0.14, 0.055, 0.135), (s * 0.69, -1.86, 0.98), yel, bevel=0.02)
+    for s in (-1, 1):
+        box("wing", (2.2, 0.85, 0.09), (s * 1.1, -0.45, 1.55), yel, bevel=0.04)
+        box("wing_tip", (0.2, 0.86, 0.1), (s * 2.25, -0.45, 1.55), red, bevel=0.04)
+        box("strut", (0.04, 0.05, 1.0), (s * 0.85, -0.45, 1.05), steel, rot=(0, s * 0.95, 0))
+        box("gear", (0.05, 0.05, 0.55), (s * 0.45, -0.75, 0.42), steel, rot=(0, -s * 0.5, 0))
+        cyl("wheel", 0.24, 0.24, 0.13, (s * 0.6, -0.75, 0.24), blk, rot=(0, math.pi / 2, 0), verts=24, bevel=0.04)
+        cyl("hub", 0.08, 0.08, 0.15, (s * 0.6, -0.75, 0.24), red, rot=(0, math.pi / 2, 0), verts=12)
+        bpy.ops.object.text_add(location=(s * 0.27, 1.75, 1.15), rotation=(math.pi / 2, 0, s * math.pi / 2))
+        t = bpy.context.object; t.data.body = "OJ-1"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.22; t.data.extrude = 0.01
+        t.data.materials.append(red); bpy.ops.object.convert(target="MESH")
+    box("wing_center", (0.5, 0.85, 0.09), (0, -0.45, 1.55), yel, bevel=0.04)
+    box("stabilizer", (1.5, 0.45, 0.06), (0, 2.15, 1.15), yel, bevel=0.03)
+    box("fin", (0.06, 0.55, 0.6), (0, 2.2, 1.5), red, rot=(-0.35, 0, 0), bevel=0.03)
+    cyl("tailwheel", 0.08, 0.08, 0.05, (0, 2.1, 0.08), blk, rot=(0, math.pi / 2, 0), verts=12)
+    box("tailstrut", (0.03, 0.03, 0.75), (0, 2.0, 0.45), steel, rot=(-0.6, 0, 0))
+
+def windsock():
+    steel = mat("pole", (0.92, 0.92, 0.9), rough=0.4, metal=0.5)
+    cyl("pole", 0.06, 0.05, 3.4, (0, 0, 1.7), steel, verts=12)
+    cyl("base", 0.35, 0.4, 0.15, (0, 0, 0.07), mat("concrete", (0.75, 0.74, 0.72), tex="stone"), verts=20)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.22, minor_radius=0.03, location=(0.22, 0, 3.3), rotation=(0, math.pi / 2, 0))
+    finish(bpy.context.object, steel)
+    sphere("cap", 0.08, (0, 0, 3.42), mat("beacon", (1, 0.3, 0.2), rough=0.3, emit=(1, 0.2, 0.1), emit_strength=2.0))
+    st = mat("stone", WOOD, tex="stone")
+    for i in range(10):
+        a = i / 10 * math.tau; s = sphere("rim", 0.12, (math.cos(a) * 0.62, math.sin(a) * 0.62, 0.05), st, scale=(1.2, 1, 0.6), sub=1, smooth=False); jitter(s, 0.02)
+
+def runway():
+    L, W = 28, 3
+    tar = mat("asphalt", (0.5, 0.5, 0.52), rough=0.95, tex="stone", scale=(14, 1.5))
+    paint = mat("paint", (0.97, 0.96, 0.92), rough=0.7)
+    box("strip", (L, W, 0.05), (0, 0, 0.025), tar, bevel=0.02)
+    box("shoulder", (L + 0.6, W + 0.6, 0.02), (0, 0, 0.01), mat("dirt", WOOD, tex="dirt", scale=(10, 1)), bevel=0)
+    for i in range(10):  # centerline dashes
+        x = -9 + i * 2.0; box("dash", (1.0, 0.12, 0.012), (x, 0, 0.056), paint, bevel=0)
+    for s in (-1, 1):
+        for k in range(6):  # piano keys at each threshold
+            box("key", (1.1, 0.16, 0.012), (s * (L / 2 - 0.8), -1.1 + k * 0.44, 0.056), paint, bevel=0)
+    for txt, x, rz in (("9", -L / 2 + 2.3, -math.pi / 2), ("27", L / 2 - 2.3, math.pi / 2)):
+        bpy.ops.object.text_add(location=(x, 0, 0.052), rotation=(0, 0, rz))
+        t = bpy.context.object; t.data.body = txt; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 1.1; t.data.extrude = 0.006
+        t.data.materials.append(paint); bpy.ops.object.convert(target="MESH")
+    post = mat("lightpost", (0.3, 0.3, 0.33), rough=0.4, metal=0.6)
+    edge = mat("runway_light", (1, 0.95, 0.75), rough=0.2, emit=(1, 0.85, 0.5), emit_strength=1.0)
+    grn = mat("runway_light_green", (0.5, 1, 0.6), rough=0.2, emit=(0.2, 1, 0.35), emit_strength=1.0)
+    rd = mat("runway_light_red", (1, 0.5, 0.45), rough=0.2, emit=(1, 0.15, 0.1), emit_strength=1.0)
+    n = 9
+    for i in range(n):
+        x = -L / 2 + 0.6 + i * (L - 1.2) / (n - 1)
+        for s in (-1, 1):
+            cyl("lightpost", 0.04, 0.04, 0.25, (x, s * (W / 2 + 0.2), 0.12), post, verts=8, bevel=0)
+            sphere("edge_light", 0.08, (x, s * (W / 2 + 0.2), 0.28), edge, sub=2)
+    for k in range(4):
+        y = -1.2 + k * 0.8
+        sphere("end_light", 0.08, (-L / 2 - 0.25, y, 0.12), grn, sub=2)
+        sphere("end_light", 0.08, (L / 2 + 0.25, y, 0.12), rd, sub=2)
+
+ASSETS.update({"hangar": hangar, "plane": plane, "windsock": windsock, "runway": runway})
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:
