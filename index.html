@@ -82,11 +82,12 @@
   #bubble::after { content:""; position:absolute; left:50%; bottom:-9px; transform:translateX(-50%) rotate(45deg); width:12px; height:12px; background:var(--paper); border-right:2px solid var(--ink); border-bottom:2px solid var(--ink); }
   .label3d { position:fixed; transform:translate(-50%,-100%); font-size:11.5px; font-weight:800; background:var(--paper); border:1.5px solid var(--ink); padding:1px 8px; border-radius:999px; pointer-events:none; white-space:nowrap; }
   #err { position:fixed; z-index:20; top:80px; left:12px; right:12px; background:#ffdede; border:2px solid #a33; border-radius:12px; padding:10px; font-size:13px; display:none; }
+  @media (max-width:1150px) { #tools { flex-direction:column; align-items:flex-end; } }
   @media (max-width:800px) {
     #stats { top:auto; bottom:70px; left:8px; right:8px; transform:none; overflow-x:auto; }
     .stat { min-width:84px; padding:2px 8px; } .stat .lbl { font-size:12px; }
     #action { left:8px; right:8px; transform:none; max-width:none; min-width:0; bottom:12px; }
-    #minimap { display:none; } #tools { top:12px; bottom:auto; max-width:calc(100vw - 190px); }
+    #minimap { display:none; } #tools { top:12px; bottom:auto; max-width:calc(100vw - 190px); flex-direction:row; }
   }
 </style>
 <script type="importmap">
@@ -687,7 +688,7 @@ function animate() {
     tail.rotation.y = Math.sin(step) * 0.3;
     if (run) wings.forEach((w, i) => w.rotation.z = (0.4 + Math.sin(t * 30) * 0.3) * (i ? -1 : 1));
   } else {
-    moving = false;
+    moving = !!override && moving && v.length() > 0.12; // a visitor petting or feeding him only pauses his walk
     if (chickenRoom === sim.room && sim.place[2] && !override) chicken.position.y += sim.place[2]; // sitting up on something, like his nest bed
     if (anim === "sleep") { body.position.y = 0.6 + Math.sin(t * 1.5) * 0.02; head.position.set(0, 1.18, 0.45); neck.position.y = 1.0; head.rotation.x = 0.55; eyes.forEach(e => e.scale.y = 0.1); legs.forEach(l => l.position.y = 0.3); }
     else if (anim === "peck") { const p = Math.max(0, Math.sin(t * 7)); head.rotation.x = p * 0.9; head.position.y = 1.42 - p * 0.35; head.position.z = 0.5 + p * 0.15; body.rotation.x = p * 0.25; tail.rotation.x = -p * 0.2; }
@@ -772,7 +773,7 @@ function bagNow() {
   return items;
 }
 let bagItems = [], bagSel = 0;
-function itemDetail(it) { return it ? `<b>${esc(it.icon ?? "📦")} ${esc(it.name)}</b><span>${esc(it.from ?? "")}${it.got ? `, ${ago(it.got + "T12:00:00") === "just now" ? "today" : esc(it.got)}` : ""}</span>${it.note ? `<span>${esc(it.note)}</span>` : ""}` : `<span>Tap something to see where it came from.</span>`; }
+function itemDetail(it) { return it ? `<b>${esc(it.icon ?? "📦")} ${esc(it.name)}</b><span>${esc(it.from ?? "")}${it.got ? `, ${it.got === new Date().toLocaleDateString("en-CA") ? "today" : esc(it.got)}` : ""}</span>${it.note ? `<span>${esc(it.note)}</span>` : ""}` : `<span>Tap something to see where it came from.</span>`; }
 function openBag() {
   bagItems = bagNow(); const slots = bagData.slots ?? 9, carried = bagItems.length; let all = [...bagItems];
   const grid = Array.from({ length: slots }, (_, i) => bagItems[i] ? `<button class="slot ${i === bagSel ? "on" : ""}" data-item="${i}" title="${esc(bagItems[i].name)}">${esc(bagItems[i].icon ?? "📦")}${bagItems[i].fresh ? `<span class="new">new</span>` : ""}</button>` : `<div class="slot empty"></div>`).join("");
