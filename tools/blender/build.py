@@ -283,9 +283,22 @@ def plane():
     sphere("windows", 1, (0, -0.55, 1.35), glass, scale=(0.36, 0.5, 0.28), sub=4)
     cyl("cowl", 0.4, 0.44, 0.35, (0, -1.6, 0.98), red, rot=(math.pi / 2, 0, 0), verts=32)
     cyl("spinner", 0.13, 0.0, 0.3, (0, -1.92, 0.98), red, rot=(math.pi / 2, 0, 0), verts=24, bevel=0)
-    box("propeller", (1.5, 0.05, 0.13), (0, -1.86, 0.98), mat("prop", (0.45, 0.28, 0.15), tex="wood"), bevel=0.04)
-    for s in (-1, 1):  # yellow prop tips
-        box("tip", (0.14, 0.055, 0.135), (s * 0.69, -1.86, 0.98), yel, bevel=0.02)
+    # propeller: everything hangs off an empty at the hub so it spins around the nose (behaviors/plane.js turns "propeller")
+    hub = (0, -1.86, 0.98)
+    bpy.ops.object.empty_add(location=hub); piv = bpy.context.object; piv.name = "propeller"
+    parts = []
+    for s in (-1, 1):
+        parts.append(box("prop_blade", (0.68, 0.04, 0.13), (s * 0.38, hub[1], hub[2]), mat("prop", (0.45, 0.28, 0.15), tex="wood"), rot=(s * 0.3, 0, 0), bevel=0.02))
+        parts.append(box("prop_tip", (0.12, 0.045, 0.135), (s * 0.68, hub[1], hub[2]), yel, rot=(s * 0.3, 0, 0), bevel=0.02))
+    parts.append(cyl("prop_hub", 0.09, 0.09, 0.08, hub, red, rot=(math.pi / 2, 0, 0), verts=16, bevel=0))
+    disc_m = mat("prop_blur", (0.85, 0.82, 0.75), rough=0.6)
+    disc_m.node_tree.nodes["Principled BSDF"].inputs["Alpha"].default_value = 0.22
+    for attr, val in (("surface_render_method", "BLENDED"), ("blend_method", "BLEND")):
+        try: setattr(disc_m, attr, val)
+        except Exception: pass
+    parts.append(cyl("prop_disc", 0.8, 0.8, 0.01, (hub[0], hub[1] - 0.02, hub[2]), disc_m, rot=(math.pi / 2, 0, 0), verts=40, bevel=0))
+    for o in parts:
+        o.parent = piv; o.matrix_parent_inverse = piv.matrix_world.inverted()
     for s in (-1, 1):
         box("wing", (2.2, 0.85, 0.09), (s * 1.1, -0.45, 1.55), yel, bevel=0.04)
         box("wing_tip", (0.2, 0.86, 0.1), (s * 2.25, -0.45, 1.55), red, bevel=0.04)

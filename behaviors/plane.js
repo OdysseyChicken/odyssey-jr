@@ -9,7 +9,7 @@ export default function setup({ THREE, obj, data, say }) {
   ], false, "centripetal");
   const len = path.getLength();
   obj.rotation.order = "YXZ";
-  let phase = "parked", t = 0, nextFlight = Date.now() + (40 + Math.random() * 60) * 1000, prop = null, spin = 0, lastYaw = Math.PI / 2;
+  let phase = "parked", t = 0, nextFlight = Date.now() + (40 + Math.random() * 60) * 1000, prop = null, disc = null, blades = [], spin = 0, lastYaw = Math.PI / 2;
   const night = () => { const h = new Date().getHours(); return h < 6 || h >= 21; };
   const pose = (x, y, z, yaw, pitch = 0, bank = 0) => { obj.position.set(x, y, z); obj.rotation.set(pitch, yaw, bank); };
   const start = () => {
@@ -19,10 +19,17 @@ export default function setup({ THREE, obj, data, say }) {
   };
   return {
     update(dt) {
-      if (!prop) prop = obj.getObjectByName("propeller");
+      if (!prop) {
+        prop = obj.getObjectByName("propeller");
+        if (prop) prop.traverse(n => { if (n.name.startsWith("prop_disc")) disc = n; else if (n.name.startsWith("prop_blade") || n.name.startsWith("prop_tip")) blades.push(n); });
+        if (disc) { disc.visible = false; disc.traverse(n => { if (n.material) { n.material.transparent = true; n.material.depthWrite = false; } }); }
+      }
       const running = phase !== "parked";
       spin = THREE.MathUtils.lerp(spin, running ? 45 : 0, dt * 2);
       if (prop) prop.rotation.z += spin * dt;
+      // at full speed the blades turn into a soft blurred disc, like a real spinning prop
+      const blur = spin > 22;
+      if (disc && disc.visible !== blur) { disc.visible = blur; blades.forEach(b => b.visible = !blur); }
       t += dt;
       if (phase === "parked") { if (!night() && Date.now() > nextFlight) { nextFlight = Date.now() + (150 + Math.random() * 120) * 1000; start(); } return; }
       if (phase === "roll") {               // speed up from the parking spot to the start of the curve
