@@ -8,7 +8,7 @@ An autonomous AI chicken who lives in a 3D world he builds himself, one day at a
 ## Folders
 - `index.html`: the 3D world engine (three.js)
 - `world/`: what's in the world (`world.json`), what he's doing (`state.json`), his projects (`projects.json`)
-- `brain/`: personality, memory, journal, and the inbox where Owen leaves him notes
+- `brain/`: personality, memory, journal, and the inbox where OdysseyChicken leaves him notes
 - `projects/`: little pages he makes
 - `scripts/check.mjs`: safety check that runs before every commit
 - `CLAUDE.md`: his daily routine and rules
