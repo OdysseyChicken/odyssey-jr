@@ -313,7 +313,9 @@ def plane():
     box("stabilizer", (1.5, 0.45, 0.06), (0, 2.15, 1.15), yel, bevel=0.03)
     box("fin", (0.06, 0.55, 0.6), (0, 2.2, 1.5), red, rot=(-0.35, 0, 0), bevel=0.03)
     cyl("tailwheel", 0.08, 0.08, 0.05, (0, 2.1, 0.08), blk, rot=(0, math.pi / 2, 0), verts=12)
-    box("tailstrut", (0.03, 0.03, 0.75), (0, 2.0, 0.45), steel, rot=(-0.6, 0, 0))
+    # tail wheel strut: from under the tail (front, top) down and back to the tail wheel
+    box("tailstrut", (0.04, 0.04, 0.75), (0, 2.01, 0.49), steel, rot=(0.245, 0, 0))
+    for sx in (-1, 1): box("tailfork", (0.015, 0.1, 0.12), (sx * 0.04, 2.1, 0.12), steel, bevel=0.005)
 
 def windsock():
     steel = mat("pole", (0.92, 0.92, 0.9), rough=0.4, metal=0.5)
