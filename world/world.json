@@ -336,10 +336,10 @@
     ]
   },
   "style": {
-    "_about": "The look of the whole world. halftone: 0 = off, 1 = full comic-print dots. dotSize in pixels. ink and paper are the two print colors.",
-    "halftone": 0.55,
-    "dotSize": 4,
-    "ink": "#2a2470",
-    "paper": "#f6f1e3"
+    "_about": "The mood of the whole world. vignette 0..1 (soft dark edges), warmth -1..1 (cool to warm), saturation 0..2, brightness 0.5..1.5.",
+    "vignette": 0.35,
+    "warmth": 0.15,
+    "saturation": 1.1,
+    "brightness": 1.0
   }
 }
