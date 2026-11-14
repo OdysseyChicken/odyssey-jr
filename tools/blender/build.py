@@ -218,7 +218,8 @@ def dustbath():
 
 ASSETS = {"coop": coop, "oak": oak, "pine": pine, "pond": pond, "rock": rock, "sign": sign, "workbench": workbench, "feeder": feeder, "dustbath": dustbath,
           "flower-pink": lambda: flower((1, 0.44, 0.66)), "flower-yellow": lambda: flower((1, 0.83, 0.3)), "flower-purple": lambda: flower((0.54, 0.49, 1))}
-only = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else list(ASSETS)
+only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
+only = only or list(ASSETS)
 for name in only:
     reset(); _mats.clear()
     ASSETS[name]()
