@@ -160,15 +160,17 @@
       "src": "assets/models/flower-purple.glb"
     },
     {
-      "id": "workbench",
+      "id": "cozy-workbench",
       "type": "model",
+      "src": "assets/models/cozy-workbench.glb",
       "pos": [
         0,
         4
       ],
+      "rot": 0,
       "label": "Workbench",
-      "src": "assets/models/workbench.glb",
-      "labelHeight": 2.0
+      "labelHeight": 2.9,
+      "script": "behaviors/cozy-workbench.js"
     },
     {
       "id": "welcome-sign",
@@ -264,6 +266,32 @@
       "note": "OJ Tower, my control tower. Click it for the tower view!",
       "rot": 3.14159,
       "scale": 1.25
+    },
+    {
+      "id": "puddles-duck-house",
+      "type": "model",
+      "src": "assets/models/puddles-duck-house.glb",
+      "pos": [
+        10.4,
+        8.5
+      ],
+      "rot": -0.9,
+      "label": "Puddles' house",
+      "labelHeight": 1.8,
+      "script": "behaviors/puddles-duck-house.js"
+    },
+    {
+      "id": "fence-map-board",
+      "type": "model",
+      "src": "assets/models/fence-map-board.glb",
+      "pos": [
+        -6.2,
+        8.6
+      ],
+      "rot": 0.6,
+      "label": "Map of past the fence",
+      "labelHeight": 3.1,
+      "script": "behaviors/fence-map-board.js"
     }
   ],
   "custom": {

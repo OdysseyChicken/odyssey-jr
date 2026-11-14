@@ -18,8 +18,9 @@
       },
       "label": "Workbench",
       "interactive": "When a visitor clicks it, the lantern flickers on and Odyssey Jr. says something about what he's building.",
-      "status": "requested",
-      "requested": "2026-11-14"
+      "status": "delivered",
+      "requested": "2026-11-14",
+      "delivered": "2026-11-14"
     }
   ]
 }

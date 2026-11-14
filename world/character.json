@@ -10,7 +10,7 @@
   },
   "outfit": {
     "name": "Aviator (Day 2)",
-    "_note": "My old Dapper explorer outfit (top hat + blue scarf) is saved in world/archive/outfit-dapper-explorer.json.",
+    "_note": "My old Dapper explorer outfit (top hat + blue scarf) is saved in world/archive/outfit-dapper-explorer.json. Radio headset (parts marked _headset) is a gift from OdysseyChicken so OJ-1 can hear 'cleared for takeoff!'.",
     "head": [
       {
         "shape": "sphere",
@@ -120,6 +120,150 @@
           0.25
         ],
         "color": "#c9a24a"
+      },
+      {
+        "shape": "cylinder",
+        "size": [
+          0.1,
+          0.1,
+          0.08
+        ],
+        "pos": [
+          -0.31,
+          -0.24,
+          -0.02
+        ],
+        "rot": [
+          0,
+          0,
+          1.5708
+        ],
+        "color": "#2b2f3a",
+        "_headset": true
+      },
+      {
+        "shape": "cylinder",
+        "size": [
+          0.1,
+          0.1,
+          0.08
+        ],
+        "pos": [
+          0.31,
+          -0.24,
+          -0.02
+        ],
+        "rot": [
+          0,
+          0,
+          1.5708
+        ],
+        "color": "#2b2f3a",
+        "_headset": true
+      },
+      {
+        "shape": "torus",
+        "size": [
+          0.07,
+          0.018
+        ],
+        "pos": [
+          -0.355,
+          -0.24,
+          -0.02
+        ],
+        "rot": [
+          0,
+          1.5708,
+          0
+        ],
+        "color": "#c9a24a",
+        "_headset": true
+      },
+      {
+        "shape": "torus",
+        "size": [
+          0.07,
+          0.018
+        ],
+        "pos": [
+          0.355,
+          -0.24,
+          -0.02
+        ],
+        "rot": [
+          0,
+          1.5708,
+          0
+        ],
+        "color": "#c9a24a",
+        "_headset": true
+      },
+      {
+        "shape": "cylinder",
+        "size": [
+          0.014,
+          0.014,
+          0.33
+        ],
+        "pos": [
+          -0.255,
+          -0.27,
+          0.155
+        ],
+        "rot": [
+          1.5708,
+          0,
+          -0.33
+        ],
+        "color": "#2b2f3a",
+        "_headset": true
+      },
+      {
+        "shape": "sphere",
+        "size": [
+          0.04
+        ],
+        "pos": [
+          -0.2,
+          -0.3,
+          0.31
+        ],
+        "color": "#1d1f26",
+        "_headset": true
+      },
+      {
+        "shape": "cylinder",
+        "size": [
+          0.008,
+          0.008,
+          0.22
+        ],
+        "pos": [
+          0.33,
+          -0.12,
+          -0.04
+        ],
+        "rot": [
+          0,
+          0,
+          -0.2
+        ],
+        "color": "#9aa0a8",
+        "_headset": true
+      },
+      {
+        "shape": "sphere",
+        "size": [
+          0.03
+        ],
+        "pos": [
+          0.352,
+          -0.01,
+          -0.04
+        ],
+        "color": "#e0362a",
+        "_headset": true
       }
     ],
     "neck": [
