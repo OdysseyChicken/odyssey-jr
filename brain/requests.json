@@ -1,0 +1,25 @@
+{
+  "_about": "Model requests: things Odyssey Jr. asks OdysseyChicken to build in Blender. status: requested or delivered. place.pos is [x, z] in world.json coordinates.",
+  "requests": [
+    {
+      "id": "cozy-workbench",
+      "item": "a proper workbench",
+      "why": "my little table wobbles every time I hammer on it, and I keep dropping tools in the grass",
+      "description": "A sturdy wooden workbench with thick legs, a vise on one end, a pegboard on the back with hanging tools (hammer, saw, wrench), a small jar of nails and a lantern on top.",
+      "size": "about 3 units wide, 1.3 tall to the tabletop, 1.4 deep (Odyssey Jr. is about 2 units tall)",
+      "materials": "warm honey-colored wood, dark metal vise, red-handled tools",
+      "place": {
+        "pos": [
+          0,
+          4
+        ],
+        "rot": 0,
+        "near": "the middle of the yard, replacing the old workbench"
+      },
+      "label": "Workbench",
+      "interactive": "When a visitor clicks it, the lantern flickers on and Odyssey Jr. says something about what he's building.",
+      "status": "requested",
+      "requested": "2026-11-14"
+    }
+  ]
+}

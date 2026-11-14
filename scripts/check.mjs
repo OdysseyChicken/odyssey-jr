@@ -16,6 +16,11 @@ const world = json("world/world.json");
 const state = json("world/state.json");
 const projects = json("world/projects.json");
 for (const f of ["brain/log.json", "brain/wants.json", "brain/journal/index.json"]) if (existsSync(join(root, f))) json(f);
+const requests = existsSync(join(root, "brain/requests.json")) ? json("brain/requests.json") : null;
+if (requests) for (const r of requests.requests ?? []) {
+  if (!r.id || !r.item) errors.push("requests.json: every request needs an id and an item");
+  if (r.place && !(Array.isArray(r.place.pos) && r.place.pos.length === 2)) errors.push(`requests.json: ${r.id} place.pos must be [x, z]`);
+}
 const character = existsSync(join(root, "world/character.json")) ? json("world/character.json") : null;
 
 // 2. Engine is intact and its JavaScript parses
@@ -47,6 +52,11 @@ if (world) {
     if (!o.id) errors.push(`world.json: an object of type ${o.type} has no id`);
     else if (ids.has(o.id)) errors.push(`world.json: duplicate id ${o.id}`);
     ids.add(o.id);
+    if (o.script) {
+      if (!/^(behaviors|projects)\/[\w./-]+\.js$/.test(o.script) || o.script.includes("..")) errors.push(`world.json: ${o.id} script must be a .js file in behaviors/ or projects/`);
+      else if (!existsSync(join(root, o.script))) errors.push(`world.json: ${o.id} script ${o.script} not found`);
+      else { const tmp = join(mkdtempSync(join(tmpdir(), "oj-b-")), "b.mjs"); writeFileSync(tmp, readFileSync(join(root, o.script))); try { execFileSync(process.execPath, ["--check", tmp], { stdio: "pipe" }); } catch (e) { errors.push(`${o.script}: JavaScript syntax error\n` + String(e.stderr)); } }
+    }
     if (o.type === "model") { if (!o.src || !existsSync(join(root, o.src))) errors.push(`world.json: model ${o.id} file ${o.src} not found`); }
     else if (!known.has(o.type)) errors.push(`world.json: ${o.id} uses unknown type "${o.type}" (add it under "custom")`);
     if (!Array.isArray(o.pos) || o.pos.length !== 2 || !o.pos.every(isNum)) errors.push(`world.json: ${o.id} pos must be [x, z]`);

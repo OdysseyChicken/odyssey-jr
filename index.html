@@ -298,7 +298,7 @@ const builtins = {
 };
 
 const gltf = new GLTFLoader();
-const labels = [], clickables = [], builtObjects = [], mapDots = [];
+const labels = [], clickables = [], builtObjects = [], mapDots = [], behaviorQueue = [], behaviors = [];
 for (const o of world.objects ?? []) {
   let obj;
   if (o.type === "model" && o.src) {
@@ -319,6 +319,7 @@ for (const o of world.objects ?? []) {
     builtObjects.push({ name: o.label, pos: [obj.position.x, obj.position.z] });
   }
   clickables.push({ obj, info: o.note ?? o.label ?? null });
+  if (o.script) behaviorQueue.push({ o, obj });
 }
 
 const size = world.ground?.size ?? 40;
@@ -512,6 +513,7 @@ renderer.domElement.addEventListener("click", e => {
     sim.needs.mood = clamp(sim.needs.mood + 6); sim.needs.calm = clamp(sim.needs.calm + 3);
     say(["Bawk!", "Hehe, that tickles!", "Hi there, visitor!", "Nice to meet you!"][Math.floor(Math.random() * 4)], 3); renderUI(); return;
   }
+  for (const b of behaviors) if (b.onClick && ray.intersectObject(b.obj, true).length) { b.onClick(); return; }
   for (const c of clickables) if (c.info && ray.intersectObject(c.obj, true).length) { say(`That's my ${c.info}!`, 3); return; }
 });
 
@@ -591,8 +593,19 @@ function animate() {
     l.el.style.top = (-q.y * 0.5 + 0.5) * innerHeight + "px";
     l.el.style.display = q.z < 1 ? "block" : "none";
   }
+  for (const b of behaviors) { try { b.update?.(dt, t); } catch (e) { console.warn("behavior error", e); b.update = null; } }
   mmTimer -= dt; if (mmTimer <= 0) { mmTimer = 0.25; drawMinimap(); }
   requestAnimationFrame(animate);
+}
+// ---------- object behaviors ----------
+// An object in world.json can have "script": "behaviors/name.js". That module exports a default function
+// setup(ctx) that returns { update(dt, t), onClick() } (both optional). ctx has THREE, obj (the object's 3D group),
+// scene, say(text, secs), chicken, sim, world, state, part (shape builder) and texFor (textures).
+for (const { o, obj } of behaviorQueue) {
+  import("./" + o.script + bust).then(m => {
+    const api = m.default?.({ THREE, obj, data: o, scene, say, chicken, sim, world, state, part, texFor });
+    if (api) behaviors.push({ ...api, obj });
+  }).catch(e => console.warn("behavior failed to load", o.script, e));
 }
 goTo(sim.place); updateSky(new Date()); renderUI(); animate();
 
@@ -629,8 +642,11 @@ const TABS = [
       return `<p class="intro"><b>Today's focus:</b> ${esc(state.today ?? "")}</p>${ai}<h3>Earlier today in the yard</h3>${yard || "<p class='intro'>Still waking up.</p>"}`;
   } },
   { id: "wants", name: "he wants", load: async () => {
-      const w = await tryJSON("brain/wants.json", { wants: [] });
-      return `<p class="intro">He asks for things he needs. Every one of these points at something that actually happened to him.</p>` + (w.wants ?? []).map(x => `<div class="want"><b>${esc(x.item)}</b><span>${esc(x.reason)}</span><span class="tag ${(x.status ?? "waiting") === "waiting" ? "" : "done"}">${esc(x.status ?? "waiting")}</span></div>`).join("");
+      const [w, rq] = await Promise.all([tryJSON("brain/wants.json", { wants: [] }), tryJSON("brain/requests.json", { requests: [] })]);
+      reqCache = rq.requests ?? [];
+      const reqs = reqCache.map((r, i) => `<div class="want"><b>🛠️ ${esc(r.item)}</b><span>${esc(r.why)}</span>${r.status === "delivered" ? "" : `<span style="padding:0;margin-top:6px"><button class="copyReq paper pill" data-i="${i}" style="padding:4px 10px;font-weight:800;font-size:12px;cursor:pointer;border-width:1.5px">📋 Copy request</button></span>`}<span class="tag ${r.status === "delivered" ? "done" : ""}">${r.status === "delivered" ? "delivered" : "waiting"}</span></div>`).join("");
+      return `<p class="intro">He asks for things he needs. Every one of these points at something that actually happened to him.</p>` + (w.wants ?? []).map(x => `<div class="want"><b>${esc(x.item)}</b><span>${esc(x.reason)}</span><span class="tag ${(x.status ?? "waiting") === "waiting" ? "" : "done"}">${esc(x.status ?? "waiting")}</span></div>`).join("")
+        + (reqs ? `<h3>Model requests for OdysseyChicken</h3><p class="intro">Things he wants built in Blender. Copy one and paste it into a chat in the Odyssey Jr. project.</p>${reqs}` : "");
   } },
   { id: "visitors", name: "visitors", load: async () => md(await getText("brain/visitors.md")) },
   { id: "about", name: "about", load: async () => md(await getText("brain/personality.md")) + `<h2>Things I've made</h2><ul>${[...(projects.making ?? []), ...(projects.done ?? [])].map(i => `<li>${i.link ? `<a href="${esc(i.link)}" target="_blank" rel="noopener">${esc(i.title)}</a>` : esc(i.title)}${i.note ? ` · ${esc(i.note)}` : ""}</li>`).join("") || "<li>Nothing yet</li>"}</ul>` }
@@ -642,7 +658,21 @@ async function openTab(id) {
   $("tabBody").innerHTML = await TABS.find(tb => tb.id === id).load();
 }
 $("tabs").onclick = e => { const b = e.target.closest("button"); if (b) openTab(b.dataset.tab); };
+let reqCache = [];
+function requestText(r) {
+  const p = r.place ?? {};
+  return [`🛠️ ODYSSEY JR. MODEL REQUEST (id: ${r.id})`, ``,
+    `Item: ${r.item}`, `Why he wants it: ${r.why}`, `What it looks like: ${r.description}`,
+    `Size: ${r.size ?? "chicken-sized scale (Odyssey Jr. is about 2 units tall)"}`,
+    `Colors / materials: ${r.materials ?? "builder's choice, cozy storybook style"}`,
+    `Place it at: x ${p.pos?.[0] ?? 0}, z ${p.pos?.[1] ?? 0}, rotation ${p.rot ?? 0}${p.near ? ` (near ${p.near})` : ""}`,
+    `Label: ${r.label ?? "none"}`,
+    `What it should do: ${r.interactive ?? "nothing, it's just decoration"}`, ``,
+    `Follow the "Building Odyssey Jr.'s model requests" guide in this project.`].join("\n");
+}
 $("tabBody").onclick = async e => {
+  const cb = e.target.closest(".copyReq");
+  if (cb) { const txt = requestText(reqCache[+cb.dataset.i]); try { await navigator.clipboard.writeText(txt); cb.textContent = "✅ Copied!"; } catch { prompt("Copy this request:", txt); } return; }
   if (e.target.id === "backToStories") { e.preventDefault(); openTab("stories"); return; }
   const s = e.target.closest(".story"); if (s) $("tabBody").innerHTML = `<p><a href="#" id="backToStories">← all stories</a></p>` + md(await getText(s.dataset.file));
 };
