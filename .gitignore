@@ -4,3 +4,6 @@ node_modules/
 .trash/
 *.env
 .env*
+tools/blender/tex/
+tools/blender/preview/
+__pycache__/

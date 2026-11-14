@@ -1,5 +1,5 @@
 {
-  "_about": "Odyssey Jr.'s world. He edits this file to build things. Positions are [x, z] on the ground; the ground runs from -size/2 to +size/2.",
+  "_about": "Odyssey Jr.'s world. He edits this file to build things. Positions are [x, z] on the ground; the ground runs from -size/2 to +size/2. Most objects are .glb models in assets/models/ made with Blender (see tools/blender/). Old shape-based version: world/archive/world-v1-shapes.json.",
   "ground": {
     "size": 40,
     "color": "#8cc96b"
@@ -41,119 +41,135 @@
   "objects": [
     {
       "id": "home-coop",
-      "type": "coop",
+      "type": "model",
       "pos": [
         -8,
         -7
       ],
       "rot": 0.3,
-      "label": "My coop"
+      "label": "My coop",
+      "src": "assets/models/coop.glb"
     },
     {
       "id": "big-oak",
-      "type": "tree",
+      "type": "model",
       "pos": [
         -12,
         2
       ],
-      "scale": 1.4
+      "scale": 1.4,
+      "src": "assets/models/oak.glb",
+      "mapColor": "#4f9a3a"
     },
     {
       "id": "pine-1",
-      "type": "pine",
+      "type": "model",
       "pos": [
         12,
         -10
-      ]
+      ],
+      "src": "assets/models/pine.glb",
+      "mapColor": "#4f9a3a"
     },
     {
       "id": "pine-2",
-      "type": "pine",
+      "type": "model",
       "pos": [
         14,
         -6
       ],
-      "scale": 0.8
+      "scale": 0.8,
+      "src": "assets/models/pine.glb",
+      "mapColor": "#4f9a3a"
     },
     {
       "id": "pond",
-      "type": "pond",
+      "type": "model",
       "pos": [
         9,
         7
       ],
-      "scale": 1.2
+      "scale": 1.2,
+      "src": "assets/models/pond.glb",
+      "mapColor": "#4aa3df"
     },
     {
       "id": "rock-1",
-      "type": "rock",
+      "type": "model",
       "pos": [
         -9,
         9
-      ]
+      ],
+      "src": "assets/models/rock.glb",
+      "mapColor": "#9a9a9a"
     },
     {
       "id": "flower-1",
-      "type": "flower",
+      "type": "model",
       "pos": [
         4,
         -8
       ],
-      "color": "#ff6fa8"
+      "src": "assets/models/flower-pink.glb"
     },
     {
       "id": "flower-2",
-      "type": "flower",
+      "type": "model",
       "pos": [
         6,
         -8.5
       ],
-      "color": "#ffd34d"
+      "src": "assets/models/flower-yellow.glb"
     },
     {
       "id": "flower-3",
-      "type": "flower",
+      "type": "model",
       "pos": [
         5.5,
         -7
       ],
-      "color": "#8a7dff"
+      "src": "assets/models/flower-purple.glb"
     },
     {
       "id": "workbench",
-      "type": "workbench",
+      "type": "model",
       "pos": [
         0,
         4
       ],
-      "label": "Workbench"
+      "label": "Workbench",
+      "src": "assets/models/workbench.glb",
+      "labelHeight": 2.0
     },
     {
       "id": "welcome-sign",
-      "type": "sign",
+      "type": "model",
       "pos": [
         2,
         9
       ],
       "rot": -0.4,
-      "label": "Odyssey Jr.'s Place"
+      "src": "assets/models/sign.glb"
     },
     {
       "id": "feeder",
-      "type": "feeder",
+      "type": "model",
       "pos": [
         -3,
         -7.6
       ],
-      "label": "Seed feeder"
+      "label": "Seed feeder",
+      "src": "assets/models/feeder.glb",
+      "labelHeight": 2.1
     },
     {
       "id": "dustbath",
-      "type": "dustbath",
+      "type": "model",
       "pos": [
         -11,
         -2
-      ]
+      ],
+      "src": "assets/models/dustbath.glb"
     }
   ],
   "custom": {

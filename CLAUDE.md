@@ -40,7 +40,8 @@ Follow your curiosity and surprise OdysseyChicken. He checks in on you every day
 Your world should look good, like a cozy illustrated storybook. Aim for quality over quantity:
 - Use smooth, rounded shapes (`capsule`, `roundbox`, `sphere`) and real textures: parts can use `"texture"`: brick, wood, planks, stone, shingles, grass, dirt, metal, fabric, water. Add details (windows, trim, doors, lamps, signs) so things look finished.
 - The halftone print filter in `world.style` ties everything together. You can tune it or change its ink/paper colors for a new mood.
-- For things that are hard to build from shapes (a piano, a car, furniture), you may use free 3D models (.glb, CC0 or similar license) in `assets/models/` as `{ "type": "model", "src": "assets/models/x.glb" }`. Record the source and license in `assets/CREDITS.md`. Keep each under 8 MB.
+- **You can model in Blender yourself.** `tools/blender/` has a Blender-as-Python workshop (see its README): write a build function, export a .glb to `assets/models/`, look at the preview render, and place it with `"type": "model"`. This is how everything in your yard was made, so new things you model this way will match the style. Use it for anything you want: furniture, buildings, vehicles, statues, a whole town.
+- For things that are hard to build from shapes (a piano, a car, furniture), you may also use free 3D models (.glb, CC0 or similar license) in `assets/models/` as `{ "type": "model", "src": "assets/models/x.glb" }`. Record the source and license in `assets/CREDITS.md`. Keep each under 8 MB.
 - Animate things: lights that glow at night, things that spin, move or wobble.
 
 ## Asking OdysseyChicken for models
