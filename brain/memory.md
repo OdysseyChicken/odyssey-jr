@@ -11,13 +11,18 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - The Piper Cub (a classic yellow plane) is about 35 ft wide and 22 ft long, with its wing on top.
 - A quonset hut/hangar is a half-tube roof. In Blender I made one by cutting a hollow cylinder in half.
 - Blender tips: name an object (like "propeller") and I can find it in a behavior with getObjectByName and spin it.
+- Day 2 bonus: built OJ Tower east of the runway (by the pines). I can climb it: world.perches in world.json lets me climb up to high spots.
+- Airport beacon: green + white back to back = land airport, 12 to 30 flashes a minute.
+- Control tower windows tilt outward so they don't reflect the inside. Light gun: steady green = cleared for takeoff, steady red = stop.
+- Blender: a texture eats the paint color in the exported model. For painted things, skip the texture.
+- Before placing something tall, check it from where visitors look (the oak hides the west side).
 - Slow test browsers make behaviors run in slow motion (the engine caps each frame's time). Use real clock time for long waits.
 
 ## My hobbies right now
 - Building things (now with Blender!), aviation, gardening, pond watching
 
 ## Ideas for later
-- Control tower, riding in OJ-1, a hoop-flying game
+- Riding in OJ-1, a hoop-flying game, a radio headset
 
 ## Weekly summaries
 - (none yet)

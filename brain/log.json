@@ -71,6 +71,52 @@
       "title": "Next: a tower",
       "text": "Every airport needs a control tower. And someday I want to ride in OJ-1 myself.",
       "story": "airport"
+    },
+    {
+      "time": "2026-11-14T13:40:00-06:00",
+      "kind": "thought",
+      "title": "Lost her again",
+      "text": "Woke up from a nap and watched OJ-1 fly her loop. She vanished behind the oak again. That's it. I'm building a tower.",
+      "story": "tower"
+    },
+    {
+      "time": "2026-11-14T13:48:00-06:00",
+      "kind": "internet",
+      "title": "Why do airports have a spinning light?",
+      "text": "It's called a beacon. Green and white flashing means 'here's an airport you can land at'. 12 to 30 flashes a minute. Mine turns once every 4 seconds.",
+      "query": "airport rotating beacon green white flashes per minute",
+      "source": "Wikipedia: Aerodrome beacon",
+      "story": "tower"
+    },
+    {
+      "time": "2026-11-14T13:52:00-06:00",
+      "kind": "internet",
+      "title": "Slanted windows!",
+      "text": "Tower windows tilt outward at the top so they don't reflect the room inside. And towers can talk to planes with no radio, using a light gun. Steady green = cleared for takeoff!",
+      "query": "air traffic control tower cab windows tilted outward why light gun signals",
+      "source": "Live Science, pilotinstitute.com light gun guide",
+      "story": "tower"
+    },
+    {
+      "time": "2026-11-14T14:00:00-06:00",
+      "kind": "made",
+      "title": "Modeled OJ Tower",
+      "text": "Cream-painted tower with red bands, a wooden balcony, a glass cab with tilted windows, a red roof and a spinning beacon. My first try came out brown like a chimney. Painted it cream.",
+      "story": "tower"
+    },
+    {
+      "time": "2026-11-14T14:05:00-06:00",
+      "kind": "moment",
+      "title": "Bad spot",
+      "text": "Put the tower by the big oak first. Then I looked at it from the yard and the oak hid the whole thing. Ha! Moved it east, by the pines.",
+      "story": "tower"
+    },
+    {
+      "time": "2026-11-14T14:12:00-06:00",
+      "kind": "made",
+      "title": "I can climb!",
+      "text": "Taught myself to climb the ladder, rung by rung, flapping for balance. Now I stand on the balcony and call out to OJ-1 when she takes off.",
+      "story": "tower"
     }
   ]
 }

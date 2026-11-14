@@ -360,6 +360,85 @@ def runway():
 
 ASSETS.update({"hangar": hangar, "plane": plane, "windsock": windsock, "runway": runway})
 
+def tower():
+    # OJ Tower: a little wooden airfield control tower (Day 2 bonus). Ladder on the +X side, balcony deck, glass cab, rotating beacon.
+    paint = mat("tower_paint", (0.97, 0.94, 0.86), rough=0.75)
+    red = mat("tower_red", (0.8, 0.22, 0.2), rough=0.6)
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    wood = mat("wood", WOOD, tex="wood")
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 1))
+    steel = mat("steel", (0.3, 0.3, 0.33), rough=0.4, metal=0.8)
+    glass = mat("tower_glass", (0.6, 0.8, 0.92), rough=0.05, metal=0.3, emit=(1, 0.82, 0.5), emit_strength=0.25)
+    deckH = 4.6
+    cyl("plinth", 1.35, 1.3, 0.4, (0, 0, 0.2), stone, verts=8)
+    sh = cyl("shaft", 0.95, 0.72, deckH - 0.4, (0, 0, 0.4 + (deckH - 0.4) / 2), paint, verts=8, bevel=0.03)
+    sh.rotation_euler.z = math.pi / 8
+    for z in (1.6, 3.2):  # red bands like a real tower
+        b = cyl("band", 0.92 - z * 0.05, 0.9 - z * 0.05, 0.16, (0, 0, z), red, verts=8, bevel=0.01); b.rotation_euler.z = math.pi / 8
+    box("door", (0.06, 0.6, 1.0), (0.94, -0.0, 0.92), mat("door", (0.55, 0.4, 0.3), tex="wood"), rot=(0, 0.0, 0), bevel=0.02)
+    box("door", (0.6, 0.06, 1.0), (0, -0.92, 0.92), mat("door", (0.55, 0.4, 0.3), tex="wood"), bevel=0.02)
+    lamp = mat("tower_lamp", (1, 0.9, 0.6), rough=0.3, emit=(1, 0.8, 0.45), emit_strength=2.0)
+    for z in (2.4, 3.8):
+        box("slit", (0.32, 0.05, 0.45), (0, -0.88 + z * 0.045, z), lamp, rot=(-0.06, 0, 0), bevel=0.02)
+    # balcony deck with a railing
+    cyl("deck", 1.85, 1.85, 0.16, (0, 0, deckH), wood, verts=8, bevel=0.03).rotation_euler.z = math.pi / 8
+    cyl("deck_under", 1.0, 1.85, 0.45, (0, 0, deckH - 0.3), paint, verts=8, bevel=0.02).rotation_euler.z = math.pi / 8
+    for i in range(16):
+        a = i / 16 * math.tau
+        if abs(math.atan2(math.sin(a), math.cos(a))) < 0.3: continue   # gap where the ladder arrives
+        cyl("rail_post", 0.035, 0.035, 0.6, (math.cos(a) * 1.75, math.sin(a) * 1.75, deckH + 0.38), trim, verts=8, bevel=0)
+    for z in (0.62, 0.36):
+        bpy.ops.mesh.primitive_torus_add(major_radius=1.75, minor_radius=0.035, location=(0, 0, deckH + z), major_segments=48, minor_segments=8)
+        r = bpy.context.object; r.name = "rail"; finish(r, red)
+        bm = bmesh.new(); bm.from_mesh(r.data)   # open the ring at the ladder
+        bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.x > 1.6 and abs(v.co.y) < 0.45], context="VERTS"); bm.to_mesh(r.data); bm.free()
+    # the cab: windows tilted outward (that's how real towers stop glare and reflections)
+    c0, c1 = deckH + 0.08, deckH + 1.95
+    cyl("cab_base", 1.05, 1.05, 0.35, (0, 0, c0 + 0.17), paint, verts=8, bevel=0.02).rotation_euler.z = math.pi / 8
+    g = cyl("cab_glass", 1.02, 1.28, c1 - c0 - 0.35, (0, 0, (c0 + 0.35 + c1) / 2), glass, verts=8, bevel=0); g.rotation_euler.z = math.pi / 8
+    for i in range(8):
+        a = i / 8 * math.tau
+        zm = (c0 + 0.35 + c1) / 2; rm = 1.15
+        o = box("mullion", (0.07, 0.07, c1 - c0 - 0.3), (math.cos(a) * rm, math.sin(a) * rm, zm), trim, bevel=0.01)
+        o.rotation_euler = (-math.sin(a) * 0.19, math.cos(a) * 0.19, a)
+    roofH = c1 + 0.08
+    cyl("roof", 1.55, 1.45, 0.16, (0, 0, roofH), red, verts=8, bevel=0.03).rotation_euler.z = math.pi / 8
+    cyl("roof_cap", 1.2, 0.5, 0.35, (0, 0, roofH + 0.25), red, verts=8, bevel=0.02).rotation_euler.z = math.pi / 8
+    cyl("beacon_base", 0.28, 0.24, 0.25, (0, 0, roofH + 0.55), steel, verts=16)
+    # rotating beacon: one green and one white lamp back to back (that means "land airport" in pilot language)
+    bpy.ops.object.empty_add(location=(0, 0, roofH + 0.82)); piv = bpy.context.object; piv.name = "beacon"
+    parts = [cyl("beacon_drum", 0.22, 0.22, 0.32, (0, 0, roofH + 0.82), steel, verts=20)]
+    gm = mat("beacon_green", (0.5, 1, 0.6), rough=0.2, emit=(0.2, 1, 0.35), emit_strength=2.0)
+    wm = mat("beacon_white", (1, 1, 0.95), rough=0.2, emit=(1, 0.97, 0.85), emit_strength=2.0)
+    parts.append(cyl("beacon_lens_g", 0.13, 0.13, 0.08, (0.22, 0, roofH + 0.82), gm, rot=(0, math.pi / 2, 0), verts=16, bevel=0))
+    parts.append(cyl("beacon_lens_w", 0.13, 0.13, 0.08, (-0.22, 0, roofH + 0.82), wm, rot=(0, math.pi / 2, 0), verts=16, bevel=0))
+    parts.append(sphere("beacon_top", 0.1, (0, 0, roofH + 1.0), steel, sub=2))
+    for o in parts: o.parent = piv; o.matrix_parent_inverse = piv.matrix_world.inverted()
+    # antenna with a red tip
+    cyl("antenna", 0.025, 0.015, 1.3, (-0.7, 0.5, roofH + 0.75), steel, verts=6, bevel=0)
+    sphere("antenna_tip", 0.06, (-0.7, 0.5, roofH + 1.42), mat("runway_light_red", (1, 0.5, 0.45), rough=0.2, emit=(1, 0.15, 0.1), emit_strength=1.0), sub=2)
+    # sign on the front of the deck
+    box("signboard", (1.4, 0.07, 0.36), (0, -1.95, deckH - 0.25), mat("board", (1, 0.86, 0.66), tex="planks", scale=(1, 0.5)), bevel=0.03)
+    bpy.ops.object.text_add(location=(0, -2.0, deckH - 0.25), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ TOWER"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.24; t.data.extrude = 0.012
+    t.data.materials.append(mat("ink_red", (0.7, 0.15, 0.12), rough=0.8)); bpy.ops.object.convert(target="MESH")
+    # ladder on +X, leaning from the ground up to the gap in the railing
+    bx, tx, top = 2.75, 1.9, deckH + 0.9
+    ang = math.atan2(bx - tx, top); L = math.hypot(bx - tx, top)
+    for s in (-1, 1):
+        box("ladder_rail", (0.07, 0.07, L), ((bx + tx) / 2, s * 0.32, top / 2), wood, rot=(0, -ang, 0), bevel=0.015)
+    n = 15
+    for i in range(n):
+        f = (i + 0.6) / n; x = bx + (tx - bx) * f; z = top * f
+        if z > deckH + 0.1: break
+        cyl("rung", 0.03, 0.03, 0.62, (x, 0, z), trim, rot=(math.pi / 2, 0, 0), verts=8, bevel=0)
+    # a little crate of flags and a lamp on the deck
+    box("crate", (0.35, 0.35, 0.3), (-1.2, -0.9, deckH + 0.23), wood)
+    cyl("flag_pole", 0.02, 0.02, 0.7, (-1.25, -0.85, deckH + 0.6), steel, verts=6, bevel=0)
+    box("flag", (0.03, 0.32, 0.2), (-1.25, -1.0, deckH + 0.85), mat("flag_green", (0.3, 0.7, 0.35), rough=0.8), bevel=0.005)
+
+ASSETS.update({"tower": tower})
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

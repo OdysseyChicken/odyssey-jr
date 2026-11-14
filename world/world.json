@@ -44,6 +44,10 @@
     "runway": [
       0,
       -11.6
+    ],
+    "tower": [
+      13.2,
+      -1
     ]
   },
   "objects": [
@@ -227,6 +231,22 @@
       "src": "assets/models/windsock.glb",
       "script": "behaviors/windsock.js",
       "mapColor": "#ff6a2b"
+    },
+    {
+      "id": "oj-tower",
+      "type": "model",
+      "pos": [
+        17,
+        -1
+      ],
+      "src": "assets/models/tower.glb",
+      "label": "OJ Tower",
+      "labelHeight": 8.3,
+      "script": "behaviors/tower.js",
+      "mapColor": "#e8e2d0",
+      "note": "OJ Tower, my control tower. Click it for the tower view!",
+      "rot": 3.14159,
+      "scale": 1.25
     }
   ],
   "custom": {
@@ -414,5 +434,24 @@
     "warmth": 0.15,
     "saturation": 1.1,
     "brightness": 1.0
+  },
+  "perches": {
+    "_about": "High places Odyssey Jr. can climb. When an action takes him to the spot with this name, he climbs from the spot up to 'edge' (x, z) at height y, then steps to 'stand' and looks toward 'face'.",
+    "tower": {
+      "edge": [
+        14.55,
+        -1
+      ],
+      "stand": [
+        15.2,
+        -1.1
+      ],
+      "y": 5.85,
+      "face": [
+        6,
+        -14
+      ],
+      "secs": 5
+    }
   }
 }
