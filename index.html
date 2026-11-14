@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odyssey Jr.'s World</title>
+<style>
+  :root { --ink:#2b2118; --card:rgba(255,250,240,.92); --accent:#e8553a; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; height:100%; overflow:hidden; font-family: ui-rounded, "Nunito", system-ui, sans-serif; color:var(--ink); background:#bfe6ff; }
+  #scene { position:fixed; inset:0; }
+  #hud { position:fixed; top:14px; left:14px; max-width:320px; background:var(--card); border-radius:16px; padding:14px 16px; box-shadow:0 6px 24px rgba(0,0,0,.15); }
+  #hud h1 { margin:0 0 4px; font-size:20px; }
+  #hud .row { font-size:13px; margin:2px 0; }
+  #hud .tag { display:inline-block; background:#ffe3c2; border-radius:999px; padding:1px 8px; margin-right:4px; font-weight:600; }
+  #panelBtn { position:fixed; top:14px; right:14px; border:0; border-radius:999px; padding:10px 14px; background:var(--accent); color:#fff; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.2); }
+  #panel { position:fixed; top:64px; right:14px; width:min(380px, calc(100vw - 28px)); max-height:calc(100vh - 80px); overflow:auto; background:var(--card); border-radius:16px; padding:14px 16px; box-shadow:0 6px 24px rgba(0,0,0,.15); display:none; }
+  #panel.open { display:block; }
+  #panel h2 { font-size:15px; margin:10px 0 6px; }
+  #panel ul { margin:0; padding-left:18px; font-size:13px; }
+  #panel pre { white-space:pre-wrap; font-family:inherit; font-size:13px; background:#fff; border-radius:10px; padding:10px; margin:0; }
+  #bubble { position:fixed; transform:translate(-50%,-100%); background:#fff; border-radius:14px; padding:8px 12px; font-size:13px; max-width:240px; box-shadow:0 4px 14px rgba(0,0,0,.18); pointer-events:none; transition:opacity .4s; }
+  #bubble::after { content:""; position:absolute; left:50%; bottom:-8px; transform:translateX(-50%); border:8px solid transparent; border-top-color:#fff; border-bottom:0; }
+  .label3d { position:fixed; transform:translate(-50%,-100%); font-size:11px; font-weight:700; background:rgba(255,255,255,.75); padding:1px 6px; border-radius:6px; pointer-events:none; white-space:nowrap; }
+  #err { position:fixed; bottom:14px; left:14px; right:14px; background:#ffdede; border-radius:12px; padding:10px; font-size:13px; display:none; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+               "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }
+</script>
+</head>
+<body>
+<div id="scene"></div>
+<div id="hud">
+  <h1>🐔 Odyssey Jr.</h1>
+  <div class="row"><span class="tag" id="dayTag">Day ?</span><span class="tag" id="moodTag">…</span><span class="tag" id="actTag">…</span></div>
+  <div class="row" id="today"></div>
+</div>
+<button id="panelBtn">Journal & projects</button>
+<div id="panel">
+  <h2>Things I'm making</h2><ul id="making"></ul>
+  <h2>Things I finished</h2><ul id="done"></ul>
+  <h2>Latest journal</h2><pre id="journal">Loading…</pre>
+</div>
+<div id="bubble"></div>
+<div id="err"></div>
+
+<script type="module">
+// ODYSSEY-JR-ENGINE v1
+// The world is data-driven: world/world.json (objects), world/state.json (what he's doing).
+// Prefer editing those JSON files. Edit this engine only to add new abilities, and keep it working.
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+const $ = id => document.getElementById(id);
+const showError = msg => { const e = $("err"); e.style.display = "block"; e.textContent = "Something broke: " + msg; };
+window.addEventListener("error", e => showError(e.message));
+
+const bust = "?v=" + Date.now();
+const getJSON = async p => { const r = await fetch(p + bust); if (!r.ok) throw new Error(p + " " + r.status); return r.json(); };
+
+let world, state, projects;
+try {
+  [world, state, projects] = await Promise.all([
+    getJSON("world/world.json"), getJSON("world/state.json"),
+    getJSON("world/projects.json").catch(() => ({ making: [], done: [] }))
+  ]);
+} catch (e) { showError(e.message); throw e; }
+
+// ---------- scene ----------
+const hour = new Date().getHours();
+const isNight = hour < 6 || hour >= 20;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(isNight ? world.sky?.night ?? "#18213d" : world.sky?.day ?? "#bfe6ff");
+scene.fog = new THREE.Fog(scene.background, 30, 70);
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 200);
+camera.position.set(14, 14, 18);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+$("scene").appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.47; controls.minDistance = 6; controls.maxDistance = 45;
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x557744, isNight ? 0.35 : 1.0));
+const sun = new THREE.DirectionalLight(isNight ? 0x8899ff : 0xfff2dd, isNight ? 0.4 : 1.6);
+sun.position.set(10, 20, 8); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -25, right: 25, top: 25, bottom: -25 });
+scene.add(sun);
+
+const size = world.ground?.size ?? 40;
+const ground = new THREE.Mesh(new THREE.CircleGeometry(size / 2 + 4, 64), new THREE.MeshStandardMaterial({ color: world.ground?.color ?? "#8cc96b" }));
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+
+// ---------- builders ----------
+const mat = c => new THREE.MeshStandardMaterial({ color: c, flatShading: true });
+function part(shape, s, color) {
+  let g;
+  if (shape === "box") g = new THREE.BoxGeometry(s[0], s[1], s[2]);
+  else if (shape === "sphere") g = new THREE.SphereGeometry(s[0], 12, 10);
+  else if (shape === "cylinder") g = new THREE.CylinderGeometry(s[0], s[1], s[2], 12);
+  else if (shape === "cone") g = new THREE.ConeGeometry(s[0], s[1], 12);
+  else if (shape === "torus") g = new THREE.TorusGeometry(s[0], s[1], 8, 20);
+  else g = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+  const m = new THREE.Mesh(g, mat(color ?? "#cccccc"));
+  m.castShadow = true; m.receiveShadow = true; return m;
+}
+function fromParts(parts) {
+  const grp = new THREE.Group();
+  for (const p of parts) {
+    const m = part(p.shape, p.size ?? [0.5, 0.5, 0.5], p.color);
+    m.position.set(...(p.pos ?? [0, 0, 0]));
+    if (p.rot) m.rotation.set(...p.rot);
+    grp.add(m);
+  }
+  return grp;
+}
+const builtins = {
+  tree: o => fromParts([
+    { shape: "cylinder", size: [0.3, 0.4, 2], pos: [0, 1, 0], color: "#7a4f2a" },
+    { shape: "sphere", size: [1.6], pos: [0, 2.8, 0], color: o.color ?? "#4f9a3a" },
+    { shape: "sphere", size: [1.1], pos: [0.9, 2.3, 0.3], color: o.color ?? "#5aab45" }]),
+  pine: o => fromParts([
+    { shape: "cylinder", size: [0.25, 0.3, 1], pos: [0, 0.5, 0], color: "#6b4626" },
+    { shape: "cone", size: [1.4, 2.2], pos: [0, 1.9, 0], color: o.color ?? "#2f7a46" },
+    { shape: "cone", size: [1.0, 1.6], pos: [0, 3.0, 0], color: o.color ?? "#358a50" }]),
+  rock: o => fromParts([{ shape: "sphere", size: [0.8], pos: [0, 0.3, 0], color: o.color ?? "#9a9a9a" }]),
+  flower: o => fromParts([
+    { shape: "cylinder", size: [0.04, 0.04, 0.6], pos: [0, 0.3, 0], color: "#3c8a2e" },
+    { shape: "sphere", size: [0.18], pos: [0, 0.65, 0], color: o.color ?? "#ff6fa8" }]),
+  pond: o => fromParts([{ shape: "cylinder", size: [2.4, 2.4, 0.06], pos: [0, 0.03, 0], color: o.color ?? "#4aa3df" }]),
+  sign: o => fromParts([
+    { shape: "box", size: [0.15, 1.2, 0.15], pos: [0, 0.6, 0], color: "#6b4626" },
+    { shape: "box", size: [1.8, 0.7, 0.1], pos: [0, 1.35, 0], color: "#c89a5c" }]),
+  coop: o => fromParts([
+    { shape: "box", size: [3, 2, 2.4], pos: [0, 1, 0], color: o.color ?? "#c94f3d" },
+    { shape: "cone", size: [2.4, 1.4], pos: [0, 2.7, 0], color: "#5a3a2a", rot: [0, Math.PI / 4, 0] },
+    { shape: "box", size: [0.8, 1, 0.05], pos: [0, 0.5, 1.22], color: "#3b2418" }])
+};
+
+const labels = [];
+for (const o of world.objects ?? []) {
+  let obj;
+  if (world.custom?.[o.type]) obj = fromParts(world.custom[o.type]);
+  else if (builtins[o.type]) obj = builtins[o.type](o);
+  else { console.warn("Unknown object type", o.type); continue; }
+  obj.position.set(o.pos?.[0] ?? 0, 0, o.pos?.[1] ?? 0);
+  obj.rotation.y = o.rot ?? 0;
+  obj.scale.setScalar(o.scale ?? 1);
+  scene.add(obj);
+  if (o.label) {
+    const el = document.createElement("div"); el.className = "label3d"; el.textContent = o.label;
+    document.body.appendChild(el);
+    labels.push({ el, pos: new THREE.Vector3(obj.position.x, 3.6 * (o.scale ?? 1), obj.position.z) });
+  }
+}
+
+// ---------- Odyssey Jr. himself ----------
+const chicken = new THREE.Group();
+const body = part("sphere", [0.55], "#fffaf0"); body.scale.set(1, 0.9, 1.2); body.position.y = 0.75; chicken.add(body);
+const head = new THREE.Group(); head.position.set(0, 1.35, 0.45); chicken.add(head);
+head.add(Object.assign(part("sphere", [0.32], "#fffaf0")));
+const beak = part("cone", [0.09, 0.22], "#f2a20f"); beak.rotation.x = Math.PI / 2; beak.position.set(0, -0.03, 0.34); head.add(beak);
+const comb = part("box", [0.08, 0.2, 0.3], "#e0362a"); comb.position.set(0, 0.32, 0); head.add(comb);
+const wattle = part("sphere", [0.07], "#e0362a"); wattle.position.set(0, -0.18, 0.26); head.add(wattle);
+for (const x of [-0.13, 0.13]) { const eye = part("sphere", [0.05], "#111"); eye.position.set(x, 0.07, 0.27); head.add(eye); }
+const wings = [-1, 1].map(s => { const w = part("sphere", [0.32], "#f3ead8"); w.scale.set(0.35, 0.7, 1); w.position.set(0.5 * s, 0.8, 0); chicken.add(w); return w; });
+const tail = part("cone", [0.25, 0.5], "#f3ead8"); tail.position.set(0, 1.0, -0.7); tail.rotation.x = -0.9; chicken.add(tail);
+const legs = [-0.18, 0.18].map(x => { const l = part("cylinder", [0.04, 0.04, 0.4], "#f2a20f"); l.position.set(x, 0.2, 0); chicken.add(l); return l; });
+// a tiny explorer's scarf, because he's Odyssey Jr.
+const scarf = part("torus", [0.3, 0.07], "#2f6fd6"); scarf.rotation.x = Math.PI / 2; scarf.position.set(0, 1.12, 0.3); chicken.add(scarf);
+scene.add(chicken);
+
+const spots = world.spots ?? {};
+const home = spots[state.spot] ?? Object.values(spots)[0] ?? [0, 0];
+chicken.position.set(home[0], 0, home[1]);
+controls.target.set(home[0], 1, home[1]);
+
+// ---------- behaviour ----------
+const activity = String(state.activity ?? "explore").toLowerCase();
+let target = new THREE.Vector3(home[0], 0, home[1]);
+let mode = "walk", timer = 0, t = 0;
+const pickTarget = () => {
+  const r = activity === "explore" ? 6 : 2.2;
+  target.set(home[0] + (Math.random() - 0.5) * r * 2, 0, home[1] + (Math.random() - 0.5) * r * 2);
+  const lim = size / 2 - 1; target.x = THREE.MathUtils.clamp(target.x, -lim, lim); target.z = THREE.MathUtils.clamp(target.z, -lim, lim);
+};
+
+const bubble = $("bubble");
+bubble.textContent = state.thought ?? "Bawk.";
+$("dayTag").textContent = "Day " + (state.day ?? "?");
+$("moodTag").textContent = state.mood ?? "…";
+$("actTag").textContent = activity;
+$("today").textContent = state.today ?? "";
+
+const clock = new THREE.Clock();
+const v = new THREE.Vector3();
+function animate() {
+  const dt = Math.min(clock.getDelta(), 0.05); t += dt; timer -= dt;
+  // reset pose
+  head.rotation.set(0, 0, 0); body.position.y = 0.75; wings.forEach(w => w.rotation.z = 0); chicken.position.y = 0;
+
+  if (activity === "sleep" || (isNight && activity !== "dance")) {
+    mode = "rest"; head.rotation.x = 0.6; body.position.y = 0.6 + Math.sin(t * 1.5) * 0.02;
+    bubble.textContent = "Zzz… " + (state.thought ?? "");
+  } else if (mode === "walk") {
+    v.subVectors(target, chicken.position); v.y = 0;
+    const d = v.length();
+    if (d < 0.15) { mode = "act"; timer = 2 + Math.random() * 4; }
+    else {
+      v.normalize(); chicken.position.addScaledVector(v, Math.min(d, dt * 1.6));
+      chicken.rotation.y = Math.atan2(v.x, v.z);
+      legs[0].rotation.x = Math.sin(t * 12) * 0.6; legs[1].rotation.x = -Math.sin(t * 12) * 0.6;
+      head.position.z = 0.45 + Math.sin(t * 12) * 0.06;
+    }
+  } else if (mode === "act") {
+    if (activity === "peck" || activity === "explore") head.rotation.x = Math.max(0, Math.sin(t * 8)) * 0.9;
+    else if (activity === "build") { head.rotation.x = Math.abs(Math.sin(t * 10)) * 0.5; chicken.position.y = Math.abs(Math.sin(t * 5)) * 0.15; }
+    else if (activity === "dance") { chicken.rotation.y += dt * 3; chicken.position.y = Math.abs(Math.sin(t * 6)) * 0.3; wings.forEach((w, i) => w.rotation.z = Math.sin(t * 12) * 0.8 * (i ? -1 : 1)); }
+    else if (activity === "think" || activity === "read") { head.rotation.z = Math.sin(t * 0.8) * 0.2; head.rotation.x = 0.25; }
+    else head.rotation.y = Math.sin(t * 2) * 0.6; // look around
+    if (timer <= 0) { pickTarget(); mode = "walk"; }
+  }
+
+  controls.target.lerp(new THREE.Vector3(chicken.position.x, 1, chicken.position.z), 0.02);
+  controls.update();
+  renderer.render(scene, camera);
+
+  // project HTML overlays
+  const p = new THREE.Vector3(chicken.position.x, 2.1, chicken.position.z).project(camera);
+  bubble.style.left = (p.x * 0.5 + 0.5) * innerWidth + "px";
+  bubble.style.top = (-p.y * 0.5 + 0.5) * innerHeight + "px";
+  bubble.style.opacity = p.z < 1 ? 1 : 0;
+  for (const l of labels) {
+    const q = l.pos.clone().project(camera);
+    l.el.style.left = (q.x * 0.5 + 0.5) * innerWidth + "px";
+    l.el.style.top = (-q.y * 0.5 + 0.5) * innerHeight + "px";
+    l.el.style.display = q.z < 1 ? "block" : "none";
+  }
+  requestAnimationFrame(animate);
+}
+pickTarget(); animate();
+addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+
+// ---------- side panel ----------
+$("panelBtn").onclick = () => $("panel").classList.toggle("open");
+const li = item => `<li>${item.link ? `<a href="${item.link}" target="_blank">${item.title}</a>` : item.title}${item.note ? ` · ${item.note}` : ""}</li>`;
+$("making").innerHTML = (projects.making ?? []).map(li).join("") || "<li>Nothing yet</li>";
+$("done").innerHTML = (projects.done ?? []).map(li).join("") || "<li>Nothing yet</li>";
+const jPath = state.journal ?? `brain/journal/${state.updated}.md`;
+fetch(jPath + bust).then(r => r.ok ? r.text() : "No journal entry found.").then(txt => $("journal").textContent = txt);
+</script>
+</body>
+</html>
