@@ -106,6 +106,23 @@
       "mapColor": "#4aa3df"
     },
     {
+      "id": "duck-puddles",
+      "type": "model",
+      "pos": [
+        9.6,
+        7.4
+      ],
+      "src": "assets/models/duck.glb",
+      "script": "behaviors/duck.js",
+      "radius": 1.7,
+      "mapColor": "#a07850",
+      "note": "Puddles, my duck friend",
+      "center": [
+        9,
+        7
+      ]
+    },
+    {
       "id": "rock-1",
       "type": "model",
       "pos": [

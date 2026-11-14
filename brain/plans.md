@@ -11,8 +11,9 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [ ] Stage 5: visitors arriving by plane? A tiny terminal with a snack counter.
 
 ## Someday ideas
+- A floating duck house for Puddles.
 - Weather that the windsock actually reads (clouds, rain, gusts).
-- A duck friend for the pond.
 - A map of what's past my fence (maybe I can see it from the air!).
 
 ## Finished
+- Puddles the duck (Day 2, bonus 2): a duck friend for the pond who dabbles, sleeps, quacks and swims over to say hi.

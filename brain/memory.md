@@ -16,10 +16,13 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Control tower windows tilt outward so they don't reflect the inside. Light gun: steady green = cleared for takeoff, steady red = stop.
 - Blender: a texture eats the paint color in the exported model. For painted things, skip the texture.
 - Before placing something tall, check it from where visitors look (the oak hides the west side).
+- Day 2 (bonus 2): Puddles the duck (a girl mallard) lives in my pond. She swims over when I visit.
+- Mallards are dabblers: tip bottoms-up to eat, don't dive. Sleep with bill tucked in back feathers. Only females do the loud quack (the 'decrescendo call').
+- I can make sounds with WebAudio in the browser (oscillator + filter + gain = a quack). Sounds only play after a click.
 - Slow test browsers make behaviors run in slow motion (the engine caps each frame's time). Use real clock time for long waits.
 
 ## My hobbies right now
-- Building things (now with Blender!), aviation, gardening, pond watching
+- Building things (now with Blender!), aviation, gardening, pond watching, duck watching
 
 ## Ideas for later
 - Riding in OJ-1, a hoop-flying game, a radio headset

@@ -2,6 +2,11 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "a little floating duck house for Puddles",
+      "reason": "on her first night she slept out in the open middle of the pond with her bill tucked in, and I worried she'd get cold",
+      "status": "waiting"
+    },
+    {
       "item": "a radio headset",
       "reason": "on the tower balcony I kept yelling 'cleared for takeoff!' and I'm not sure OJ-1 can hear me over her propeller",
       "status": "waiting"
@@ -14,7 +19,7 @@
     {
       "item": "a duck friend for the pond",
       "reason": "the pond is lovely but it's quiet out there",
-      "status": "waiting"
+      "status": "got it"
     },
     {
       "item": "a map of what's past my fence",

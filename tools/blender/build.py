@@ -439,6 +439,41 @@ def tower():
 
 ASSETS.update({"tower": tower})
 
+def duck():
+    # Puddles, a female mallard (Day 2, second bonus). Origin = waterline under her middle. Faces -Y (front).
+    brown = mat("duck_brown", (0.6, 0.45, 0.3), rough=0.85)
+    dark = mat("duck_dark", (0.42, 0.3, 0.2), rough=0.85)
+    light = mat("duck_light", (0.78, 0.65, 0.48), rough=0.85)
+    blue = mat("duck_speculum", (0.25, 0.3, 0.85), rough=0.35, metal=0.2)
+    white = mat("duck_white", (0.97, 0.96, 0.92), rough=0.7)
+    bill = mat("duck_bill", (0.95, 0.55, 0.15), rough=0.5)
+    blk = mat("duck_eye", (0.06, 0.05, 0.05), rough=0.2)
+    sphere("body", 1, (0, 0.05, 0.16), brown, scale=(0.36, 0.58, 0.27), sub=4)
+    sphere("breast", 1, (0, -0.3, 0.22), light, scale=(0.3, 0.3, 0.25), sub=3)
+    sphere("tail", 1, (0, 0.6, 0.25), dark, scale=(0.11, 0.17, 0.05), sub=3).rotation_euler.x = -0.35
+    for sx in (-1, 1):
+        w = sphere("wing", 1, (sx * 0.27, 0.12, 0.27), dark, scale=(0.1, 0.42, 0.17), sub=3); w.rotation_euler = (0.18, 0, sx * -0.15)
+        sphere("speculum", 1, (sx * 0.34, 0.2, 0.27), blue, scale=(0.03, 0.14, 0.06), sub=2)
+        sphere("speculum_edge", 1, (sx * 0.345, 0.2, 0.2), white, scale=(0.025, 0.14, 0.018), sub=2)
+    # head on a pivot so a behavior can bob it, dunk it, or tuck it in to sleep
+    bpy.ops.object.empty_add(location=(0, -0.38, 0.36)); piv = bpy.context.object; piv.name = "duck_head"
+    parts = [sphere("neck", 1, (0, -0.4, 0.42), brown, scale=(0.13, 0.13, 0.17), sub=3),
+             sphere("head", 0.19, (0, -0.45, 0.62), brown, scale=(0.9, 1.1, 0.95), sub=3)]
+    b = sphere("bill", 1, (0, -0.66, 0.6), bill, scale=(0.085, 0.16, 0.04), sub=3); b.rotation_euler.x = 0.12; parts.append(b)
+    parts.append(sphere("bill_spot", 1, (0, -0.72, 0.625), mat("bill_spot", (0.25, 0.18, 0.12), rough=0.6), scale=(0.035, 0.05, 0.015), sub=2))
+    for sx in (-1, 1):
+        parts.append(sphere("eye_stripe", 1, (sx * 0.14, -0.48, 0.64), dark, scale=(0.03, 0.12, 0.025), sub=2))
+        parts.append(sphere("eye", 0.032, (sx * 0.155, -0.52, 0.66), blk, sub=2))
+        parts.append(sphere("eye_shine", 0.01, (sx * 0.175, -0.535, 0.675), white, sub=1))
+    for o in parts: o.parent = piv; o.matrix_parent_inverse = piv.matrix_world.inverted()
+    # orange feet just under the water, on a pivot so they can paddle
+    for sx in (-1, 1):
+        bpy.ops.object.empty_add(location=(sx * 0.12, 0.15, -0.02)); fp = bpy.context.object; fp.name = "duck_foot_" + ("l" if sx < 0 else "r")
+        f = sphere("foot", 1, (sx * 0.12, 0.2, -0.1), bill, scale=(0.08, 0.1, 0.015), sub=2)
+        f.parent = fp; f.matrix_parent_inverse = fp.matrix_world.inverted()
+
+ASSETS.update({"duck": duck})
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

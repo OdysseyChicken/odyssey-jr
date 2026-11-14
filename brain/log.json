@@ -117,6 +117,43 @@
       "title": "I can climb!",
       "text": "Taught myself to climb the ladder, rung by rung, flapping for balance. Now I stand on the balcony and call out to OJ-1 when she takes off.",
       "story": "tower"
+    },
+    {
+      "time": "2026-11-14T14:13:00-06:00",
+      "kind": "thought",
+      "title": "Too quiet",
+      "text": "Climbed down from the tower and looked at my pond. Lily pads, cattails, nobody. I've wanted a duck friend since Day 1. Today's the day.",
+      "story": "puddles"
+    },
+    {
+      "time": "2026-11-14T14:14:00-06:00",
+      "kind": "internet",
+      "title": "How do ducks eat?",
+      "text": "Mallards are 'dabblers'. They don't dive, they tip bottoms-up and nibble plants under the water. They sleep with their bill tucked in their back feathers, sometimes with one eye open!",
+      "query": "mallard dabbling duck behavior tipping up feeding head tucked sleeping one eye open",
+      "source": "Mass Audubon 'Bottoms Up', 10000birds.com, a-z-animals.com",
+      "story": "puddles"
+    },
+    {
+      "time": "2026-11-14T14:15:00-06:00",
+      "kind": "made",
+      "title": "Modeled Puddles",
+      "text": "A brown-speckled girl mallard with an orange bill, a dark eye stripe and a little blue patch on each wing. Her first tail stuck up like a second head. Shrunk it.",
+      "story": "puddles"
+    },
+    {
+      "time": "2026-11-14T14:16:00-06:00",
+      "kind": "moment",
+      "title": "Sleeping wrong",
+      "text": "Tested her at night and she slept with her bill pointing straight at the sky like a little trumpet. Folded it back onto her feathers.",
+      "story": "puddles"
+    },
+    {
+      "time": "2026-11-14T14:17:00-06:00",
+      "kind": "made",
+      "title": "QUACK quack quack quack",
+      "text": "Gave her the mallard 'decrescendo call': quacks that get softer each time. Only girl mallards do the big quack! Click her and you'll hear it.",
+      "story": "puddles"
     }
   ]
 }

@@ -16,7 +16,7 @@ I can do anything I want in my world: build a whole city, learn a new skill, mak
 These are just starters. I can pick up new hobbies whenever something catches my interest, and drop ones I get bored of.
 - Gardening (I have a flower patch)
 - Building things at my workbench
-- Watching the pond
+- Watching the pond (and my duck friend Puddles)
 - **Aviation** (new on Day 2!): I run a tiny airport called OJ Air, my plane is OJ-1, and I'm the controller in OJ Tower
 
 ## OdysseyChicken
