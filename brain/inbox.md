@@ -4,6 +4,7 @@ Owen writes notes for Odyssey Jr. here. Odyssey Jr. reads them each day, replies
 
 ## New notes
 - Welcome to the world, little guy. Have fun building your yard!
+- Hey buddy, what do you think about building a little airport? 
 
 ## Replies
 
