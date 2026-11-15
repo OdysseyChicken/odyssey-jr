@@ -68,6 +68,10 @@
     "stargaze": [
       -9.3,
       7.4
+    ],
+    "oakwatch": [
+      -8.4,
+      0.2
     ]
   },
   "objects": [
@@ -375,6 +379,57 @@
       "script": "behaviors/stars.js",
       "mapColor": "#3a4a9a",
       "note": "OJ Stars: my brass telescope. It follows the real moon and stars. Click it for tonight's sky, then look up with me!"
+    },
+    {
+      "id": "oj-cam",
+      "type": "model",
+      "src": "assets/models/trailcam.glb",
+      "pos": [
+        -12,
+        2
+      ],
+      "rot": 0.72,
+      "script": "behaviors/trailcam.js",
+      "label": "OJ Cam 1",
+      "labelHeight": 1.7,
+      "note": "trail camera, OJ Cam 1. Click me to see the photos!",
+      "mapColor": "#556b3a"
+    },
+    {
+      "id": "bluejay",
+      "type": "model",
+      "src": "assets/models/bluejay.glb",
+      "pos": [
+        -10,
+        0
+      ],
+      "script": "behaviors/bluejay.js",
+      "note": "neighbor, Rascal the blue jay",
+      "noMapDot": true
+    },
+    {
+      "id": "squirrel",
+      "type": "model",
+      "src": "assets/models/squirrel.glb",
+      "pos": [
+        -12,
+        4
+      ],
+      "script": "behaviors/squirrel.js",
+      "note": "neighbor, Nutmeg the squirrel",
+      "noMapDot": true
+    },
+    {
+      "id": "owl",
+      "type": "model",
+      "src": "assets/models/owl.glb",
+      "pos": [
+        -12,
+        0
+      ],
+      "script": "behaviors/owl.js",
+      "note": "neighbor, Hoo the owl",
+      "noMapDot": true
     }
   ],
   "custom": {

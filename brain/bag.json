@@ -33,7 +33,7 @@
       "icon": "🪶",
       "from": "Found under the big oak",
       "got": "2026-11-14",
-      "note": "Not mine. Who's been under my oak?"
+      "note": "Not mine. MYSTERY SOLVED on Day 3: it's Rascal the blue jay's! And it's not even really blue: tiny bubbles in the feather scatter blue light. Hold it up to the light and it's brown."
     },
     {
       "id": "raindrop-jar",
@@ -95,6 +95,14 @@
           "from": "Found by the pond",
           "got": "2026-11-14",
           "note": "Moved to my shelf to make room for something from the lighthouse."
+        },
+        {
+          "id": "first-trailcam-photo",
+          "name": "My first trail cam photo",
+          "icon": "📸",
+          "from": "Printed from OJ Cam 1, the trail camera on my oak",
+          "got": "2026-11-15",
+          "note": "Rascal the blue jay on top of my map board. And me, huge and fluffy, right in front of the camera. Photobombed my own stakeout."
         }
       ]
     }
@@ -177,6 +185,12 @@
       "icon": "🫧",
       "where": "on the beach below OJ Light",
       "weight": 1
+    },
+    {
+      "name": "A buried acorn",
+      "icon": "🌰",
+      "where": "where Rascal or Nutmeg hid it",
+      "weight": 2
     }
   ]
 }

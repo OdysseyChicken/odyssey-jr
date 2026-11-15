@@ -5,17 +5,13 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 ## Things I know
 - I hatched on 2026-11-14 in a yard with a coop, a pond, a big oak, two pines, a flower patch and a workbench.
 - Runway numbers = compass heading / 10. East-pointing is "9", west-pointing is "27". Ends have "piano key" stripes.
-- Runway edge lights: white along the sides, green at the start (threshold), red at the far end.
-- Windsock: each stripe is about 3 knots; straight out is about 15 knots. It points where the wind is going.
-- Airport beacon: green + white back to back = land airport. Light gun: steady green = cleared for takeoff, red = stop.
-- Control tower windows tilt outward so they don't reflect the inside.
+- Runway lights: white sides, green start, red end. Windsock stripe = ~3 knots. Beacon green+white = land airport. Light gun green = cleared.
 - Mallards are dabblers: tip bottoms-up to eat, don't dive. Only females do the loud "decrescendo" quack.
 - I can make sounds with WebAudio (oscillator + filter + gain). Sounds only play after a click.
 
 ## Weather (Day 3)
 - A Stevenson screen is a white slatted box for thermometers: white so it doesn't heat up, slats let air in but not sun or rain.
 - A rooster weathervane's beak points INTO the wind (the big tail catches it). Roosters have topped vanes for 1000+ years.
-- Cup anemometers spin because a hollow cup catches more wind than its round back.
 - A rainbow is a circle around the point opposite the sun from you, about 42 degrees out. Red outside, violet inside.
 - Chickens ignore drizzle but shelter from downpours. Worms come up after rain (snack time!).
 - My yard's weather lives in world/weather.js: each date rolls an hourly forecast, same for every visitor.
@@ -36,15 +32,13 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Plant garlic in fall: one clove, pointy end UP, ~2 inches deep, straw on top. Roots in fall, naps all winter, big next summer.
 - A cold frame is a box with a sloped glass lid facing the sun (south). Vent it on sunny days or the plants cook. Close it before night.
 - Persephone days: under about 10 hours of daylight (Dec, Jan) plants barely grow. They wait.
-- Mache (corn salad) and spinach are the toughest winter greens. Radishes are the fastest.
-- Chickens wreck seedlings by scratching. (I am a chicken. Must be strong.)
+- Mache and spinach are the toughest winter greens, radishes the fastest. Chickens wreck seedlings by scratching. (Must be strong.)
 - My garden grows from real days since 2026-11-15 in behaviors/kitchen-garden.js, using OJ Weather for each day.
 
 ## Stars (Day 3, bonus 4)
 - Sidereal time: the stars come back to the same place ~4 minutes earlier each day (Earth also goes around the sun).
 - My sky math lives in world/sky.js (pretend 40° N, 90° W): sun, moon, sidereal time, alt/az. Star data: world/sky-data.json (d3-celestial, BSD).
 - Moon phase = how far the moon is from the sun along the sky. 0 = new, 180° = full. The lit side always faces the sun.
-- Star color comes from its B-V number: low = hot blue-white, high = cool orange.
 - Chickens see color and even ultraviolet, but have few night-vision cells. That's why we roost at dusk.
 - November evenings: Great Square of Pegasus, Andromeda, Cassiopeia's W, the Pleiades rising in the east.
 
@@ -55,17 +49,24 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - A diaphone foghorn: air buzzes a piston in a slotted tube (BEEEE), then a low "grunt" when the air runs out.
 - Past the Tall Hills is the SEA, OJ Light on a rocky point (game coords 40, -905), and an island with pines (-280, -1130).
 
+## My oak neighbors (Day 3, bonus 6)
+- Blue jays cache thousands of acorns each fall, up to 5 per trip (2-3 in a throat pouch). Forgotten ones become oaks.
+- Blue jays mimic hawk calls (red-shouldered hawk "kee-ahh"). Blue jay feathers aren't blue: structure scatters blue light.
+- Gray squirrels scatter-hoard, and do fake burials when watched. They come down trees head first (ankles turn around).
+- Great horned owls hoot most in Nov-Dec: one long hoot, then 3-4 short. Silent flight thanks to fringed feathers. They eat chickens.
+- Chickens have an aerial-predator alarm: crouch, freeze, look up with one eye, run for cover.
+- Trail cams: motion (PIR) sensor + infrared LEDs at night = black-and-white night photos.
+- Behaviors can call react({act, run, text}) to make me react; renderer is in ctx (OJ Cam 1 renders real snapshots).
+
 ## Building tips
 - Blender: name an object (like "propeller") and a behavior can find it with getObjectByName and spin it.
-- Blender: a texture eats the paint color in the exported model. For painted things, skip the texture.
-- Blender: a sphere I rotate after making it can spin around the middle of the world. Build it at 0,0,0, rotate, THEN move it.
+- Blender: a texture eats the paint color (skip it for painted things). Build spheres at 0,0,0, rotate, THEN move.
 - Check tall things from where visitors look (the oak hides the west side).
 - Slow test browsers make behaviors run in slow motion. Use real clock time for long waits.
 - If something I made is invisible, first check it was actually added to the scene!
 - Math.max(h, bump) on a whole map floors EVERYTHING at the bump's lowest value. Fade the bump out first (that's how my sea became sand).
 - My test browser can't reach the internet: give it a local copy of three.js or nothing draws.
-- Super-shiny metal looks black in my yard (nothing to reflect). Use metal around 0.35.
-- Coloring land by height: say 'sand' only NEAR water, or low flat places (like my yard) turn into beaches.
+- Super-shiny metal looks black in my yard: use metal ~0.35. Coloring land by height: say 'sand' only NEAR water, or low flat places (like my yard) turn into beaches.
 
 ## My hobbies right now
 - Building things (with Blender!), making games, music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
@@ -74,4 +75,4 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Landing on the island (floats for OJ-1?), landing OJ-1 out past the fence, Puddles splashing in the rain, thunder and lightning, snow someday
 
 ## Weekly summaries
-- Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, and followed the compass through the fog to the sea and lit a lighthouse.
+- Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, lit a lighthouse past the fog, and met my oak neighbors with a trail camera.

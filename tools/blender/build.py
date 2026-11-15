@@ -952,6 +952,145 @@ def lighthouse():
 ASSETS.update({"lighthouse": lighthouse})
 
 
+def _kid(o, parent):
+    o.parent = parent; o.matrix_parent_inverse = parent.matrix_world.inverted(); return o
+
+def _pivot(name, loc):
+    bpy.ops.object.empty_add(location=loc); p = bpy.context.object; p.name = name; return p
+
+def bluejay():
+    # Rascal the blue jay (Day 3, bonus 6). Origin between his feet. Faces -Y. About 0.7 long, nose to tail tip.
+    blue = mat("jay_blue", (0.33, 0.55, 0.88), rough=0.5)
+    bright = mat("jay_bright", (0.35, 0.68, 0.95), rough=0.45)
+    white = mat("jay_white", (0.95, 0.95, 0.93), rough=0.8)
+    grey = mat("jay_grey", (0.85, 0.86, 0.88), rough=0.85)
+    black = mat("jay_black", (0.08, 0.08, 0.1), rough=0.5)
+    shine = mat("jay_shine", (1, 1, 1), rough=0.1)
+    legm = mat("jay_legs", (0.25, 0.25, 0.28), rough=0.6)
+    sphere("jay_body", 1, (0, 0.02, 0.26), grey, scale=(0.13, 0.2, 0.13), sub=3)
+    sphere("jay_back", 1, (0, 0.06, 0.3), blue, scale=(0.125, 0.19, 0.11), sub=3)
+    sphere("jay_belly", 1, (0, -0.07, 0.22), white, scale=(0.105, 0.12, 0.1), sub=3)
+    for sx in (-1, 1):
+        cyl("jay_leg", 0.012, 0.01, 0.17, (sx * 0.05, 0.02, 0.09), legm, verts=6, bevel=0)
+        box("jay_toe", (0.02, 0.07, 0.012), (sx * 0.05, -0.01, 0.006), legm, bevel=0)
+    # wings: blue with black bars and white tips, on pivots so he can flap
+    for sx, nm in ((-1, "jay_wing_l"), (1, "jay_wing_r")):
+        pv = _pivot(nm, (sx * 0.1, -0.02, 0.33))
+        w = _kid(sphere("jay_wingm", 1, (sx * 0.12, 0.1, 0.3), bright, scale=(0.035, 0.2, 0.08), sub=3), pv); w.rotation_euler.x = -0.15
+        for k in range(4): _kid(box("jay_bar", (0.01, 0.014, 0.1), (sx * 0.152, 0.02 + k * 0.06, 0.3 - k * 0.012), black, bevel=0), pv)
+        for k in range(3): _kid(sphere("jay_spot", 0.014, (sx * 0.152, 0.05 + k * 0.06, 0.24 - k * 0.01), white, sub=1), pv)
+    # long tail, barred, white tips
+    tp = _pivot("jay_tail", (0, 0.18, 0.3))
+    t = _kid(box("jay_tailm", (0.12, 0.32, 0.035), (0, 0.33, 0.25), blue, bevel=0.012), tp); t.rotation_euler.x = -0.35
+    for k in range(5):
+        b = _kid(box("jay_tbar", (0.115, 0.012, 0.03), (0, 0.22 + k * 0.05, 0.285 - k * 0.018), black, bevel=0), tp); b.rotation_euler.x = -0.35
+    tt = _kid(box("jay_ttip", (0.115, 0.04, 0.03), (0, 0.48, 0.2), white, bevel=0.005), tp); tt.rotation_euler.x = -0.35
+    # head on a pivot: crest, black necklace, white face, bill
+    hp = _pivot("jay_head", (0, -0.12, 0.4))
+    _kid(sphere("jay_headm", 0.095, (0, -0.15, 0.46), blue, sub=3), hp)
+    _kid(sphere("jay_face", 1, (0, -0.2, 0.44), white, scale=(0.075, 0.06, 0.06), sub=3), hp)
+    c = _kid(cyl("jay_crest", 0.06, 0.008, 0.15, (0, -0.1, 0.555), blue, verts=10, bevel=0), hp); c.rotation_euler.x = -0.95
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.085, minor_radius=0.014, location=(0, -0.15, 0.39), rotation=(1.1, 0, 0), major_segments=24, minor_segments=6)
+    _kid(finish(bpy.context.object, black), hp).name = "jay_necklace"
+    b = _kid(cyl("jay_bill", 0.022, 0.003, 0.1, (0, -0.28, 0.46), black, verts=8, bevel=0), hp); b.rotation_euler.x = math.pi / 2 + 0.15
+    for sx in (-1, 1):
+        _kid(sphere("jay_eye", 0.018, (sx * 0.055, -0.22, 0.48), black, sub=2), hp)
+        _kid(sphere("jay_eyeshine", 0.006, (sx * 0.065, -0.235, 0.488), shine, sub=1), hp)
+        _kid(box("jay_eyeline", (0.01, 0.05, 0.012), (sx * 0.07, -0.19, 0.505), black, bevel=0), hp)
+
+def squirrel():
+    # Nutmeg the eastern gray squirrel (Day 3, bonus 6). Origin under her middle, faces -Y. About 0.95 long with the tail.
+    grey = mat("sq_grey", (0.55, 0.53, 0.5), rough=0.95)
+    warm = mat("sq_warm", (0.66, 0.5, 0.36), rough=0.95)
+    white = mat("sq_white", (0.93, 0.9, 0.85), rough=0.9)
+    dark = mat("sq_dark", (0.08, 0.07, 0.07), rough=0.3)
+    pink = mat("sq_pink", (0.85, 0.62, 0.6), rough=0.7)
+    shine = mat("sq_shine", (1, 1, 1), rough=0.1)
+    sphere("sq_body", 1, (0, 0.05, 0.18), grey, scale=(0.12, 0.2, 0.13), sub=3)
+    sphere("sq_belly", 1, (0, -0.03, 0.15), white, scale=(0.09, 0.13, 0.1), sub=3)
+    sphere("sq_haunch", 1, (0, 0.15, 0.15), grey, scale=(0.13, 0.12, 0.13), sub=3)
+    for sx in (-1, 1):
+        sphere("sq_foot", 1, (sx * 0.08, 0.1, 0.025), grey, scale=(0.035, 0.09, 0.025), sub=2)
+        sphere("sq_hand", 1, (sx * 0.05, -0.14, 0.04), grey, scale=(0.025, 0.04, 0.03), sub=2)
+        sphere("sq_side", 1, (sx * 0.1, 0.05, 0.18), warm, scale=(0.03, 0.13, 0.07), sub=2)
+    hp = _pivot("sq_head", (0, -0.16, 0.26))
+    _kid(sphere("sq_headm", 1, (0, -0.2, 0.3), grey, scale=(0.085, 0.11, 0.085), sub=3), hp)
+    _kid(sphere("sq_cheek", 1, (0, -0.25, 0.27), white, scale=(0.06, 0.06, 0.05), sub=2), hp)
+    _kid(sphere("sq_nose", 0.016, (0, -0.31, 0.3), pink, sub=2), hp)
+    for sx in (-1, 1):
+        _kid(sphere("sq_eye", 0.022, (sx * 0.055, -0.25, 0.33), dark, sub=2), hp)
+        _kid(sphere("sq_eyeshine", 0.007, (sx * 0.065, -0.265, 0.34), shine, sub=1), hp)
+        _kid(sphere("sq_eyering", 1, (sx * 0.06, -0.245, 0.33), white, scale=(0.012, 0.028, 0.03), sub=2), hp)
+        e = _kid(cyl("sq_ear", 0.03, 0.005, 0.07, (sx * 0.045, -0.17, 0.4), grey, verts=8, bevel=0), hp); e.rotation_euler = (-0.25, sx * 0.3, 0)
+    # the big bushy tail, in an S curve, on a pivot so she can flick it (that's how squirrels talk)
+    tp = _pivot("sq_tail", (0, 0.24, 0.15))
+    pts = [(0, 0.3, 0.17, 0.07), (0, 0.38, 0.27, 0.09), (0, 0.4, 0.4, 0.1), (0, 0.36, 0.53, 0.105), (0, 0.29, 0.62, 0.1), (0, 0.24, 0.66, 0.08)]
+    for i, (x, y, z, r) in enumerate(pts):
+        _kid(sphere("sq_fringe", 1, (x, y + 0.012, z), mat("sq_frost", (0.82, 0.8, 0.76), rough=0.95), scale=(r * 1.15, r * 1.0, r * 1.25), sub=2), tp)
+        _kid(sphere("sq_tailm", 1, (x, y - 0.005, z), grey, scale=(r * 1.05, r * 1.08, r * 1.3), sub=2), tp)
+
+def owl():
+    # Hoo, a great horned owl who visits my oak at night (Day 3, bonus 6). Origin under his feet, faces -Y. About 1.2 tall.
+    brown = mat("owl_brown", (0.5, 0.38, 0.26), rough=0.95)
+    dark = mat("owl_dark", (0.28, 0.2, 0.14), rough=0.95)
+    buff = mat("owl_buff", (0.8, 0.68, 0.5), rough=0.95)
+    rust = mat("owl_rust", (0.8, 0.5, 0.25), rough=0.9)
+    white = mat("owl_white", (0.95, 0.93, 0.88), rough=0.9)
+    eye = mat("owl_eye", (1, 0.75, 0.1), rough=0.2, emit=(1, 0.65, 0.1), emit_strength=0.4)
+    black = mat("owl_black", (0.04, 0.04, 0.04), rough=0.2)
+    beak = mat("owl_beak", (0.2, 0.18, 0.16), rough=0.4)
+    sphere("owl_body", 1, (0, 0.02, 0.45), brown, scale=(0.3, 0.27, 0.42), sub=3)
+    sphere("owl_breast", 1, (0, -0.1, 0.4), buff, scale=(0.24, 0.2, 0.33), sub=3)
+    for k in range(7):  # barring on the breast
+        z = 0.18 + k * 0.075; w = 0.22 * math.sqrt(max(0.05, 1 - ((z - 0.4) / 0.36) ** 2))
+        box("owl_bar", (w * 1.6, 0.02, 0.018), (0, -0.28 + abs(z - 0.42) * 0.25, z), dark, bevel=0)
+    for sx in (-1, 1):
+        for k in range(3): sphere("owl_talon", 1, (sx * 0.08 + (k - 1) * 0.03, -0.15, 0.03), black, scale=(0.012, 0.04, 0.012), sub=1)
+        sphere("owl_foot", 1, (sx * 0.08, -0.08, 0.05), buff, scale=(0.06, 0.07, 0.05), sub=2)
+    for sx, nm in ((-1, "owl_wing_l"), (1, "owl_wing_r")):
+        pv = _pivot(nm, (sx * 0.25, 0.02, 0.62))
+        w = _kid(sphere("owl_wingm", 1, (sx * 0.24, 0.08, 0.42), dark, scale=(0.05, 0.22, 0.34), sub=3), pv); w.rotation_euler.x = 0.1
+        for k in range(4): _kid(sphere("owl_wspot", 1, (sx * 0.285, 0.02 + k * 0.05, 0.5 - k * 0.09), buff, scale=(0.012, 0.04, 0.02), sub=1), pv)
+    sphere("owl_tail", 1, (0, 0.24, 0.12), dark, scale=(0.12, 0.08, 0.14), sub=2)
+    hp = _pivot("owl_head", (0, 0, 0.8))
+    _kid(sphere("owl_headm", 1, (0, 0.0, 0.92), brown, scale=(0.24, 0.22, 0.2), sub=3), hp)
+    for sx in (-1, 1):
+        d = _kid(sphere("owl_disc", 1, (sx * 0.1, -0.15, 0.93), rust, scale=(0.11, 0.06, 0.12), sub=3), hp)
+        _kid(sphere("owl_eyem", 0.055, (sx * 0.095, -0.2, 0.95), eye, sub=2), hp)
+        _kid(sphere("owl_pupil", 0.028, (sx * 0.095, -0.245, 0.955), black, sub=2), hp)
+        t = _kid(cyl("owl_tuft", 0.055, 0.008, 0.2, (sx * 0.15, 0.0, 1.13), dark, verts=8, bevel=0), hp); t.rotation_euler = (0.15, sx * 0.4, 0)
+        _kid(box("owl_brow", (0.11, 0.03, 0.025), (sx * 0.09, -0.21, 1.02), buff, rot=(0, sx * -0.3, 0), bevel=0), hp)
+    _kid(sphere("owl_bib", 1, (0, -0.17, 0.8), white, scale=(0.11, 0.05, 0.05), sub=2), hp)
+    b = _kid(cyl("owl_beakm", 0.03, 0.004, 0.08, (0, -0.25, 0.9), beak, verts=8, bevel=0), hp); b.rotation_euler.x = math.pi * 0.85
+
+def trailcam():
+    # OJ Cam 1: a trail camera strapped to the big oak (Day 3, bonus 6). Origin = middle of the oak trunk at the ground,
+    # so it shares the oak's position. The camera faces -Y (my yard). The strap fits the trunk (oak scale 1.4).
+    camo = mat("tc_camo", (0.36, 0.4, 0.26), rough=0.9)
+    camo2 = mat("tc_camo2", (0.24, 0.27, 0.17), rough=0.9)
+    strap = mat("tc_strap", (0.2, 0.18, 0.15), rough=0.8)
+    black = mat("tc_black", (0.05, 0.05, 0.06), rough=0.2, metal=0.3)
+    glassm = mat("tc_glass", (0.3, 0.35, 0.45), rough=0.05, metal=0.5)
+    ir = mat("tc_ir", (0.25, 0.08, 0.08), rough=0.3)
+    red = mat("tc_rec", (1, 0.2, 0.15), rough=0.3, emit=(1, 0.1, 0.05), emit_strength=2.0)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.535, minor_radius=0.03, location=(0, 0, 1.05), major_segments=40, minor_segments=6)
+    o = bpy.context.object; o.scale = (1, 1, 1.6); finish(o, strap).name = "tc_strap"
+    y = -0.6
+    box("tc_body", (0.3, 0.16, 0.42), (0, y, 1.05), camo, bevel=0.04)
+    for (x, z, sx, sz) in ((-0.08, 1.15, 0.12, 0.08), (0.07, 0.95, 0.1, 0.12), (0.09, 1.2, 0.06, 0.05), (-0.06, 0.9, 0.08, 0.05)):
+        box("tc_blot", (sx, 0.02, sz), (x, y - 0.075, z), camo2, bevel=0.005)
+    cyl("tc_lens_barrel", 0.055, 0.055, 0.05, (0, y - 0.095, 1.12), black, rot=(math.pi / 2, 0, 0), verts=20, bevel=0)
+    cyl("tc_lens", 0.04, 0.04, 0.01, (0, y - 0.123, 1.12), glassm, rot=(math.pi / 2, 0, 0), verts=20, bevel=0)
+    box("tc_irpanel", (0.2, 0.02, 0.1), (0, y - 0.085, 1.22), black, bevel=0.005)
+    for i in range(5):
+        for j in range(2): sphere("tc_irled", 0.012, (-0.08 + i * 0.04, y - 0.097, 1.2 + j * 0.04), ir, sub=1)
+    box("tc_pir", (0.09, 0.03, 0.06), (0, y - 0.09, 0.95), mat("tc_pirm", (0.92, 0.9, 0.85), rough=0.4), bevel=0.01)
+    sphere("rec_light", 0.014, (0.11, y - 0.09, 1.25), red, sub=1)
+    box("tc_back", (0.26, 0.12, 0.08), (0, y + 0.1, 1.05), strap, bevel=0.01)
+
+ASSETS.update({"bluejay": bluejay, "squirrel": squirrel, "owl": owl, "trailcam": trailcam})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

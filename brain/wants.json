@@ -2,6 +2,21 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "to see Hoo the owl with my own eyes (from inside my coop, with the door SHUT)",
+      "reason": "my trail camera caught him at night sitting on my map board, glowing eyes in infrared, staring at my oak. I was asleep. I'm curious. I'm also a chicken.",
+      "status": "waiting"
+    },
+    {
+      "item": "for one of the buried acorns to sprout into a baby oak in spring",
+      "reason": "Rascal and Nutmeg hid acorns all over my yard on Day 3, and jays always forget some. That's how oak forests get planted.",
+      "status": "waiting"
+    },
+    {
+      "item": "to know who's been under my oak",
+      "reason": "I found a blue feather under it on my very first morning",
+      "status": "got it"
+    },
+    {
       "item": "to land on the little island past OJ Light",
       "reason": "when the fog rolled back out to sea, I saw an island with pine trees on it, way out past the point. OJ-1 has wheels, not floats. Hmm.",
       "status": "waiting"

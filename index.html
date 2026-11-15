@@ -352,7 +352,7 @@ function addObject(o, room) {
   obj.rotation.y = o.rot ?? 0;
   obj.scale.setScalar(o.scale ?? 1);
   scene.add(obj); if (o.id) objById[o.id] = obj;
-  if (room === "outside") mapDots.push({ x: obj.position.x, z: obj.position.z, c: o.mapColor ?? (o.type === "pond" ? "#4aa3df" : o.type === "tree" || o.type === "pine" ? "#4f9a3a" : "#8a7a66") });
+  if (room === "outside" && !o.noMapDot) mapDots.push({ x: obj.position.x, z: obj.position.z, c: o.mapColor ?? (o.type === "pond" ? "#4aa3df" : o.type === "tree" || o.type === "pine" ? "#4f9a3a" : "#8a7a66") });
   if (o.label) {
     const el = document.createElement("div"); el.className = "label3d"; el.textContent = o.label;
     document.body.appendChild(el);
@@ -493,9 +493,13 @@ const ACTIONS = {
   weather:  { icon: "🌡️", doing: "checking his weather station", to: "OJ Weather", why: "read the rain gauge and the wind", where: "weather", anim: "look", fx: { wonder: 1.0, mood: 0.4 }, dur: [4, 9] },
   music:    { icon: "🎶", doing: "practicing his song on the Cluck-a-phone", to: "OJ Music", why: "practice his song", where: "music", anim: "play", face: "music-nook", fx: { mood: 1.2, calm: 0.8, wonder: 0.3, energy: -0.1 }, dur: [6, 14] },
   stargaze: { icon: "🔭", doing: "up past his bedtime, looking through his telescope", to: "OJ Stars", why: "look at the stars", where: "stargaze", anim: "look", face: "oj-telescope", fx: { wonder: 1.6, calm: 0.7, energy: -0.2 }, dur: [6, 14] },
+  // Day 3, bonus 6: my oak neighbors. "oakwatch" = a stakeout to see who's been under my oak. "alarm" only happens when
+  // something sounds like a hawk (a behavior calls react()): chickens crouch, freeze and look up with one eye.
+  oakwatch: { icon: "🕵️", doing: "on a stakeout by the big oak, watching for the blue jay, the squirrel and whoever else lives in there", to: "the big oak", why: "spy on his oak neighbors", where: "oakwatch", anim: "look", face: "big-oak", fx: { wonder: 1.3, calm: 0.5, mood: 0.3 }, dur: [6, 12] },
+  alarm:    { icon: "😱", doing: "frozen flat with one eye on the sky", to: "cover", why: "hide from a hawk", where: "shelter", anim: "alarm", fx: {}, dur: [1, 1] },
   garden:   { icon: "🧄", doing: "checking on the seeds in his garden (and trying very hard not to scratch them up)", to: "OJ Garden", why: "see if anything sprouted", where: "kitchen", anim: "look", face: "oj-garden", fx: { calm: 1.0, wonder: 0.6, mood: 0.5 }, dur: [5, 11] }
 };
-const OUTDOOR_DRY = ["stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
+const OUTDOOR_DRY = ["oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
 const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
@@ -515,6 +519,7 @@ function chooseAction(n, now, rnd) {
     weather: spots.weather ? lack("wonder") * 0.5 + 0.15 + (wx.afterRain ? 0.8 : 0) : 0,
     music: spots.music ? lack("mood") * 0.8 + lack("calm") * 0.6 + 0.25 : 0,
     stargaze: spots.stargaze && skyDaylight(now) < 0.3 ? (1.4 + lack("wonder")) * (1 - wx.cloud) : 0,
+    oakwatch: spots.oakwatch && skyDaylight(now) > 0.4 ? lack("wonder") * 0.7 + 0.25 : 0,
     garden: spots.kitchen ? lack("calm") * 0.7 + lack("wonder") * 0.4 + 0.25 + (wx.afterRain ? 0.5 : 0) : 0
   };
   // chickens don't love getting soaked: in the rain most outdoor plans get put off
@@ -627,7 +632,7 @@ controls.addEventListener("start", () => { if (follow) { follow = false; $("camB
 setView(chickenRoom);
 
 const bubble = $("bubble");
-const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."], stargaze: ["Ooh. Ooh! Look at that one.", "I can't see my own feet in the dark, but I can see the stars.", "Hello, Moon!", "Is that the Great Square of Pegasus? It is!", "Five more minutes, then bed. Okay, ten."] };
+const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."], oakwatch: ["Shh. I'm on a stakeout.", "Who drops blue feathers under MY oak? Hmm?", "Rascal's been burying acorns all over my yard.", "Nutmeg just pretended to bury that. I SAW you.", "Squirrels come down trees head-first. Show-off.", "If I hold very still, they forget I'm here."], alarm: ["!!!", "EEEEE! HAWK!", "…"], stargaze: ["Ooh. Ooh! Look at that one.", "I can't see my own feet in the dark, but I can see the stars.", "Hello, Moon!", "Is that the Great Square of Pegasus? It is!", "Five more minutes, then bed. Okay, ten."] };
 let bubbleText = state.thought ?? "Bawk.", bubbleTimer = 8;
 function say(text, secs = 4) { bubbleText = text; bubbleTimer = secs; }
 
@@ -682,7 +687,7 @@ function animate() {
   const blinking = (t % 3.7) < 0.12;
   eyes.forEach(e => e.scale.y = blinking ? 0.1 : 1);
   const anim = override ? ACTIONS[override.act].anim : ACTIONS[sim.act].anim;
-  if (override) { override.secs -= dt; if (override.secs <= 0) { override = null; seeds.clear(); } }
+  if (override) { override.secs -= dt; if (override.secs <= 0) { const back = override.move; override = null; seeds.clear(); if (back) goTo(sim.place); } }
 
   // climbing: some spots have a perch up high (world.perches), like the OJ Tower balcony. He climbs up when an
   // action sends him there and climbs back down before walking anywhere else.
@@ -702,9 +707,9 @@ function animate() {
     chicken.rotation.y = Math.atan2(P.edge[0] - foot[0], P.edge[1] - foot[1]) * (wantUp ? 1 : 1);
     legs[0].rotation.x = Math.sin(t * 9) * 0.8; legs[1].rotation.x = -Math.sin(t * 9) * 0.8; body.rotation.x = -0.35;
     wings.forEach((wg, i) => wg.rotation.z = (0.5 + Math.sin(t * 22) * 0.4) * (i ? -1 : 1));
-  } else if (moving && v.length() > 0.12 && !override && !climbing) {
+  } else if (moving && v.length() > 0.12 && (!override || override.move) && !climbing) {
     // the waddle: rolling body, bouncing steps, and a head that holds still then thrusts forward like a real chicken
-    const run = sim.act === "eat" || sim.act === "dance";
+    const run = sim.act === "eat" || sim.act === "dance" || !!override?.move;
     const speed = run ? 2.6 : 1.5, step = t * (run ? 13 : 9);
     v.normalize(); chicken.position.addScaledVector(v, dt * speed);
     let dRot = Math.atan2(v.x, v.z) - chicken.rotation.y; dRot = Math.atan2(Math.sin(dRot), Math.cos(dRot)); chicken.rotation.y += dRot * Math.min(1, dt * 8);
@@ -729,6 +734,9 @@ function animate() {
     else if (anim === "play") { // tapping the Cluck-a-phone with his beak, swaying side to side to the beat (Day 3, bonus 2)
       const b = t / 0.28, p = Math.max(0, Math.sin(b * Math.PI)); head.rotation.x = p * 0.75; head.position.y = 1.42 - p * 0.3; head.position.z = 0.5 + p * 0.12;
       head.rotation.y = Math.sin(t * 1.1) * 0.35; body.rotation.z = Math.sin(t * 2.2) * 0.1; tail.rotation.y = Math.sin(t * 4.4) * 0.35; body.rotation.x = p * 0.18; }
+    else if (anim === "alarm") { // crouched low and frozen, head tipped so one eye looks straight up at the sky
+      body.position.y = 0.6; body.rotation.x = 0.12; body.scale.setScalar(0.95); legs.forEach(l => l.position.y = 0.3); tail.rotation.x = 0.35;
+      head.position.set(0, 1.25, 0.5); neck.position.y = 1.02; head.rotation.set(-0.25, 0, 0.75); if ((t % 2.3) < 0.15) head.rotation.z = 0.6; }
     else if (anim === "think") { head.rotation.z = Math.sin(t * 0.8) * 0.22; head.rotation.x = -0.18; body.position.y = 0.66; legs.forEach(l => l.position.y = 0.34); }
     else if (anim === "explore") { head.rotation.y = Math.sin(t * 1.5) * 0.7; if ((t % 6) < dt && chickenRoom === "outside") { const lim = size / 2 - 2; goTo([THREE.MathUtils.clamp(chicken.position.x + (Math.random() - 0.5) * 6, -lim, lim), THREE.MathUtils.clamp(chicken.position.z + (Math.random() - 0.5) * 6, -lim, lim)]); } }
     else { head.rotation.y = Math.sin(t * 2) * 0.6; }
@@ -736,7 +744,8 @@ function animate() {
       idleTimer -= dt; if (idleTimer < 0) { idleTimer = 2 + Math.random() * 4; lookTilt = (Math.random() - 0.5) * 0.7; }
       head.rotation.z += lookTilt;
       if ((t % 11) < 0.35) wings.forEach((w, i) => w.rotation.z += Math.sin(t * 40) * 0.25 * (i ? -1 : 1));
-      if (anim !== "explore" && anim !== "dance" && anim !== "dust" && anim !== "play" && (t % 9) < dt && !override && chickenRoom === sim.room) goTo([sim.place[0] + (Math.random() - 0.5) * 1.5, sim.place[1] + (Math.random() - 0.5) * 1.5]);
+      if (anim === "alarm") head.rotation.z -= lookTilt; // frozen: no curious head tilts
+      if (anim !== "explore" && anim !== "dance" && anim !== "dust" && anim !== "play" && anim !== "alarm" && (t % 9) < dt && !override && chickenRoom === sim.room) goTo([sim.place[0] + (Math.random() - 0.5) * 1.5, sim.place[1] + (Math.random() - 0.5) * 1.5]);
     }
   }
   const faceTo = objById[ACTIONS[sim.act].face]; // some actions turn him toward a thing once he's there (like his xylophone)
@@ -771,13 +780,26 @@ function animate() {
   mmTimer -= dt; if (mmTimer <= 0 && viewRoom === "outside") { mmTimer = 0.25; drawMinimap(); }
   requestAnimationFrame(animate);
 }
+// ---------- reacting to things (Day 3, bonus 6) ----------
+// A behavior can make him react for a few seconds: react({ act, icon, text, secs, run: [x, z], say }) . With run, he hurries there.
+// Only works when he's outside on the ground (not asleep in his house, not up the tower). Returns true if he reacted.
+function react(o) {
+  if (chickenRoom !== "outside" || climb > 0 || sim.room !== "outside" || !ACTIONS[o.act]) return false;
+  override = { act: o.act, icon: o.icon ?? ACTIONS[o.act].icon, text: o.text ?? "", secs: o.secs ?? 4, move: !!o.run };
+  if (o.run) goTo(o.run, "outside");
+  if (o.say) say(o.say, o.sayFor ?? 3);
+  renderUI(); return true;
+}
+const chickenInfo = () => ({ room: chickenRoom, act: override?.act ?? sim.act, up: climb > 0, busy: !!override });
+
 // ---------- object behaviors ----------
 // An object in world.json can have "script": "behaviors/name.js". That module exports a default function
 // setup(ctx) that returns { update(dt, t), onClick() } (both optional). ctx has THREE, obj (the object's 3D group),
 // scene, say(text, secs), chicken, sim, world, state, part (shape builder) and texFor (textures).
+// Also renderer (for snapshots), react(...) (make him react, see above) and chickenInfo() (where he is and what he's doing).
 for (const { o, obj } of behaviorQueue) {
   import("./" + o.script + bust).then(m => {
-    const api = m.default?.({ THREE, obj, data: o, scene, say, chicken, sim, world, state, part, texFor, camera, controls, objects: objById, setFollow, rooms, enterRoom, openBag, openCloset, dress, bag: bagData, weatherAt, weatherFor, weatherKinds: WEATHER_KINDS, compass, openModal, openWeather, viewRoom: () => viewRoom, wearing: wearingId, outfits });
+    const api = m.default?.({ THREE, obj, data: o, scene, say, chicken, sim, world, state, part, texFor, camera, controls, objects: objById, setFollow, rooms, enterRoom, openBag, openCloset, dress, bag: bagData, weatherAt, weatherFor, weatherKinds: WEATHER_KINDS, compass, openModal, openWeather, viewRoom: () => viewRoom, wearing: wearingId, outfits, renderer, react, chickenInfo });
     if (api) behaviors.push({ ...api, obj });
   }).catch(e => console.warn("behavior failed to load", o.script, e));
 }

@@ -22,6 +22,7 @@ These are just starters. I can pick up new hobbies whenever something catches my
 - **Music** (new on Day 3!): I play the Cluck-a-phone with my beak and wrote a song called "Over the Fence"
 - **Stargazing** (new on Day 3!): I have a brass telescope. I stay up a little past dusk to look, even though chickens are bad at seeing in the dark. Stars are lights, so I can see those!
 - **Exploring past the fence** (new on Day 3!): I followed my golden compass through the fog and found the sea and a lighthouse, OJ Light. I lit it. Now it flashes for me every night
+- **Wildlife spying** (new on Day 3!): I run a trail camera, OJ Cam 1, on my big oak. My neighbors are Rascal the blue jay, Nutmeg the squirrel and Hoo the owl. I am jumpy about hawks, even fake ones
 - **Weather watching** (new on Day 3!): I run OJ Weather, read my rain gauge, and own a yellow rain hat. I don't love getting soaked, but I LOVE a rainbow
 
 ## OdysseyChicken

@@ -14,3 +14,6 @@ Who has come by my yard, and who I've met. (OdysseyChicken's notes count as visi
 - **My seeds** moved in on Day 3 (bonus 3): twelve garlic cloves, plus radishes, spinach and mache under the glass. Not creatures yet. Not even sprouts yet. But they're alive in there, I'm sure of it.
 - **The Moon** showed up on Day 3 (bonus 4), for real this time: right where the real moon is, with its real phase. Not a creature, but it follows me around like Puddles does.
 - **OJ Light** turned up on Day 3 (bonus 5), past the Tall Hills on a rocky point over the sea. Nobody was home and the lamp was dark. Somebody built it, and somebody built the clockwork with a notch my compass fits. Who? Also: the sea. The sea is new.
+- **Rascal the blue jay** (Day 3, bonus 6) is who's been leaving blue feathers under my oak! He drops in during the day, hides acorns all over my yard, eats at my feeder, and does a fake hawk call that makes me dive for cover. Every. Time.
+- **Nutmeg the gray squirrel** (Day 3, bonus 6) lives in a leaf nest up in my oak. Comes down head first, buries acorns, and does FAKE burials when I'm watching. Rude. Smart.
+- **Hoo the great horned owl** (Day 3, bonus 6) only comes at night when I'm asleep. My trail camera, OJ Cam 1, caught him on top of my map board. Neighbors, not friends. He eats chickens.

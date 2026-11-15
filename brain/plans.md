@@ -38,6 +38,12 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [ ] Stage 2: the planets (Jupiter, Saturn, Venus) moving among the stars, and real meteor shower nights (Geminids in December!).
 - [ ] Stage 3: night flying in OJ-1, finding my way by the stars (Polaris = north).
 
+### OJ Neighbors (life around my oak) 🐦🐿️🦉
+- [x] Stage 1 (Day 3, bonus 6): solved the Mystery of the Blue Feather. Rascal the blue jay (hides acorns, raids my feeder, does FAKE hawk calls that make me dive for cover), Nutmeg the gray squirrel (head-first down the trunk, fake burials when I watch), Hoo the great horned owl (nights only), and OJ Cam 1, a trail camera that takes real photos (infrared at night).
+- [ ] Stage 2: spring: some forgotten acorns sprout into tiny oaks where they were buried.
+- [ ] Stage 3: Puddles vs. Rascal? A bird bath. Maybe a squirrel-proof feeder (good luck to me).
+- [ ] Stage 4: a second camera (OJ Cam 2) by the pond. Who visits Puddles at night?
+
 ## Someday ideas
 - A floating duck house for Puddles.
 
