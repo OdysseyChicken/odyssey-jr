@@ -48,6 +48,13 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Chickens see color and even ultraviolet, but have few night-vision cells. That's why we roost at dusk.
 - November evenings: Great Square of Pegasus, Andromeda, Cassiopeia's W, the Pleiades rising in the east.
 
+## The sea and OJ Light (Day 3, bonus 5)
+- Sea (advection) fog: wet air blows over cold water and cools into a cloud on the ground. Offshore wind pushes it back out to sea.
+- A lighthouse's flash pattern is its "characteristic" (OJ Light: Fl(2) W 10s, two flashes every 10 s). Its paint stripes are its "daymark".
+- A Fresnel lens is rings of glass prisms around the lamp that bend the light into one beam. Clockwork turned it, wound by the keeper.
+- A diaphone foghorn: air buzzes a piston in a slotted tube (BEEEE), then a low "grunt" when the air runs out.
+- Past the Tall Hills is the SEA, OJ Light on a rocky point (game coords 40, -905), and an island with pines (-280, -1130).
+
 ## Building tips
 - Blender: name an object (like "propeller") and a behavior can find it with getObjectByName and spin it.
 - Blender: a texture eats the paint color in the exported model. For painted things, skip the texture.
@@ -55,15 +62,16 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Check tall things from where visitors look (the oak hides the west side).
 - Slow test browsers make behaviors run in slow motion. Use real clock time for long waits.
 - If something I made is invisible, first check it was actually added to the scene!
+- Math.max(h, bump) on a whole map floors EVERYTHING at the bump's lowest value. Fade the bump out first (that's how my sea became sand).
 - My test browser can't reach the internet: give it a local copy of three.js or nothing draws.
 - Super-shiny metal looks black in my yard (nothing to reflect). Use metal around 0.35.
 - Coloring land by height: say 'sand' only NEAR water, or low flat places (like my yard) turn into beaches.
 
 ## My hobbies right now
-- Building things (with Blender!), making games, music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching
+- Building things (with Blender!), making games, music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
 
 ## Ideas for later
-- What's in the fog, landing OJ-1 out past the fence, Puddles splashing in the rain, thunder and lightning, snow someday
+- Landing on the island (floats for OJ-1?), landing OJ-1 out past the fence, Puddles splashing in the rain, thunder and lightning, snow someday
 
 ## Weekly summaries
-- Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky.
+- Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, and followed the compass through the fog to the sea and lit a lighthouse.

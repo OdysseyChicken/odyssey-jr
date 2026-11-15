@@ -855,6 +855,103 @@ def telescope():
 ASSETS.update({"telescope": telescope})
 
 
+def lighthouse():
+    # OJ Light (Day 3, bonus 5): the lighthouse I found in the fog past the Tall Hills, on a rocky point over the sea.
+    # Red and white bands are its "daymark" (so sailors know which lighthouse it is in the daytime).
+    # Front (Blender -Y) faces back toward my yard; the sea and the foghorn face +Y.
+    paint = mat("lh_white", (0.97, 0.95, 0.9), rough=0.7)
+    red = mat("lh_red", (0.78, 0.18, 0.15), rough=0.6)
+    iron = mat("lh_iron", (0.16, 0.18, 0.2), rough=0.5, metal=0.4)
+    brass = mat("lh_brass", (0.85, 0.65, 0.28), rough=0.35, metal=0.35)
+    stone = mat("lh_stone", WOOD, tex="stone", scale=(3, 1))
+    rockm = mat("lh_rock", (0.62, 0.58, 0.55), rough=0.95)
+    wood = mat("lh_door", (0.45, 0.3, 0.2), tex="wood")
+    win = mat("lh_window", (0.95, 0.85, 0.55), rough=0.3, emit=(1, 0.78, 0.4), emit_strength=0.6)
+    lensm = mat("lh_lens", (0.95, 0.9, 0.7), rough=0.1, metal=0.2, emit=(1, 0.85, 0.5), emit_strength=0.3)
+    lampm = mat("lh_lamp", (1, 0.95, 0.75), rough=0.2, emit=(1, 0.9, 0.6), emit_strength=0.5)
+    glass = mat("lh_glass", (0.75, 0.88, 0.95), rough=0.05, metal=0.1)
+    gb = glass.node_tree.nodes["Principled BSDF"]; gb.inputs["Alpha"].default_value = 0.28
+    try: glass.surface_render_method = "BLENDED"
+    except Exception: glass.blend_method = "BLEND"
+    # the rocky point
+    for i in range(9):
+        a = i / 9 * math.tau; r = 3.2 + random.uniform(0, 1.6)
+        o = sphere("lh_rocks", random.uniform(1.6, 2.6), (math.cos(a) * r, math.sin(a) * r, 0.2), rockm, scale=(1.2, 1, 0.55), sub=2, smooth=False); jitter(o, 0.25)
+    cyl("lh_plinth", 3.1, 2.9, 1.2, (0, 0, 0.6), stone, verts=10, bevel=0.03)
+    z0, H, r0, r1 = 1.2, 13.0, 2.4, 1.5
+    rad = lambda z: r0 + (r1 - r0) * (z - z0) / H
+    cyl("lh_tower", r0, r1, H, (0, 0, z0 + H / 2), paint, verts=40, bevel=0)
+    for zb in (3.0, 7.0, 11.0):  # daymark bands
+        h = 1.7; cyl("lh_band", rad(zb) + 0.03, rad(zb + h) + 0.03, h, (0, 0, zb + h / 2), red, verts=40, bevel=0)
+    # door and windows, staggered as the stairs spiral up inside
+    box("lh_door", (0.9, 0.2, 1.7), (0, -rad(2) + 0.05, 2.05), wood, bevel=0.03)
+    box("lh_door_frame", (1.15, 0.12, 0.2), (0, -rad(2.9) - 0.02, 2.95), paint, bevel=0.02)
+    for zw, a in ((5.2, -1.2), (9.2, -1.9), (12.8, -1.35), (6.0, 1.6)):
+        rr = rad(zw); box("lh_win", (0.45, 0.12, 0.7), (math.cos(a) * rr, math.sin(a) * rr, zw), win, rot=(0, 0, a + math.pi / 2), bevel=0.02)
+    # gallery (the balcony the keeper walks around)
+    top = z0 + H
+    cyl("lh_corbel", r1, 2.35, 0.5, (0, 0, top + 0.05), iron, verts=40, bevel=0)
+    cyl("lh_gallery", 2.45, 2.45, 0.22, (0, 0, top + 0.4), iron, verts=40, bevel=0.02)
+    for i in range(24):
+        a = i / 24 * math.tau; cyl("lh_post", 0.04, 0.04, 0.9, (math.cos(a) * 2.35, math.sin(a) * 2.35, top + 0.95), iron, verts=6, bevel=0)
+    for zz in (1.4, 0.95):
+        bpy.ops.mesh.primitive_torus_add(major_radius=2.35, minor_radius=0.05, location=(0, 0, top + zz), major_segments=48, minor_segments=8)
+        finish(bpy.context.object, iron).name = "lh_rail"
+    # lantern room
+    lb = top + 0.5
+    cyl("lh_lantern_wall", 1.35, 1.35, 0.7, (0, 0, lb + 0.35), red, verts=10, bevel=0.02)
+    gh = 2.0
+    cyl("lh_lantern_glass", 1.28, 1.28, gh, (0, 0, lb + 0.7 + gh / 2), glass, verts=10, bevel=0)
+    for i in range(10):
+        a = (i + 0.5) / 10 * math.tau; box("lh_mullion", (0.08, 0.08, gh), (math.cos(a) * 1.27, math.sin(a) * 1.27, lb + 0.7 + gh / 2), iron, bevel=0)
+    bpy.ops.mesh.primitive_torus_add(major_radius=1.28, minor_radius=0.05, location=(0, 0, lb + 0.7 + gh * 0.5), major_segments=40, minor_segments=6)
+    finish(bpy.context.object, iron).name = "lh_astragal"
+    # the Fresnel lens: rings of glass prisms around the lamp, on a brass pedestal (clockwork turns it)
+    lz = lb + 0.7 + gh / 2
+    cyl("lh_pedestal", 0.35, 0.45, 0.75, (0, 0, lb + 0.7 + 0.37), brass, verts=16, bevel=0.01)
+    bpy.ops.object.empty_add(location=(0, 0, lz)); piv = bpy.context.object; piv.name = "lens"
+    parts = [cyl("lens_core", 0.62, 0.62, 1.15, (0, 0, lz), lensm, verts=24, bevel=0)]
+    for dz in (-0.5, -0.3, -0.1, 0.1, 0.3, 0.5):
+        bpy.ops.mesh.primitive_torus_add(major_radius=0.62 - abs(dz) * 0.25, minor_radius=0.07, location=(0, 0, lz + dz), major_segments=32, minor_segments=6)
+        parts.append(finish(bpy.context.object, brass))
+    for a in (0, 0.44):  # two bullseye panels close together: two flashes, then a long dark. bawk-bawk.
+        parts.append(cyl("lens_bullseye", 0.28, 0.28, 0.08, (math.cos(a) * 0.64, math.sin(a) * 0.64, lz), lampm, rot=(0, math.pi / 2, a), verts=20, bevel=0))
+    for o in parts: o.parent = piv; o.matrix_parent_inverse = piv.matrix_world.inverted()
+    sphere("lamp", 0.22, (0, 0, lz), lampm, sub=2)
+    # roof
+    rz = lb + 0.7 + gh
+    cyl("lh_roof_rim", 1.55, 1.5, 0.15, (0, 0, rz + 0.07), red, verts=10, bevel=0.02)
+    sphere("lh_dome", 1.4, (0, 0, rz + 0.12), red, scale=(1, 1, 0.72), sub=3)
+    cyl("lh_vent_neck", 0.16, 0.12, 0.5, (0, 0, rz + 1.2), iron, verts=12, bevel=0)
+    sphere("lh_vent_ball", 0.32, (0, 0, rz + 1.55), iron, sub=2)
+    cyl("lh_rod", 0.03, 0.02, 1.1, (0, 0, rz + 2.3), brass, verts=6, bevel=0)
+    # keeper's cottage
+    cx, cy = -5.2, 0.8
+    box("lh_cottage", (4.0, 3.2, 2.6), (cx, cy, 1.3), paint, bevel=0.04)
+    for s in (-1, 1):
+        box("lh_roof", (4.4, 2.05, 0.18), (cx, cy + s * 0.8, 3.15), red, rot=(s * -0.62, 0, 0), bevel=0.03)
+    for s in (-1, 1):  # gable ends
+        bpy.ops.mesh.primitive_cone_add(vertices=3, radius1=1.85, depth=0.15, location=(cx + s * 1.98, cy, 3.05), rotation=(0, math.pi / 2, 0))
+        o = bpy.context.object; o.scale = (0.62, 1, 1); o.rotation_euler = (math.pi / 2 * 0 + math.radians(-90), math.pi / 2, 0); finish(o, paint).name = "lh_gable"
+    box("lh_chimney", (0.5, 0.5, 1.4), (cx - 1.2, cy + 0.6, 3.6), stone, bevel=0.02)
+    box("lh_cdoor", (0.75, 0.12, 1.5), (cx + 0.6, cy - 1.62, 0.8), wood, bevel=0.03)
+    for x in (-1.1,):
+        box("lh_cwin", (0.8, 0.1, 0.7), (cx + x, cy - 1.62, 1.5), win, bevel=0.02)
+    box("lh_sign", (2.0, 0.1, 0.45), (cx, cy - 1.68, 2.35), mat("board", (1, 0.86, 0.66), tex="planks", scale=(1, 0.5)), bevel=0.03)
+    bpy.ops.object.text_add(location=(cx, cy - 1.75, 2.35), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ LIGHT"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.32; t.data.extrude = 0.015
+    t.data.materials.append(mat("ink_red", (0.7, 0.15, 0.12), rough=0.8)); bpy.ops.object.convert(target="MESH")
+    # fog signal house with its big horn pointing out to sea (+Y)
+    fx, fy = 3.6, 3.0
+    box("lh_foghouse", (1.8, 1.6, 1.6), (fx, fy, 0.8 + 1.0), paint, bevel=0.03)
+    box("lh_fogroof", (2.1, 1.9, 0.18), (fx, fy, 2.7), red, bevel=0.03)
+    bpy.ops.object.empty_add(location=(fx, fy + 0.8, 2.0)); hp = bpy.context.object; hp.name = "horn"
+    h1 = cyl("horn_bell", 0.12, 0.55, 1.4, (fx, fy + 1.5, 2.0), iron, rot=(-math.pi / 2, 0, 0), verts=20, bevel=0)
+    h1.parent = hp; h1.matrix_parent_inverse = hp.matrix_world.inverted()
+
+ASSETS.update({"lighthouse": lighthouse})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

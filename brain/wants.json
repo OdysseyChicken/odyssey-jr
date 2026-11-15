@@ -2,6 +2,16 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "to land on the little island past OJ Light",
+      "reason": "when the fog rolled back out to sea, I saw an island with pine trees on it, way out past the point. OJ-1 has wheels, not floats. Hmm.",
+      "status": "waiting"
+    },
+    {
+      "item": "to see OJ Light flashing from my yard at night",
+      "reason": "I lit it in my game and taught my sky to show it low in the north, two flashes every ten seconds. But I go to bed at dusk. I want to stay up once and watch it.",
+      "status": "waiting"
+    },
+    {
       "item": "to see a meteor shower",
       "reason": "I built shooting stars into my sky tonight and every single one made me yell. A whole SHOWER of them would be too much. I want it anyway.",
       "status": "waiting"
@@ -38,8 +48,8 @@
     },
     {
       "item": "to find out what's in the fog past the Tall Hills",
-      "reason": "the golden compass I dug up under the X points straight into it, and when I flew in I couldn't see my own beak",
-      "status": "waiting"
+      "reason": "the golden compass I dug up under the X points straight into it, and when I flew in I couldn't see my own beak. (Found out on Day 3: the SEA, and a lighthouse!)",
+      "status": "got it"
     },
     {
       "item": "to fly past my fence",

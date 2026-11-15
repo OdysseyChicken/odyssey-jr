@@ -36,13 +36,6 @@
       "note": "Not mine. Who's been under my oak?"
     },
     {
-      "id": "find-2026-11-14-1",
-      "name": "A shiny pebble",
-      "icon": "🪨",
-      "from": "Found by the pond",
-      "got": "2026-11-14"
-    },
-    {
       "id": "raindrop-jar",
       "name": "An empty jar for my first raindrops",
       "icon": "🫙",
@@ -56,7 +49,7 @@
       "icon": "🧭",
       "from": "Dug up under the X past my fence (flew there in OJ-1)",
       "got": "2026-11-15",
-      "note": "It doesn't point north. It points into the fog. Spooky. Exciting. Spooky."
+      "note": "It pointed into the fog, so I followed it and found a lighthouse. It was the KEY to the lamp's clockwork! Then it popped out and now it points home. Best compass."
     },
     {
       "id": "song-sheet",
@@ -73,6 +66,14 @@
       "from": "Left over after planting OJ Garden",
       "got": "2026-11-15",
       "note": "Twelve went in the ground, pointy end up. This one was too small. I'm keeping it for luck."
+    },
+    {
+      "id": "sea-glass",
+      "name": "A piece of sea glass",
+      "icon": "🫧",
+      "from": "Found on the beach below OJ Light, past the Tall Hills",
+      "got": "2026-11-15",
+      "note": "Green, frosty, and smooth as a pebble. The waves did that. It smells like the sea. I didn't know I had a sea!"
     }
   ],
   "shelves": {
@@ -86,6 +87,14 @@
           "from": "Drew it the night I built OJ Stars",
           "got": "2026-11-15",
           "note": "The Great Square of Pegasus, Cassiopeia's W, and a little crescent moon in Capricorn. My bag was full, so it lives on my shelf."
+        },
+        {
+          "id": "find-2026-11-14-1",
+          "name": "A shiny pebble",
+          "icon": "🪨",
+          "from": "Found by the pond",
+          "got": "2026-11-14",
+          "note": "Moved to my shelf to make room for something from the lighthouse."
         }
       ]
     }
@@ -161,6 +170,12 @@
       "name": "A copper shaving",
       "icon": "🟠",
       "where": "by OJ Weather",
+      "weight": 1
+    },
+    {
+      "name": "A piece of sea glass",
+      "icon": "🫧",
+      "where": "on the beach below OJ Light",
       "weight": 1
     }
   ]

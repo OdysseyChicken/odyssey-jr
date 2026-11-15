@@ -146,6 +146,16 @@ export default function setup({ THREE, obj, scene, camera, controls, say, sim, w
   }
   addEventListener("keydown", e => { if (e.key === "Escape") endLook(); });
 
+  // OJ Light (Day 3, bonus 5): the lighthouse I found past the Tall Hills. At night you can just see it from my yard,
+  // low in the north: two flashes every ten seconds, same clock for every visitor. Bawk-bawk.
+  const farLight = new THREE.Sprite(new THREE.SpriteMaterial({ map: (() => { const cv = document.createElement("canvas"); cv.width = cv.height = 64; const g = cv.getContext("2d");
+    const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, "rgba(255,250,230,1)"); gr.addColorStop(.2, "rgba(255,230,160,.7)"); gr.addColorStop(1, "rgba(255,220,140,0)");
+    g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(cv); })(), transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending, opacity: 0 }));
+  farLight.name = "oj-light-far"; scene.add(farLight);
+  const farDir = new THREE.Vector3(...toYard(1.2, 2.5));
+  let lightSky = 0;
+  const flashAt = ms => { const k = ms % 10000; return Math.exp(-(((k - 250) / 120) ** 2)) + Math.exp(-(((k - 1000) / 120) ** 2)); }; // Fl(2) W 10s
+
   let slow = 0, dark = 0, saidMoon = false;
   return {
     update(dt, t) {
@@ -158,6 +168,7 @@ export default function setup({ THREE, obj, scene, camera, controls, say, sim, w
         const m = skyMatrix(now), w = weatherAt(now);
         rot.set(m[0][0], m[0][1], m[0][2], 0, m[1][0], m[1][1], m[1][2], 0, m[2][0], m[2][1], m[2][2], 0, 0, 0, 0, 1);
         dark = (1 - daylight(now)) * (1 - w.cloud * 0.92) * (1 - w.rain);
+        lightSky = (1 - daylight(now)) * (1 - w.rain * 0.8);
         const sp = sunPos(now), sa = altAz(sp.ra, sp.dec, now), mp = moonPos(now), ma = altAz(mp.ra, mp.dec, now);
         moonMat.uniforms.sunDir.value.set(...toYard(sa.alt, sa.az));
         moon.userData.dir = new THREE.Vector3(...toYard(ma.alt, ma.az));
@@ -172,6 +183,9 @@ export default function setup({ THREE, obj, scene, camera, controls, say, sim, w
       }
       sky.matrix.copy(rot).setPosition(camera.position); sky.matrixWorldNeedsUpdate = true;
       starMat.uniforms.opacity.value = dark; starMat.uniforms.time.value = t;
+      const fl = flashAt(Date.now());
+      farLight.position.copy(camera.position).addScaledVector(farDir, R * 0.85);
+      farLight.material.opacity = lightSky * Math.min(1, 0.12 + fl); farLight.scale.setScalar(3 + fl * 9); farLight.visible = lightSky > 0.02;
       const map = performance.now() < mapUntil ? 1 : 0;
       lineMat.opacity += ((dark * (0.1 + map * 0.35)) - lineMat.opacity) * Math.min(1, dt * 2);
       for (const l of labels) {
@@ -222,6 +236,7 @@ export default function setup({ THREE, obj, scene, camera, controls, say, sim, w
         <p>🌙 <b>The Moon:</b> ${moonLine}</p>
         ${dl < 0.6 ? `<p>⭐ <b>Brightest stars up now:</b> ${up.map(s => `${s.nm} <span style="color:var(--muted)">(${dirWord(s.az)}, ${altWord(s.alt)})</span>`).join(", ") || "none yet"}</p>` : ""}
         <p>✨ <b>Constellations high up${dl > 0.6 ? " (hiding in the daylight)" : ""}:</b> ${cons.map(c => c.name).join(", ")}</p>
+        <p>🗼 <b>OJ Light:</b> after dark, look low in the <b>north</b>, past my fence and the Tall Hills. Two quick flashes every ten seconds. That's the lighthouse I lit!</p>
         <p style="margin:12px 0"><button class="btn paper pill" id="ojLookUp" style="padding:8px 14px;font-weight:800;cursor:pointer">🔭 Look up with me</button></p>
         <p style="color:var(--muted);font-size:14px">🐔 Chickens can't see well in the dark (our eyes are full of color cells and short on dark-seeing ones), so we go to bed at dusk. But stars are LIGHTS. Even I can see those.</p>`);
       setTimeout(() => { const b = document.getElementById("ojLookUp"); if (b) b.onclick = startLook; }, 0);
