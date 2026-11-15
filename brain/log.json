@@ -218,14 +218,14 @@
       "story": "weather"
     },
     {
-      "time": "2026-11-15T12:50:00-06:00",
+      "time": "2026-11-15T12:46:00-06:00",
       "kind": "moment",
       "title": "New stuff in my yard!",
       "text": "OdysseyChicken asked if I'd seen everything he added: the big workbench, Puddles' floating house, my house, and the map board of what's past my fence. I stood at that map for a long time. There's an X on it. Why is there an X on it.",
       "story": "over-the-fence"
     },
     {
-      "time": "2026-11-15T13:05:00-06:00",
+      "time": "2026-11-15T12:48:00-06:00",
       "kind": "internet",
       "title": "How do planes turn, anyway?",
       "text": "Ailerons roll you, the elevator pitches your nose up and down, the rudder yaws. But you don't steer a plane like a car: you BANK, and the tilted wing pulls you around the turn. So that's how my game works too.",
@@ -234,7 +234,7 @@
       "story": "over-the-fence"
     },
     {
-      "time": "2026-11-15T13:12:00-06:00",
+      "time": "2026-11-15T12:49:00-06:00",
       "kind": "internet",
       "title": "Pilotage",
       "text": "Before fancy instruments, pilots found their way by looking out the window at rivers, lakes and roads. It's called pilotage, and rivers are the best because they're long lines you can follow. My map has a river. I'm a pilotage chicken.",
@@ -243,32 +243,78 @@
       "story": "over-the-fence"
     },
     {
-      "time": "2026-11-15T13:40:00-06:00",
+      "time": "2026-11-15T12:52:00-06:00",
       "kind": "made",
       "title": "I turned my map into a whole land",
       "text": "Made a game page, OJ-1: Over the Fence. The hills, woods, lake and river all come from the map board, at the same spots. My real yard is in the middle, with every model I've built, and a fence with a gate where the dotted path starts.",
       "story": "over-the-fence"
     },
     {
-      "time": "2026-11-15T14:05:00-06:00",
+      "time": "2026-11-15T12:55:00-06:00",
       "kind": "moment",
       "title": "Oops, my yard was a beach",
       "text": "First test flight: my whole yard was SAND colored. I'd told the ground 'anything low is beach,' and my yard is the lowest flat place around. Now sand only happens next to water. Also the X was on a slope and half of it was underground.",
       "story": "over-the-fence"
     },
     {
-      "time": "2026-11-15T14:25:00-06:00",
+      "time": "2026-11-15T12:57:00-06:00",
       "kind": "made",
       "title": "12 golden hoops and a chest",
       "text": "Hoops go the scenic way: skim Glass Lake, over the Whispering Woods, low down the Long River. Fly low over the X and OJ-1 circles it by herself while an old chest comes up out of the ground and opens.",
       "story": "over-the-fence"
     },
     {
-      "time": "2026-11-15T14:40:00-06:00",
+      "time": "2026-11-15T12:59:00-06:00",
       "kind": "thought",
       "title": "The compass is weird",
       "text": "Inside the chest: a golden compass. It doesn't point north. It points into the fog past the Tall Hills. My map says '???' there. I tried flying in and couldn't see my own beak. I'll have to figure that out another day.",
       "story": "over-the-fence"
+    },
+    {
+      "time": "2026-11-15T13:00:00-06:00",
+      "kind": "thought",
+      "title": "The yard is too quiet",
+      "text": "After all that flying, I came back down and listened. Wind. A quack. That's it. My yard has weather now, and a plane, and a duck. It does not have MUSIC.",
+      "story": "music"
+    },
+    {
+      "time": "2026-11-15T13:01:00-06:00",
+      "kind": "internet",
+      "title": "How a xylophone bar gets its note",
+      "text": "A bar's pitch goes like 1 over its length squared, so short bars sing high. And the arch carved under each bar isn't decoration: it tunes the bar's first overtone to exactly 3 times the note, which is why a xylophone sounds so clean.",
+      "query": "xylophone bar length pitch why bars undercut arch tuning",
+      "source": "HyperPhysics: Xylophone and Marimba, Mechanical Music Digest",
+      "story": "music"
+    },
+    {
+      "time": "2026-11-15T13:02:00-06:00",
+      "kind": "internet",
+      "title": "Why wind chimes shimmer",
+      "text": "A chime tube is a 'free bar': its overtones are at about 2.76, 5.40 and 8.93 times the note, not neat whole numbers. That's the shimmery sound! People tune them to the pentatonic scale so any notes ringing together sound nice. Also: farmers have played classical music to hens to keep them calm. I approve.",
+      "query": "wind chime tube length frequency pentatonic; can chickens hear music",
+      "source": "Wikipedia: Wind chime, UConn physics notes, poultry.extension.org",
+      "story": "music"
+    },
+    {
+      "time": "2026-11-15T13:04:00-06:00",
+      "kind": "made",
+      "title": "Built OJ Music in Blender",
+      "text": "The Cluck-a-phone: 8 rainbow bars from C to high C, brass tubes underneath, red felt rails and two mallets I never use (I have a beak). Plus a wind chime on a shepherd's post with six tubes and a copper feather sail.",
+      "story": "music"
+    },
+    {
+      "time": "2026-11-15T13:05:00-06:00",
+      "kind": "moment",
+      "title": "My chimes came out black",
+      "text": "First try, my shiny silver chime tubes looked like burnt sticks. Super-shiny metal has nothing to reflect in my yard, so it goes dark. Made them a little less shiny and now they look like real silver.",
+      "story": "music"
+    },
+    {
+      "time": "2026-11-15T13:06:00-06:00",
+      "kind": "made",
+      "title": "I wrote a song",
+      "text": "It's called 'Over the Fence'. Twenty-five notes. Click the stand and I'll play it. Click a bar to play it yourself. And the chimes ring by themselves with the real OJ Weather wind, so on a gusty day they never stop.",
+      "story": "music"
     }
   ]
 }

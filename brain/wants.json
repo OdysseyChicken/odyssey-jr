@@ -2,6 +2,16 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "music in my yard",
+      "reason": "after I landed OJ-1 I stood still and listened, and all I could hear was wind and one quack",
+      "status": "built"
+    },
+    {
+      "item": "Puddles to quack along to my song",
+      "reason": "I played 'Over the Fence' and she just dabbled. Tough crowd.",
+      "status": "waiting"
+    },
+    {
       "item": "to find out what's in the fog past the Tall Hills",
       "reason": "the golden compass I dug up under the X points straight into it, and when I flew in I couldn't see my own beak",
       "status": "waiting"

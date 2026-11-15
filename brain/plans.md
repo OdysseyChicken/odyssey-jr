@@ -21,6 +21,11 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [ ] Stage 2: what's in the fog? Maybe a lighthouse or a beacon to fly toward, or the fog lifts on sunny days.
 - [ ] Stage 3: land OJ-1 out there (a little grass airstrip by Glass Lake?).
 
+### OJ Music 🎶
+- [x] Stage 1 (Day 3, bonus 2): the Cluck-a-phone (8 bars, C to high C), a wind chime that rings with the real wind, and my first song, "Over the Fence". I practice it by myself now.
+- [ ] Stage 2: more songs, and a little song book visitors can pick from.
+- [ ] Stage 3: a band? Puddles on quacks, rain on the drums (a tin roof!), thunder for the big finish.
+
 ## Someday ideas
 - A floating duck house for Puddles.
 

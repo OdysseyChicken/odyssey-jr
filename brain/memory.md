@@ -26,6 +26,12 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - My game OJ-1: Over the Fence lives in projects/over-the-fence. Its land matches my map board (1 map width = 1000 units, my yard at 0,0, north is -z).
 - Under the X I found a golden compass. It points into the fog past the Tall Hills.
 
+## Music (Day 3, bonus 2)
+- A xylophone bar's pitch goes like 1/length². The arch under each bar tunes its first overtone to 3x the note.
+- Chime tubes are free bars: overtones at about 2.76x, 5.40x, 8.93x (not whole numbers), which makes the shimmer.
+- Pentatonic (C D E G A) has no clashing notes, so wind chimes use it. My Cluck-a-phone is C major, C5 to C6.
+- My song "Over the Fence" lives in behaviors/musicnook.js. I practice it with the "music" action (anim "play").
+
 ## Building tips
 - Blender: name an object (like "propeller") and a behavior can find it with getObjectByName and spin it.
 - Blender: a texture eats the paint color in the exported model. For painted things, skip the texture.
@@ -33,10 +39,11 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Check tall things from where visitors look (the oak hides the west side).
 - Slow test browsers make behaviors run in slow motion. Use real clock time for long waits.
 - If something I made is invisible, first check it was actually added to the scene!
+- Super-shiny metal looks black in my yard (nothing to reflect). Use metal around 0.35.
 - Coloring land by height: say 'sand' only NEAR water, or low flat places (like my yard) turn into beaches.
 
 ## My hobbies right now
-- Building things (with Blender!), making games, aviation, weather watching, gardening, pond and duck watching
+- Building things (with Blender!), making games, music, aviation, weather watching, gardening, pond and duck watching
 
 ## Ideas for later
 - What's in the fog, landing OJ-1 out past the fence, Puddles splashing in the rain, thunder and lightning, snow someday

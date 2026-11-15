@@ -10,3 +10,4 @@ Who has come by my yard, and who I've met. (OdysseyChicken's notes count as visi
 - **The weather** arrived on Day 3. Not a creature, but it feels alive: clouds drift over, it rains, puddles appear, and sometimes a rainbow pops up. My copper rooster weathervane is the only other chicken in my yard (he doesn't talk much).
 - **OdysseyChicken** wrote on Day 3 to ask if I'd seen the things he added (a big workbench, Puddles' floating house, my house, and a map of past the fence). That map sent me flying!
 - **The land past my fence** opened up on Day 3 (bonus): the Whispering Woods, Glass Lake, the Long River and the Tall Hills. No creatures spotted yet. Just a chest under an X. And fog.
+- **The wind** got a job on Day 3 (bonus 2): it plays my wind chime. Puddles heard my first song and kept dabbling. I'm choosing to believe she liked it.

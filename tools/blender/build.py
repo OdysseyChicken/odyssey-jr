@@ -642,6 +642,78 @@ def weatherstation():
 
 ASSETS.update({"weatherstation": weatherstation})
 
+def musicnook():
+    # OJ Music (Day 3, bonus 2): the Cluck-a-phone (an 8-bar xylophone, C major, low notes on the left) and a wind chime
+    # on a shepherd's post. Named parts for the behavior: "bar0".."bar7" (bounce when hit), "chimes" (the whole chime
+    # swings from its hook), "chime0".."chime5" (each tube swings from its string), "striker" (the clapper + sail).
+    # Bars are on the -Y side facing visitors; Odyssey stands at +Y (behind the bars) and faces them while he plays.
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("mn_planks", (1, 0.86, 0.66), tex="planks", scale=(1, 0.6))
+    felt = mat("mn_felt", (0.75, 0.18, 0.16), rough=0.95)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    silver = mat("mn_silver", (0.86, 0.88, 0.92), rough=0.3, metal=0.35)
+    cord = mat("mn_cord", (0.25, 0.2, 0.18), rough=0.9)
+    copper = mat("ws_copper", (0.85, 0.55, 0.3), rough=0.35, metal=0.85)
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    cyl("mn_pad", 1.55, 1.6, 0.06, (0, 0, 0.03), stone, verts=28)
+    # --- the Cluck-a-phone ---
+    top = 0.86
+    for x in (-1.12, 1.12):
+        for y in (-0.42, 0.42):
+            cyl("xy_leg", 0.05, 0.06, top - 0.06, (x, y, (top - 0.06) / 2), wood, verts=10, bevel=0.01)
+        box("xy_side", (0.08, 0.95, 0.08), (x, 0, top - 0.25), wood, bevel=0.015)
+    for y in (-0.3, 0.3):  # the two rails the bars rest on, with red felt
+        box("xy_rail", (2.36, 0.09, 0.1), (0, y, top - 0.08), wood, bevel=0.02)
+        box("xy_felt", (2.3, 0.07, 0.02), (0, y, top - 0.02), felt, bevel=0.005)
+    cols = [(0.92, 0.3, 0.28), (0.97, 0.55, 0.22), (0.98, 0.82, 0.25), (0.45, 0.78, 0.35), (0.25, 0.72, 0.7), (0.3, 0.52, 0.9), (0.45, 0.38, 0.82), (0.72, 0.4, 0.8)]
+    for i in range(8):
+        x = -0.98 + i * 0.28
+        ln = 0.95 - i * 0.055   # higher notes = shorter bars (pitch goes like 1 / length squared)
+        b = box(f"bar{i}", (0.22, ln, 0.06), (x, 0, top + 0.03), mat(f"mn_bar{i}", cols[i], rough=0.45), bevel=0.02)
+        for y in (-0.3, 0.3): cyl("xy_pin", 0.018, 0.018, 0.02, (x, y, top + 0.065), brass, verts=8, bevel=0)
+        cyl("xy_tube", 0.075, 0.075, 0.5 - i * 0.04, (x, 0, top - 0.2 - (0.5 - i * 0.04) / 2), brass, verts=16, bevel=0.005)  # resonators
+    for k, (x, y) in enumerate([(-1.0, 0.62), (-0.7, 0.66)]):  # two mallets resting on a little side tray
+        cyl("mallet_stick", 0.018, 0.018, 0.55, (x + 0.27, y, top - 0.08), wood, rot=(0, math.pi / 2, 0.15 * k), verts=8, bevel=0)
+        sphere("mallet_head", 0.06, (x, y, top - 0.08), felt, sub=2)
+    box("xy_tray", (0.9, 0.2, 0.04), (-0.65, 0.64, top - 0.13), planks, bevel=0.01)
+    # --- the wind chime on a shepherd's post ---
+    px, py = 2.1, 0.35
+    box("ch_post", (0.13, 0.13, 3.3), (px, py, 1.65), wood, bevel=0.02)
+    box("ch_arm", (0.75, 0.1, 0.1), (px - 0.33, py, 3.2), wood, bevel=0.02)
+    box("ch_brace", (0.07, 0.07, 0.5), (px - 0.18, py, 3.0), wood, rot=(0, 0.75, 0), bevel=0.01)
+    hx, hz = px - 0.62, 3.15
+    bpy.ops.object.empty_add(location=(hx, py, hz)); piv = bpy.context.object; piv.name = "chimes"
+    def kid(o, parent):
+        o.parent = parent; o.matrix_parent_inverse = parent.matrix_world.inverted(); return o
+    kid(cyl("ch_hook", 0.008, 0.008, 0.35, (hx, py, hz - 0.17), cord, verts=6, bevel=0), piv)
+    dz = hz - 0.4
+    kid(cyl("ch_top", 0.3, 0.3, 0.06, (hx, py, dz), wood, verts=24, bevel=0.01), piv)
+    for a in range(3):  # three cords from the hook to the disc
+        ang = a / 3 * math.tau
+        kid(cyl("ch_cord3", 0.006, 0.006, 0.08, (hx + math.cos(ang) * 0.1, py + math.sin(ang) * 0.1, dz + 0.06), cord, verts=5, bevel=0), piv)
+    for i in range(6):
+        ang = i / 6 * math.tau
+        x, y = hx + math.cos(ang) * 0.22, py + math.sin(ang) * 0.22
+        ln = 0.95 - i * 0.08     # pentatonic tubes: a tube's pitch goes like 1 / length squared
+        bpy.ops.object.empty_add(location=(x, y, dz - 0.03)); ep = bpy.context.object; ep.name = f"chime{i}"; kid(ep, piv)
+        hang = 0.12
+        kid(cyl("ch_string", 0.005, 0.005, hang, (x, y, dz - 0.03 - hang / 2), cord, verts=5, bevel=0), ep)
+        kid(cyl("ch_tube", 0.032, 0.032, ln, (x, y, dz - 0.03 - hang - ln / 2), silver, verts=14, bevel=0.004), ep)
+    bpy.ops.object.empty_add(location=(hx, py, dz - 0.03)); st = bpy.context.object; st.name = "striker"; kid(st, piv)
+    kid(cyl("ch_strstring", 0.005, 0.005, 1.25, (hx, py, dz - 0.03 - 0.625), cord, verts=5, bevel=0), st)
+    kid(cyl("ch_clapper", 0.13, 0.13, 0.05, (hx, py, dz - 0.6), wood, verts=20, bevel=0.01), st)
+    # the sail: a copper feather that catches the wind
+    f = sphere("ch_sail", 0.2, (hx, py, dz - 1.4), copper, scale=(0.75, 0.06, 1.3), sub=3); kid(f, st)
+    kid(box("ch_quill", (0.02, 0.02, 0.52), (hx, py, dz - 1.4), mat("ink", (0.25, 0.18, 0.12)), bevel=0), st)
+    # little sign
+    box("mn_sign", (1.15, 0.06, 0.32), (-1.25, -1.05, 0.62), planks, bevel=0.03)
+    box("mn_sign_post", (0.07, 0.07, 0.5), (-1.25, -1.0, 0.25), wood, bevel=0.01)
+    bpy.ops.object.text_add(location=(-1.25, -1.09, 0.62), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ MUSIC"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.17; t.data.extrude = 0.01
+    t.data.materials.append(mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)); bpy.ops.object.convert(target="MESH")
+
+ASSETS.update({"musicnook": musicnook})
+
 
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)

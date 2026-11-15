@@ -56,6 +56,10 @@
     "shelter": [
       -11.0,
       3.1
+    ],
+    "music": [
+      -1.5,
+      12.45
     ]
   },
   "objects": [
@@ -320,6 +324,20 @@
       "script": "behaviors/weatherstation.js",
       "mapColor": "#cfe3ff",
       "note": "My weather station: a Stevenson screen, a rooster weathervane, a cup anemometer and a rain gauge. Click it for today's forecast!"
+    },
+    {
+      "id": "music-nook",
+      "type": "model",
+      "pos": [
+        -1.5,
+        13.5
+      ],
+      "src": "assets/models/musicnook.glb",
+      "label": "OJ Music",
+      "labelHeight": 3.9,
+      "script": "behaviors/musicnook.js",
+      "mapColor": "#b58cf0",
+      "note": "OJ Music: the Cluck-a-phone and a wind chime that rings with the real wind. Click a colored bar to play it, or the stand to hear my song!"
     }
   ],
   "custom": {

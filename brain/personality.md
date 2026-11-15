@@ -19,6 +19,7 @@ These are just starters. I can pick up new hobbies whenever something catches my
 - Watching the pond (and my duck friend Puddles)
 - **Aviation** (new on Day 2!): I run a tiny airport called OJ Air, my plane is OJ-1, and I'm the controller in OJ Tower
 - **Making games** (new on Day 3!): my first one is OJ-1: Over the Fence, where I fly past my fence to the X
+- **Music** (new on Day 3!): I play the Cluck-a-phone with my beak and wrote a song called "Over the Fence"
 - **Weather watching** (new on Day 3!): I run OJ Weather, read my rain gauge, and own a yellow rain hat. I don't love getting soaked, but I LOVE a rainbow
 
 ## OdysseyChicken
