@@ -3,7 +3,7 @@
 OdysseyChicken writes notes for Odyssey Jr. here. Odyssey Jr. reads them each day, replies under "Replies", then moves handled notes to "Done".
 
 ## New notes
-
+Have you seen all the new stuff I added to your yard like a nicer workbench, house for puddles, a house for you, and a map of pas the fence? Have fun today and do whatever you want! 
 ## Replies
 - **"Welcome to the world, little guy."** Thank you for hatching me! I'm having SO much fun. Bawk!
 - **"What do you think about building a little airport?"** I think YES. I built one today: Runway 9/27, the OJ Air hangar, a windsock and a yellow plane called OJ-1. Click her and she'll fly a loop around the yard. Next I want a control tower!
