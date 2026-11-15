@@ -485,9 +485,10 @@ const ACTIONS = {
   shelter:  { icon: "🌧️", doing: "huddled under the big oak, all fluffed up, waiting out the rain", to: "the big oak", why: "get out of the rain", where: "shelter", anim: "huddle", fx: { calm: 0.5, energy: 0.3 }, dur: [10, 25] },
   worms:    { icon: "🪱", doing: "hunting for worms that came up after the rain", to: "the wet garden", why: "catch worms (they come up when it rains!)", where: "garden", anim: "scratch", fx: { fullness: 1.8, wonder: 0.8, mood: 0.6 }, dur: [8, 16] },
   weather:  { icon: "🌡️", doing: "checking his weather station", to: "OJ Weather", why: "read the rain gauge and the wind", where: "weather", anim: "look", fx: { wonder: 1.0, mood: 0.4 }, dur: [4, 9] },
-  music:    { icon: "🎶", doing: "practicing his song on the Cluck-a-phone", to: "OJ Music", why: "practice his song", where: "music", anim: "play", face: "music-nook", fx: { mood: 1.2, calm: 0.8, wonder: 0.3, energy: -0.1 }, dur: [6, 14] }
+  music:    { icon: "🎶", doing: "practicing his song on the Cluck-a-phone", to: "OJ Music", why: "practice his song", where: "music", anim: "play", face: "music-nook", fx: { mood: 1.2, calm: 0.8, wonder: 0.3, energy: -0.1 }, dur: [6, 14] },
+  garden:   { icon: "🧄", doing: "checking on the seeds in his garden (and trying very hard not to scratch them up)", to: "OJ Garden", why: "see if anything sprouted", where: "kitchen", anim: "look", face: "oj-garden", fx: { calm: 1.0, wonder: 0.6, mood: 0.5 }, dur: [5, 11] }
 };
-const OUTDOOR_DRY = ["forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
+const OUTDOOR_DRY = ["garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
 const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
@@ -505,7 +506,8 @@ function chooseAction(n, now, rnd) {
     dustbath: lack("calm") ** 2 * 4, think: lack("calm") + lack("wonder") * 0.5, planes: spots.airport ? lack("wonder") * 0.9 + 0.25 : 0, visit: spots.pond ? lack("mood") * 0.9 + lack("calm") * 0.4 + 0.2 : 0, tower: spots.tower ? lack("wonder") * 0.8 + lack("calm") * 0.3 + 0.2 : 0, dance: n.mood > 75 ? 0.6 : 0.1,
     shelter: spots.shelter ? wx.rain * 6 : 0, worms: wx.afterRain ? 2.5 + lack("fullness") * 2 : 0,
     weather: spots.weather ? lack("wonder") * 0.5 + 0.15 + (wx.afterRain ? 0.8 : 0) : 0,
-    music: spots.music ? lack("mood") * 0.8 + lack("calm") * 0.6 + 0.25 : 0
+    music: spots.music ? lack("mood") * 0.8 + lack("calm") * 0.6 + 0.25 : 0,
+    garden: spots.kitchen ? lack("calm") * 0.7 + lack("wonder") * 0.4 + 0.25 + (wx.afterRain ? 0.5 : 0) : 0
   };
   // chickens don't love getting soaked: in the rain most outdoor plans get put off
   for (const k of OUTDOOR_DRY) scores[k] *= 1 - wx.rain * 0.85;
@@ -617,7 +619,7 @@ controls.addEventListener("start", () => { if (follow) { follow = false; $("camB
 setView(chickenRoom);
 
 const bubble = $("bubble");
-const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."] };
+const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."] };
 let bubbleText = state.thought ?? "Bawk.", bubbleTimer = 8;
 function say(text, secs = 4) { bubbleText = text; bubbleTimer = secs; }
 

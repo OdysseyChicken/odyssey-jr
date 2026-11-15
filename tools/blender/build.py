@@ -714,6 +714,93 @@ def musicnook():
 
 ASSETS.update({"musicnook": musicnook})
 
+def kitchengarden():
+    # OJ Garden (Day 3, bonus 3): a cedar raised bed. The left half is open (garlic, tucked under straw), the right half
+    # wears a cold frame: a wooden box with a sloped glass lid that faces the sun. Named parts for the behavior:
+    # "lid" (an empty at the back hinge; the lid swings open on sunny afternoons), "glass" (the pane, made see-through
+    # by the behavior). The plants are NOT in this model; the behavior grows them day by day.
+    # Front faces -Y (toward visitors). Soil top is at z = 0.42.
+    cedar = mat("kg_cedar", (0.95, 0.68, 0.5), tex="planks", scale=(2, 0.4))
+    wood = mat("wood", WOOD, tex="wood")
+    soil = mat("kg_soil", (0.62, 0.45, 0.35), tex="dirt", scale=(3, 1.5))
+    straw = mat("kg_straw", (0.93, 0.8, 0.45), rough=0.95)
+    white = mat("kg_white", (0.95, 0.93, 0.86), rough=0.7)
+    glass = mat("kg_glass", (0.75, 0.88, 0.92), rough=0.1)
+    green = mat("kg_green", (0.38, 0.62, 0.42), rough=0.6)
+    tin = mat("kg_tin", (0.55, 0.72, 0.68), rough=0.4, metal=0.35)
+    ink = mat("ink", (0.25, 0.16, 0.12), rough=0.9)
+    L, W, H = 3.8, 1.7, 0.45
+    # the bed: three stacked boards per side, chunky corner posts
+    for k in range(3):
+        z = 0.08 + k * 0.145
+        box("kg_board", (L, 0.09, 0.14), (0, -W / 2, z), cedar, bevel=0.015)
+        box("kg_board", (L, 0.09, 0.14), (0, W / 2, z), cedar, bevel=0.015)
+        box("kg_board", (0.09, W, 0.14), (-L / 2, 0, z), cedar, bevel=0.015)
+        box("kg_board", (0.09, W, 0.14), (L / 2, 0, z), cedar, bevel=0.015)
+    for x in (-L / 2, L / 2):
+        for y in (-W / 2, W / 2):
+            box("kg_post", (0.14, 0.14, 0.56), (x, y, 0.28), wood, bevel=0.025)
+            cyl("kg_cap", 0.085, 0.06, 0.05, (x, y, 0.585), white, verts=16, bevel=0.01)
+    box("kg_cap_rail", (L + 0.12, 0.16, 0.04), (0, -W / 2, H + 0.02), white, bevel=0.012)
+    box("kg_cap_rail", (L + 0.12, 0.16, 0.04), (0, W / 2, H + 0.02), white, bevel=0.012)
+    s = box("kg_soil", (L - 0.1, W - 0.1, 0.06), (0, 0, 0.39), soil, bevel=0.03); jitter(s, 0.008)
+    # straw mulch over the garlic (left half): loose little tufts
+    random.seed(11)
+    for i in range(70):
+        x = random.uniform(-1.8, -0.15); y = random.uniform(-0.72, 0.72)
+        box("kg_straw", (random.uniform(0.12, 0.25), 0.012, 0.012), (x, y, 0.43 + random.uniform(0, 0.02)), straw,
+            rot=(0, random.uniform(-0.2, 0.2), random.uniform(0, math.pi)), bevel=0)
+    # row markers: little white stakes with green tops
+    for (x, y) in [(-1.75, -0.35), (-1.75, 0.35), (0.25, -0.45), (0.25, 0.0), (0.25, 0.45)]:
+        box("kg_stake", (0.03, 0.03, 0.28), (x, y, 0.52), white, bevel=0.004)
+        box("kg_tag", (0.1, 0.015, 0.07), (x, y - 0.02, 0.64), green, bevel=0.006)
+    # the cold frame on the right half: back wall taller than the front, so the glass slopes toward the sun
+    fx0, fx1 = 0.05, 1.8; fw = fx1 - fx0; cx = (fx0 + fx1) / 2
+    back, front = 0.42, 0.22
+    box("kg_cf_back", (fw, 0.07, back), (cx, W / 2 - 0.12, H + back / 2), wood, bevel=0.015)
+    box("kg_cf_front", (fw, 0.07, front), (cx, -W / 2 + 0.12, H + front / 2), wood, bevel=0.015)
+    d = W - 0.24
+    for x in (fx0, fx1):  # sloped side walls (a wedge from a box, then cut the top)
+        bpy.ops.mesh.primitive_cube_add(size=1)
+        o = bpy.context.object; o.name = "kg_cf_side"
+        for v in o.data.vertices:
+            yy = v.co.y * d; top = front + (back - front) * (v.co.y + 0.5)
+            v.co.x = x + v.co.x * 0.07; v.co.y = yy; v.co.z = H + (top if v.co.z > 0 else 0)
+        finish(o, wood, bevel=0.012)
+    # the lid hinges on the back edge
+    hy, hz = W / 2 - 0.12, H + back
+    bpy.ops.object.empty_add(location=(cx, hy, hz)); piv = bpy.context.object; piv.name = "lid"
+    ang = math.atan2(back - front, d); ln = math.hypot(d, back - front) + 0.06
+    def kid(o):
+        o.parent = piv; o.matrix_parent_inverse = piv.matrix_world.inverted(); return o
+    my, mz = hy - math.cos(ang) * ln / 2, hz - math.sin(ang) * ln / 2 + 0.03
+    kid(box("glass", (fw - 0.08, ln - 0.08, 0.02), (cx, my, mz), glass, rot=(-ang, 0, 0), bevel=0))
+    for x in (fx0, cx, fx1):
+        kid(box("kg_lid_bar", (0.07, ln, 0.05), (x, my, mz + 0.01), white, rot=(-ang, 0, 0), bevel=0.01))
+    for t in (0.0, 1.0):
+        yy = hy - math.cos(ang) * ln * t; zz = hz - math.sin(ang) * ln * t + 0.03
+        kid(box("kg_lid_end", (fw + 0.07, 0.07, 0.05), (cx, yy, zz + 0.01), white, rot=(-ang, 0, 0), bevel=0.01))
+    kid(cyl("kg_handle", 0.025, 0.025, 0.3, (cx, hy - math.cos(ang) * ln - 0.03, hz - math.sin(ang) * ln + 0.06), mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9), rot=(0, math.pi / 2, 0), verts=10, bevel=0))
+    for x in (fx0 + 0.3, fx1 - 0.3):
+        cyl("kg_hinge", 0.03, 0.03, 0.14, (x, hy, hz + 0.02), mat("ws_iron", (0.3, 0.3, 0.32), rough=0.5, metal=0.6), rot=(0, math.pi / 2, 0), verts=10, bevel=0)
+    # a vent stick leaning on the frame (what I prop the lid up with)
+    box("kg_ventstick", (0.04, 0.04, 0.5), (fx1 + 0.12, -W / 2 - 0.05, 0.25), wood, rot=(0.15, 0.1, 0), bevel=0.005)
+    # watering can at the front left corner
+    cx2, cy2 = -2.25, -0.55
+    cyl("kg_can", 0.17, 0.15, 0.3, (cx2, cy2, 0.15), tin, verts=24, bevel=0.01)
+    cyl("kg_spout", 0.025, 0.04, 0.45, (cx2 + 0.28, cy2, 0.28), tin, rot=(0, 0.9, 0), verts=10, bevel=0)
+    cyl("kg_rose", 0.06, 0.035, 0.05, (cx2 + 0.46, cy2, 0.42), tin, rot=(0, 0.9, 0), verts=12, bevel=0)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.13, minor_radius=0.02, location=(cx2 - 0.05, cy2, 0.36), rotation=(math.pi / 2, 0, 0))
+    o = bpy.context.object; o.name = "kg_can_handle"; finish(o, tin)
+    # the sign
+    box("kg_sign", (1.2, 0.06, 0.34), (-1.0, -W / 2 - 0.35, 0.72), mat("board", (1, 0.86, 0.66), tex="planks", scale=(1, 0.5)), bevel=0.03)
+    box("kg_sign_post", (0.07, 0.07, 0.62), (-1.0, -W / 2 - 0.31, 0.31), wood, bevel=0.01)
+    bpy.ops.object.text_add(location=(-1.0, -W / 2 - 0.39, 0.72), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ GARDEN"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.17; t.data.extrude = 0.01
+    t.data.materials.append(mat("ink_green", (0.2, 0.42, 0.22), rough=0.8)); bpy.ops.object.convert(target="MESH")
+
+ASSETS.update({"kitchengarden": kitchengarden})
+
 
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)

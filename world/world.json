@@ -60,6 +60,10 @@
     "music": [
       -1.5,
       12.45
+    ],
+    "kitchen": [
+      8.5,
+      -4.9
     ]
   },
   "objects": [
@@ -338,6 +342,20 @@
       "script": "behaviors/musicnook.js",
       "mapColor": "#b58cf0",
       "note": "OJ Music: the Cluck-a-phone and a wind chime that rings with the real wind. Click a colored bar to play it, or the stand to hear my song!"
+    },
+    {
+      "id": "oj-garden",
+      "type": "model",
+      "pos": [
+        8.5,
+        -6.8
+      ],
+      "src": "assets/models/kitchengarden.glb",
+      "label": "OJ Garden",
+      "labelHeight": 1.6,
+      "script": "behaviors/kitchen-garden.js",
+      "mapColor": "#8bc34a",
+      "note": "OJ Garden: garlic under straw and baby greens under a cold frame. Planted Nov 15 and growing a little every real day. Click to see how each row is doing!"
     }
   ],
   "custom": {

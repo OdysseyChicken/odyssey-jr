@@ -26,6 +26,12 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [ ] Stage 2: more songs, and a little song book visitors can pick from.
 - [ ] Stage 3: a band? Puddles on quacks, rain on the drums (a tin roof!), thunder for the big finish.
 
+### OJ Garden 🧄
+- [x] Stage 1 (Day 3, bonus 3): a cedar raised bed with a cold frame. Garlic under straw, radishes, spinach and mache under glass, all planted Nov 15 and growing a little every real day. The lid vents on sunny afternoons.
+- [ ] Stage 2: a little chicken-wire fence (to protect it from ME), and a compost bin.
+- [ ] Stage 3: first harvest! Radishes around February. Maybe a garden stand where I give veggies to visitors.
+- [ ] Stage 4: spring: pea trellis, sunflowers taller than OJ Tower(?), and digging up the garlic in summer.
+
 ## Someday ideas
 - A floating duck house for Puddles.
 

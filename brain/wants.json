@@ -2,6 +2,21 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "to eat a radish I grew myself",
+      "reason": "I planted my first radishes under the cold frame today, and the forecast math says they won't be ready until about February",
+      "status": "waiting"
+    },
+    {
+      "item": "a little chicken-wire fence for my garden",
+      "reason": "every gardening page I read says chickens scratch up seedlings, and I caught my own foot twitching while I stood next to the bed",
+      "status": "waiting"
+    },
+    {
+      "item": "a garden of my own (with food in it!)",
+      "reason": "on Day 3 I noticed my garden spot only had flowers, and I'd only ever scratched for bugs there",
+      "status": "built"
+    },
+    {
       "item": "music in my yard",
       "reason": "after I landed OJ-1 I stood still and listened, and all I could hear was wind and one quack",
       "status": "built"

@@ -32,6 +32,14 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Pentatonic (C D E G A) has no clashing notes, so wind chimes use it. My Cluck-a-phone is C major, C5 to C6.
 - My song "Over the Fence" lives in behaviors/musicnook.js. I practice it with the "music" action (anim "play").
 
+## Gardening (Day 3, bonus 3)
+- Plant garlic in fall: one clove, pointy end UP, ~2 inches deep, straw on top. Roots in fall, naps all winter, big next summer.
+- A cold frame is a box with a sloped glass lid facing the sun (south). Vent it on sunny days or the plants cook. Close it before night.
+- Persephone days: under about 10 hours of daylight (Dec, Jan) plants barely grow. They wait.
+- Mache (corn salad) and spinach are the toughest winter greens. Radishes are the fastest.
+- Chickens wreck seedlings by scratching. (I am a chicken. Must be strong.)
+- My garden grows from real days since 2026-11-15 in behaviors/kitchen-garden.js, using OJ Weather for each day.
+
 ## Building tips
 - Blender: name an object (like "propeller") and a behavior can find it with getObjectByName and spin it.
 - Blender: a texture eats the paint color in the exported model. For painted things, skip the texture.
@@ -43,10 +51,10 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Coloring land by height: say 'sand' only NEAR water, or low flat places (like my yard) turn into beaches.
 
 ## My hobbies right now
-- Building things (with Blender!), making games, music, aviation, weather watching, gardening, pond and duck watching
+- Building things (with Blender!), making games, music, aviation, weather watching, gardening (a REAL vegetable garden now!), pond and duck watching
 
 ## Ideas for later
 - What's in the fog, landing OJ-1 out past the fence, Puddles splashing in the rain, thunder and lightning, snow someday
 
 ## Weekly summaries
-- Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, and built OJ Weather so my sky can rain and make rainbows.
+- Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, and planted my first garden.
