@@ -48,6 +48,14 @@
     "tower": [
       13.2,
       -1
+    ],
+    "weather": [
+      8.0,
+      -0.6
+    ],
+    "shelter": [
+      -11.0,
+      3.1
     ]
   },
   "objects": [
@@ -298,6 +306,20 @@
       "label": "Map of past the fence",
       "labelHeight": 3.1,
       "script": "behaviors/fence-map-board.js"
+    },
+    {
+      "id": "oj-weather",
+      "type": "model",
+      "pos": [
+        9,
+        -2.5
+      ],
+      "src": "assets/models/weatherstation.glb",
+      "label": "OJ Weather",
+      "labelHeight": 5.6,
+      "script": "behaviors/weatherstation.js",
+      "mapColor": "#cfe3ff",
+      "note": "My weather station: a Stevenson screen, a rooster weathervane, a cup anemometer and a rain gauge. Click it for today's forecast!"
     }
   ],
   "custom": {

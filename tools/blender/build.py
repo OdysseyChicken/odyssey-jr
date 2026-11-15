@@ -536,6 +536,113 @@ def duck():
 
 ASSETS.update({"duck": duck})
 
+def weatherstation():
+    # OJ Weather (Day 3): a Stevenson screen (white louvered box for thermometers), a pole with a rooster weathervane
+    # and a cup anemometer, and a glass rain gauge. Pivots: "vane" (turns with wind), "anemometer" (spins), "rain_level" (fills).
+    white = mat("ws_white", (0.97, 0.96, 0.92), rough=0.6)
+    shade = mat("ws_shade", (0.82, 0.8, 0.76), rough=0.7)
+    wood = mat("wood", WOOD, tex="wood")
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    steel = mat("steel", (0.3, 0.3, 0.33), rough=0.4, metal=0.8)
+    copper = mat("ws_copper", (0.85, 0.55, 0.3), rough=0.35, metal=0.85)
+    red = mat("ws_red", (0.8, 0.22, 0.2), rough=0.6)
+    glass = mat("ws_glass", (0.75, 0.88, 0.95), rough=0.05, metal=0.2)
+    water = mat("ws_water", (0.35, 0.6, 0.95), rough=0.1, emit=(0.2, 0.45, 0.9), emit_strength=0.3)
+    # round stone pad
+    cyl("pad", 1.9, 1.95, 0.08, (0, 0, 0.04), stone, verts=24)
+    # --- Stevenson screen on four legs, door facing the viewer (-Y) ---
+    sx0, sy0, H0 = -0.55, 0.15, 1.15  # box centre x,y and bottom height
+    for dx in (-0.36, 0.36):
+        for dy in (-0.3, 0.3):
+            box("leg", (0.08, 0.08, H0), (sx0 + dx, sy0 + dy, H0 / 2), wood, bevel=0.01)
+    box("screen_floor", (0.95, 0.8, 0.06), (sx0, sy0, H0), white, bevel=0.01)
+    bh = 0.75
+    for i in range(9):  # louvers all around: slats tilted so air gets in but sun and rain don't
+        z = H0 + 0.08 + i * (bh / 9)
+        box("louver", (0.92, 0.03, 0.09), (sx0, sy0 - 0.39, z), white, rot=(0.6, 0, 0), bevel=0.005)
+        box("louver", (0.92, 0.03, 0.09), (sx0, sy0 + 0.39, z), white, rot=(-0.6, 0, 0), bevel=0.005)
+        box("louver", (0.03, 0.76, 0.09), (sx0 - 0.46, sy0, z), white, rot=(0, -0.6, 0), bevel=0.005)
+        box("louver", (0.03, 0.76, 0.09), (sx0 + 0.46, sy0, z), white, rot=(0, 0.6, 0), bevel=0.005)
+    box("screen_inner", (0.84, 0.7, bh), (sx0, sy0, H0 + bh / 2 + 0.03), shade, bevel=0)
+    for dx in (-0.46, 0.46):
+        for dy in (-0.39, 0.39):
+            box("corner", (0.06, 0.06, bh + 0.08), (sx0 + dx, sy0 + dy, H0 + bh / 2 + 0.03), white, bevel=0.01)
+    # pitched double roof (the gap keeps the sun from heating it)
+    rz = H0 + bh + 0.12
+    box("roof_l", (0.6, 1.0, 0.05), (sx0 - 0.27, sy0, rz + 0.12), white, rot=(0, -0.42, 0), bevel=0.01)
+    box("roof_r", (0.6, 1.0, 0.05), (sx0 + 0.27, sy0, rz + 0.12), white, rot=(0, 0.42, 0), bevel=0.01)
+    box("door_knob", (0.05, 0.05, 0.05), (sx0 + 0.32, sy0 - 0.43, H0 + 0.4), copper, bevel=0.01)
+    # --- tall pole with weathervane + anemometer ---
+    px, py = 0.75, 0.25
+    top = 4.2
+    cyl("pole", 0.07, 0.05, top, (px, py, top / 2), steel, verts=12)
+    cyl("pole_foot", 0.2, 0.25, 0.25, (px, py, 0.2), stone, verts=12)
+    # compass arms: N E S W letters (N points to world -z, which is Blender +Y)
+    cz = top - 0.55
+    box("arm_ns", (0.04, 1.1, 0.04), (px, py, cz), steel, bevel=0)
+    box("arm_ew", (1.1, 0.04, 0.04), (px, py, cz), steel, bevel=0)
+    ink = mat("ws_ink", (0.2, 0.18, 0.2), rough=0.6)
+    for letter, (dx, dy) in {"N": (0, 0.62), "S": (0, -0.62), "E": (0.62, 0), "W": (-0.62, 0)}.items():
+        bpy.ops.object.text_add(location=(px + dx, py + dy, cz - 0.08), rotation=(math.pi / 2, 0, 0))
+        t = bpy.context.object; t.data.body = letter; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.24; t.data.extrude = 0.025
+        t.data.materials.append(copper); bpy.ops.object.convert(target="MESH")
+    sphere("ball", 0.08, (px, py, top + 0.02), copper, sub=2)
+    # rooster weathervane on a pivot. Its tail catches the wind, so the head points where the wind comes FROM.
+    bpy.ops.object.empty_add(location=(px, py, top + 0.1)); vp = bpy.context.object; vp.name = "vane"
+    vz = top + 0.55
+    vparts = [cyl("vane_rod", 0.02, 0.02, 0.5, (px, py, top + 0.3), steel, verts=8, bevel=0),
+              box("arrow", (0.03, 1.3, 0.03), (px, py + 0.0, top + 0.22), copper, bevel=0),
+              cyl("arrow_head", 0.09, 0.0, 0.2, (px, py - 0.72, top + 0.22), copper, rot=(math.pi / 2, 0, 0), verts=4, bevel=0),
+              box("arrow_fin", (0.02, 0.28, 0.24), (px, py + 0.62, top + 0.22), copper, bevel=0.01)]
+    vparts.append(sphere("r_body", 1, (px, py + 0.05, vz), copper, scale=(0.05, 0.3, 0.2), sub=3))
+    vparts.append(sphere("r_chest", 1, (px, py - 0.17, vz + 0.1), copper, scale=(0.05, 0.13, 0.15), sub=3))
+    vparts.append(sphere("r_head", 1, (px, py - 0.27, vz + 0.3), copper, scale=(0.045, 0.1, 0.1), sub=3))
+    vparts.append(cyl("r_beak", 0.03, 0.0, 0.1, (px, py - 0.4, vz + 0.3), copper, rot=(math.pi / 2, 0, 0), verts=6, bevel=0))
+    for i, (dy, dz) in enumerate([(-0.3, 0.42), (-0.24, 0.43), (-0.18, 0.4)]):
+        vparts.append(sphere("r_comb", 0.045, (px, py + dy, vz + dz), red, scale=(0.6, 1, 1.2), sub=2))
+    vparts.append(sphere("r_wattle", 1, (px, py - 0.33, vz + 0.2), red, scale=(0.03, 0.03, 0.05), sub=2))
+    for i in range(4):  # big curved tail feathers
+        f = sphere("r_tail", 1, (0, 0, 0), copper, scale=(0.03, 0.08, 0.28 - i * 0.03), sub=3)  # built at the origin so it turns around its own middle
+        f.rotation_euler.x = -0.5 - i * 0.28; f.location = (px, py + 0.32 + i * 0.03, vz + 0.18 + i * 0.03); vparts.append(f)
+    vparts.append(cyl("r_leg", 0.02, 0.02, 0.2, (px, py + 0.05, vz - 0.22), copper, verts=6, bevel=0))
+    for o in vparts: o.parent = vp; o.matrix_parent_inverse = vp.matrix_world.inverted()
+    # cup anemometer on a side arm. Hollow cups catch more wind than their round backs, so they spin.
+    ax, ay, az = px - 0.65, py, top - 1.4
+    box("anemo_arm", (0.65, 0.04, 0.04), (px - 0.33, py, az), steel, bevel=0)
+    cyl("anemo_post", 0.025, 0.025, 0.3, (ax, ay, az + 0.15), steel, verts=8, bevel=0)
+    bpy.ops.object.empty_add(location=(ax, ay, az + 0.32)); ap = bpy.context.object; ap.name = "anemometer"
+    aparts = [cyl("anemo_hub", 0.05, 0.04, 0.08, (ax, ay, az + 0.32), copper, verts=12, bevel=0)]
+    for i in range(3):
+        a = i / 3 * math.tau
+        cx, cy = ax + math.cos(a) * 0.34, ay + math.sin(a) * 0.34
+        aparts.append(box("anemo_spoke", (0.3, 0.02, 0.02), (ax + math.cos(a) * 0.17, ay + math.sin(a) * 0.17, az + 0.32), steel, rot=(0, 0, a), bevel=0))
+        bpy.ops.mesh.primitive_uv_sphere_add(radius=0.09, location=(cx, cy, az + 0.32), segments=16, ring_count=8)
+        c = bpy.context.object; c.name = "anemo_cup"
+        bm = bmesh.new(); bm.from_mesh(c.data)
+        bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.y > 0.005], context="VERTS"); bm.to_mesh(c.data); bm.free()
+        c.rotation_euler = (math.pi / 2, 0, a + math.pi); finish(c, red); aparts.append(c)
+        mdf = c.modifiers.new("solid", "SOLIDIFY"); mdf.thickness = 0.012
+    for o in aparts: o.parent = ap; o.matrix_parent_inverse = ap.matrix_world.inverted()
+    # rain gauge: a glass tube with marks, on a little post, plus a funnel on top
+    gx, gy = 0.1, -1.0
+    box("gauge_post", (0.14, 0.14, 0.7), (gx, gy, 0.35), wood, bevel=0.01)
+    cyl("gauge_tube", 0.12, 0.12, 0.6, (gx, gy, 1.0), glass, verts=20, bevel=0)
+    cyl("gauge_funnel", 0.2, 0.12, 0.12, (gx, gy, 1.36), steel, verts=20, bevel=0)
+    for i in range(5):
+        box("gauge_mark", (0.1, 0.01, 0.012), (gx, gy - 0.12, 0.78 + i * 0.1), ink, bevel=0)
+    bpy.ops.object.empty_add(location=(gx, gy, 0.72)); lp = bpy.context.object; lp.name = "rain_level"
+    w = cyl("gauge_water", 0.1, 0.1, 0.56, (gx, gy, 0.72 + 0.28), water, verts=20, bevel=0)
+    w.parent = lp; w.matrix_parent_inverse = lp.matrix_world.inverted()
+    # sign
+    box("ws_sign", (1.1, 0.06, 0.32), (0.9, -1.1, 0.75), mat("board", (1, 0.86, 0.66), tex="planks", scale=(1, 0.5)), bevel=0.03)
+    box("ws_sign_post", (0.07, 0.07, 0.6), (0.9, -1.05, 0.3), wood, bevel=0.01)
+    bpy.ops.object.text_add(location=(0.9, -1.14, 0.75), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ WEATHER"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.17; t.data.extrude = 0.01
+    t.data.materials.append(mat("ink_red", (0.7, 0.15, 0.12), rough=0.8)); bpy.ops.object.convert(target="MESH")
+
+ASSETS.update({"weatherstation": weatherstation})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

@@ -105,7 +105,7 @@
   <div id="tabBody">Loading…</div>
 </div>
 <div id="action" class="paper pill"><span id="avatar">🐔</span><span id="actionText">Waking up…</span><span id="actionSince"></span></div>
-<div id="tools"><button id="seedBtn" class="paper pill" title="Toss him some seeds">🌾 Toss seeds</button><button id="outBtn" class="paper pill" style="display:none" title="Step back outside">🚪 Go outside</button><button id="bagBtn" class="paper pill" title="See what he is carrying">🎒 Bag</button><button id="camBtn" class="paper pill" title="Follow Odyssey Jr. with the camera">🎥 Follow</button></div>
+<div id="tools"><button id="seedBtn" class="paper pill" title="Toss him some seeds">🌾 Toss seeds</button><button id="outBtn" class="paper pill" style="display:none" title="Step back outside">🚪 Go outside</button><button id="bagBtn" class="paper pill" title="See what he is carrying">🎒 Bag</button><button id="wxBtn" class="paper pill" title="OJ Weather: today's weather in the yard">🌤️ Weather</button><button id="camBtn" class="paper pill" title="Follow Odyssey Jr. with the camera">🎥 Follow</button></div>
 <div id="minimap" class="paper"><canvas width="260" height="260"></canvas></div>
 <div id="modal" class="paper"><header><div><b id="modalTitle"></b><span id="modalSub"></span></div><button id="closeModal" title="Close">✕</button></header><div id="modalBody"></div></div>
 <div id="bubble"></div>
@@ -128,6 +128,7 @@ import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { findsFor } from "./world/finds.js";
+import { weatherAt, weatherFor, KINDS as WEATHER_KINDS, compass } from "./world/weather.js";
 
 const $ = id => document.getElementById(id);
 const showError = msg => { const e = $("err"); e.style.display = "block"; e.textContent = "Something broke: " + msg; };
@@ -160,6 +161,7 @@ renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadow
 renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
 $("scene").appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
+scene.userData.focus = controls.target; // weather (rain) follows what you look at
 controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.48; controls.minDistance = 3; controls.maxDistance = 50;
 
 const hemi = new THREE.HemisphereLight(0xfff6e8, 0x5a6b4a, 1.1); scene.add(hemi);
@@ -173,10 +175,15 @@ const isNightHour = h => h < 6 || h >= 21;
 function updateSky(now) {
   const h = now.getHours() + now.getMinutes() / 60;
   const k = h < 5 || h > 21.5 ? 0 : h < 7 ? (h - 5) / 2 : h > 19.5 ? (21.5 - h) / 2 : 1;
-  scene.background.copy(nightSky).lerp(daySky, k); scene.fog.color.copy(scene.background);
-  hemi.intensity = 0.35 + 0.75 * k; sun.intensity = 0.4 + 1.8 * k;
+  // weather (world/weather.js): clouds grey the sky and dim the sun, rain washes the colors out a little
+  const w = weatherAt(now), gloom = w.cloud * 0.55 + w.rain * 0.25;
+  scene.background.copy(nightSky).lerp(daySky, k).lerp(grey.setRGB(0.55 * k + 0.1, 0.58 * k + 0.11, 0.62 * k + 0.14), gloom); scene.fog.color.copy(scene.background);
+  scene.fog.near = 35 - w.rain * 15; scene.fog.far = 90 - w.rain * 35;
+  hemi.intensity = (0.35 + 0.75 * k) * (1 - gloom * 0.25); sun.intensity = (0.4 + 1.8 * k) * (1 - gloom * 0.7);
   sun.color.set(k < 1 ? 0xffc39a : 0xfff0d8);
+  cozy.uniforms.saturation.value = (style.saturation ?? 1.1) * (1 - w.rain * 0.2);
 }
+const grey = new THREE.Color();
 
 // ---------- art style: cozy filter ----------
 // world.json "style": { vignette 0..1 (soft dark edges), warmth -1..1 (cool to warm), saturation 0..2, brightness 0.5..1.5 }.
@@ -474,22 +481,32 @@ const ACTIONS = {
   tower:    { icon: "🗼", doing: "up in OJ Tower watching the sky", to: "OJ Tower", why: "climb up and look out", where: "tower", anim: "look", fx: { wonder: 1.3, calm: 0.6, energy: -0.1 }, dur: [8, 16] },
   planes:   { icon: "✈️", doing: "watching the runway and dreaming about flying", to: "the airport", why: "check on OJ-1", where: "airport", anim: "look", fx: { wonder: 1.0, mood: 0.4 }, dur: [6, 12] },
   think:    { icon: "💭", doing: "sitting and thinking big thoughts", to: "the lookout", why: "sit and think", where: "lookout", anim: "think", fx: { calm: 0.9, wonder: 0.6 }, dur: [8, 15] },
-  dance:    { icon: "🎶", doing: "doing a happy little dance", to: "a sunny spot", why: "dance", where: "*here", anim: "dance", fx: { mood: 1.6, energy: -0.3 }, dur: [3, 6] }
+  dance:    { icon: "🎶", doing: "doing a happy little dance", to: "a sunny spot", why: "dance", where: "*here", anim: "dance", fx: { mood: 1.6, energy: -0.3 }, dur: [3, 6] },
+  shelter:  { icon: "🌧️", doing: "huddled under the big oak, all fluffed up, waiting out the rain", to: "the big oak", why: "get out of the rain", where: "shelter", anim: "huddle", fx: { calm: 0.5, energy: 0.3 }, dur: [10, 25] },
+  worms:    { icon: "🪱", doing: "hunting for worms that came up after the rain", to: "the wet garden", why: "catch worms (they come up when it rains!)", where: "garden", anim: "scratch", fx: { fullness: 1.8, wonder: 0.8, mood: 0.6 }, dur: [8, 16] },
+  weather:  { icon: "🌡️", doing: "checking his weather station", to: "OJ Weather", why: "read the rain gauge and the wind", where: "weather", anim: "look", fx: { wonder: 1.0, mood: 0.4 }, dur: [4, 9] }
 };
+const OUTDOOR_DRY = ["forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather"];
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
 const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
 
 const sim = { needs: { fullness: 70, energy: 55, wonder: 60, mood: 65, calm: 70 }, act: "sleep", left: 0, since: new Date(), place: spotPos("coop"), room: "outside", rnd: null, target: null, history: [] };
-function chooseAction(n, hour, rnd) {
+function chooseAction(n, now, rnd) {
+  const hour = now.getHours();
   if (isNightHour(hour)) return "sleep";
+  const wx = weatherAt(now);
   const lack = k => (100 - n[k]) / 100;
   const scores = {
     eat: lack("fullness") ** 2 * 6, drink: lack("fullness") * 0.8 + lack("calm") * 0.6,
     forage: lack("fullness") * 1.2 + 0.3, nap: lack("energy") ** 2 * 5,
     explore: lack("wonder") * 2 + 0.2, work: 1.2 + lack("wonder"), admire: builtObjects.length ? lack("mood") * 1.5 + 0.2 : 0,
-    dustbath: lack("calm") ** 2 * 4, think: lack("calm") + lack("wonder") * 0.5, planes: spots.airport ? lack("wonder") * 0.9 + 0.25 : 0, visit: spots.pond ? lack("mood") * 0.9 + lack("calm") * 0.4 + 0.2 : 0, tower: spots.tower ? lack("wonder") * 0.8 + lack("calm") * 0.3 + 0.2 : 0, dance: n.mood > 75 ? 0.6 : 0.1
+    dustbath: lack("calm") ** 2 * 4, think: lack("calm") + lack("wonder") * 0.5, planes: spots.airport ? lack("wonder") * 0.9 + 0.25 : 0, visit: spots.pond ? lack("mood") * 0.9 + lack("calm") * 0.4 + 0.2 : 0, tower: spots.tower ? lack("wonder") * 0.8 + lack("calm") * 0.3 + 0.2 : 0, dance: n.mood > 75 ? 0.6 : 0.1,
+    shelter: spots.shelter ? wx.rain * 6 : 0, worms: wx.afterRain ? 2.5 + lack("fullness") * 2 : 0,
+    weather: spots.weather ? lack("wonder") * 0.5 + 0.15 + (wx.afterRain ? 0.8 : 0) : 0
   };
+  // chickens don't love getting soaked: in the rain most outdoor plans get put off
+  for (const k of OUTDOOR_DRY) scores[k] *= 1 - wx.rain * 0.85;
   let total = 0; for (const k in scores) total += scores[k];
   let r = rnd() * total;
   for (const k in scores) { r -= scores[k]; if (r <= 0) return k; }
@@ -514,7 +531,7 @@ function applyMinute(n, actName) {
 }
 function newAction(now) {
   sim.target = null;
-  sim.act = chooseAction(sim.needs, now.getHours(), sim.rnd);
+  sim.act = chooseAction(sim.needs, now, sim.rnd);
   const [lo, hi] = ACTIONS[sim.act].dur; sim.left = Math.round(lo + sim.rnd() * (hi - lo));
   sim.place = placeFor(sim.act, sim.rnd, sim.place); sim.since = new Date(now);
   const last = sim.history[sim.history.length - 1];
@@ -598,7 +615,7 @@ controls.addEventListener("start", () => { if (follow) { follow = false; $("camB
 setView(chickenRoom);
 
 const bubble = $("bubble");
-const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"] };
+const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."] };
 let bubbleText = state.thought ?? "Bawk.", bubbleTimer = 8;
 function say(text, secs = 4) { bubbleText = text; bubbleTimer = secs; }
 
@@ -648,7 +665,7 @@ let idleTimer = 3, lookTilt = 0, mmTimer = 0;
 function animate() {
   const dt = Math.min(clock.getDelta(), 0.05); t += dt;
   head.rotation.set(0, 0, 0); head.position.set(0, 1.42, 0.5); neck.position.set(0, 1.18, 0.42);
-  body.position.y = 0.78; body.rotation.set(0, 0, 0); tail.rotation.set(0, 0, 0);
+  body.position.y = 0.78; body.rotation.set(0, 0, 0); body.scale.setScalar(1); tail.rotation.set(0, 0, 0);
   wings.forEach(w => w.rotation.set(0, 0, 0)); chicken.position.y = 0; legs.forEach(l => { l.rotation.set(0, 0, 0); l.position.y = 0.44; });
   const blinking = (t % 3.7) < 0.12;
   eyes.forEach(e => e.scale.y = blinking ? 0.1 : 1);
@@ -696,6 +713,7 @@ function animate() {
     else if (anim === "build") { head.rotation.x = Math.abs(Math.sin(t * 10)) * 0.5; chicken.position.y = Math.abs(Math.sin(t * 5)) * 0.1; wings.forEach((w, i) => w.rotation.z = Math.sin(t * 10) * 0.3 * (i ? -1 : 1)); }
     else if (anim === "dance") { chicken.rotation.y += dt * 3; chicken.position.y = Math.abs(Math.sin(t * 6)) * 0.25; body.rotation.z = Math.sin(t * 6) * 0.2; wings.forEach((w, i) => w.rotation.z = (0.5 + Math.sin(t * 14) * 0.5) * (i ? -1 : 1)); tail.rotation.y = Math.sin(t * 12) * 0.5; }
     else if (anim === "dust") { body.position.y = 0.55; body.rotation.z = Math.sin(t * 4) * 0.35; wings.forEach((w, i) => w.rotation.z = (0.6 + Math.sin(t * 16) * 0.3) * (i ? -1 : 1)); head.position.y = 1.2; legs.forEach(l => l.position.y = 0.3); }
+    else if (anim === "huddle") { body.position.y = 0.6; body.scale.setScalar(1.12); head.position.set(0, 1.22, 0.42); neck.position.y = 1.02; legs.forEach(l => l.position.y = 0.3); if ((t % 4) < 0.25) body.rotation.z = Math.sin(t * 60) * 0.08; head.rotation.y = Math.sin(t * 0.7) * 0.4; }
     else if (anim === "think") { head.rotation.z = Math.sin(t * 0.8) * 0.22; head.rotation.x = -0.18; body.position.y = 0.66; legs.forEach(l => l.position.y = 0.34); }
     else if (anim === "explore") { head.rotation.y = Math.sin(t * 1.5) * 0.7; if ((t % 6) < dt && chickenRoom === "outside") { const lim = size / 2 - 2; goTo([THREE.MathUtils.clamp(chicken.position.x + (Math.random() - 0.5) * 6, -lim, lim), THREE.MathUtils.clamp(chicken.position.z + (Math.random() - 0.5) * 6, -lim, lim)]); } }
     else { head.rotation.y = Math.sin(t * 2) * 0.6; }
@@ -714,7 +732,7 @@ function animate() {
   if (override?.act === "eat" && seeds.children.length && Math.random() < dt * 2.5) seeds.remove(seeds.children[0]);
 
   bubbleTimer -= dt;
-  if (bubbleTimer <= 0) { const opts = lines[sim.act] ?? ["Bawk."]; say(Math.random() < 0.3 ? (state.thought ?? opts[0]) : opts[Math.floor(Math.random() * opts.length)], 6); }
+  if (bubbleTimer <= 0) { const opts = lines[sim.act] ?? ["Bawk."]; const wx = weatherAt(new Date()); say((Math.random() < 0.3 ? (state.thought ?? opts[0]) : opts[Math.floor(Math.random() * opts.length)]).replace("{from}", wx.from).replace("{name}", wx.name), 6); }
   bubble.textContent = bubbleText;
 
   if (follow && chickenRoom !== viewRoom) setView(chickenRoom);
@@ -742,7 +760,7 @@ function animate() {
 // scene, say(text, secs), chicken, sim, world, state, part (shape builder) and texFor (textures).
 for (const { o, obj } of behaviorQueue) {
   import("./" + o.script + bust).then(m => {
-    const api = m.default?.({ THREE, obj, data: o, scene, say, chicken, sim, world, state, part, texFor, camera, controls, objects: objById, setFollow, rooms, enterRoom, openBag, openCloset, dress, bag: bagData });
+    const api = m.default?.({ THREE, obj, data: o, scene, say, chicken, sim, world, state, part, texFor, camera, controls, objects: objById, setFollow, rooms, enterRoom, openBag, openCloset, dress, bag: bagData, weatherAt, weatherFor, weatherKinds: WEATHER_KINDS, compass, openModal, openWeather, viewRoom: () => viewRoom, wearing: wearingId, outfits });
     if (api) behaviors.push({ ...api, obj });
   }).catch(e => console.warn("behavior failed to load", o.script, e));
 }
@@ -786,6 +804,28 @@ function openBag() {
     `<div class="bagCols"><div><div class="slots">${grid}</div><p style="font-size:12.5px;color:var(--muted);margin:8px 0 0">${carried >= slots ? "His bag is full." : `${carried} of ${slots} places used.`}</p><div class="detail" id="itemDetail">${itemDetail(bagItems[bagSel])}</div></div><div>${shelves}</div></div>`);
 }
 $("bagBtn").onclick = () => { bagSel = 0; openBag(); };
+
+// ---------- OJ Weather panel (Day 3) ----------
+const WX_FACTS = [
+  "My thermometer box is a Stevenson screen: white so it doesn't soak up sun, with slanted slats so air gets in but sunshine and rain don't.",
+  "A rooster weathervane points its beak INTO the wind. The big tail catches the breeze and swings around behind.",
+  "Cup anemometers spin because a hollow cup catches more wind than its round back.",
+  "A rainbow is always on the opposite side of the sky from the sun, about 42 degrees out. Red is on the outside, violet inside.",
+  "After rain, worms wiggle up out of the soggy ground. Chickens know this. I know this.",
+  "Chicken feathers shed light rain, but a heavy downpour soaks right through. That's why I hide under the oak."
+];
+function openWeather() {
+  const now = new Date(), w = weatherAt(now), h = now.getHours();
+  const strip = w.day.hours.map((x, i) => `<div style="flex:1;min-width:30px;text-align:center;padding:4px 0;border-radius:10px;${i === h ? "background:#ffe9a8;font-weight:700" : ""}${i < h ? "opacity:.5" : ""}"><div style="font-size:18px">${WEATHER_KINDS[x.kind].icon}</div><div style="font-size:11px;color:var(--muted)">${(i % 12) || 12}${i < 12 ? "a" : "p"}</div></div>`).join("");
+  const dayWord = { sunny: "a mostly sunny day", mixed: "a bit of everything", rainy: "a soggy one" }[w.day.kind];
+  openModal(`${w.icon} OJ Weather`, `Today in the yard: ${dayWord}. Same sky for every visitor.`, `
+    <p style="font-size:17px"><b>Right now:</b> ${esc(w.name)}${w.rainbow > 0 ? " with a <b>rainbow</b> 🌈" : ""}. Wind ${w.knots} knots from the ${w.from}.</p>
+    <p>Rain gauge today: <b>${w.rainMM.toFixed(1)} mm</b>${w.afterRain ? " · The rain just stopped. Worm time!" : ""}</p>
+    <div style="display:flex;gap:2px;overflow-x:auto;margin:10px 0">${strip}</div>
+    <p style="color:var(--muted);font-size:14px">🐔 ${esc(WX_FACTS[Math.floor(Math.random() * WX_FACTS.length)])}</p>`);
+}
+$("wxBtn").onclick = openWeather;
+setInterval(() => { $("wxBtn").textContent = weatherAt(new Date()).icon + " Weather"; }, 30000); $("wxBtn").textContent = weatherAt(new Date()).icon + " Weather";
 $("modalBody").onclick = e => {
   const tr = e.target.closest("[data-try]"); if (tr) { tryingOn = tr.dataset.try || null; dress(tryingOn ?? wearingId); openCloset(); return; }
   const it = e.target.closest("[data-item]"); if (it) { bagSel = +it.dataset.item; document.querySelectorAll("#modalBody .slot").forEach(x => x.classList.toggle("on", x === it)); $("itemDetail").innerHTML = itemDetail(bagItems[bagSel]); }

@@ -1,6 +1,6 @@
 // OJ-1, Odyssey Jr.'s little yellow plane. Click it (or wait) and it takes off, loops around the yard and lands.
 // Phases: parked -> roll -> fly (along a curve) -> land (rollout) -> turn -> taxi back -> turn -> parked.
-export default function setup({ THREE, obj, data, say }) {
+export default function setup({ THREE, obj, data, say, weatherAt }) {
   const Z = obj.position.z, X0 = obj.position.x;          // runway centerline z, parking spot x (facing +x)
   const V = (x, y, z) => new THREE.Vector3(x, y, z);
   const path = new THREE.CatmullRomCurve3([
@@ -11,6 +11,7 @@ export default function setup({ THREE, obj, data, say }) {
   obj.rotation.order = "YXZ";
   let phase = "parked", t = 0, nextFlight = Date.now() + (40 + Math.random() * 60) * 1000, prop = null, disc = null, blades = [], spin = 0, lastYaw = Math.PI / 2;
   const night = () => { const h = new Date().getHours(); return h < 6 || h >= 21; };
+  const stormy = () => (weatherAt?.(new Date()).rain ?? 0) > 0.6; // OJ-1 stays parked on her own in heavy rain (Day 3)
   const pose = (x, y, z, yaw, pitch = 0, bank = 0) => { obj.position.set(x, y, z); obj.rotation.set(pitch, yaw, bank); };
   const start = () => {
     if (phase !== "parked") { say("She's already up there! Look up! Bawk!", 3); return; }
@@ -31,7 +32,7 @@ export default function setup({ THREE, obj, data, say }) {
       const blur = spin > 22;
       if (disc && disc.visible !== blur) { disc.visible = blur; blades.forEach(b => b.visible = !blur); }
       t += dt;
-      if (phase === "parked") { if (!night() && Date.now() > nextFlight) { nextFlight = Date.now() + (150 + Math.random() * 120) * 1000; start(); } return; }
+      if (phase === "parked") { if (!night() && !stormy() && Date.now() > nextFlight) { nextFlight = Date.now() + (150 + Math.random() * 120) * 1000; start(); } return; }
       if (phase === "roll") {               // speed up from the parking spot to the start of the curve
         const T = 5, u = Math.min(t / T, 1), x = X0 + (4 - X0) * u * u;
         pose(x, 0, Z, Math.PI / 2, -0.12 * u * u);

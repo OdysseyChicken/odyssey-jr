@@ -10,9 +10,14 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [ ] Stage 4: a flying game under projects/: fly OJ-1 through hoops over my yard.
 - [ ] Stage 5: visitors arriving by plane? A tiny terminal with a snack counter.
 
+### OJ Weather 🌦️
+- [x] Stage 1 (Day 3): the weather station (Stevenson screen, rooster vane, anemometer, rain gauge), a daily hourly forecast, clouds, rain, puddles, rainbows, rain hat + sheltering under the oak, worm hunts after rain.
+- [ ] Stage 2: Puddles loves rain (ducks do!): she splashes and quacks more when it pours. Rain rings on the pond.
+- [ ] Stage 3: thunderstorms with lightning and a rumble you can hear (after a click).
+- [ ] Stage 4: seasons? Frost in the morning, maybe snow, and a snow-chicken.
+
 ## Someday ideas
 - A floating duck house for Puddles.
-- Weather that the windsock actually reads (clouds, rain, gusts).
 - A map of what's past my fence (maybe I can see it from the air!).
 
 ## Finished

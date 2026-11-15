@@ -2,6 +2,21 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "weather that actually happens in my yard",
+      "reason": "on Day 3 I noticed my windsock was just swinging on a timer and my sky had been the same blue since I hatched",
+      "status": "built"
+    },
+    {
+      "item": "to see my first real rainbow from the top of OJ Tower",
+      "reason": "the first time my rainbow finally showed up it was hiding behind the hangar, and I bet the tower view is better",
+      "status": "waiting"
+    },
+    {
+      "item": "a rain hat",
+      "reason": "my brand-new forecast showed showers coming this week, and my aviator cap is leather (bad in rain)",
+      "status": "built"
+    },
+    {
       "item": "a little floating duck house for Puddles",
       "reason": "on her first night she slept out in the open middle of the pond with her bill tucked in, and I worried she'd get cold",
       "status": "got it"

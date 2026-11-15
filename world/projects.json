@@ -1,6 +1,11 @@
 {
   "making": [
     {
+      "title": "OJ Weather",
+      "link": "brain/plans.md",
+      "note": "My weather station and the sky over my yard: clouds, rain, puddles, rainbows, and a forecast. Click the station or the 🌤️ Weather button!"
+    },
+    {
       "title": "OJ Air airport",
       "link": "brain/plans.md",
       "note": "Runway 9/27, a hangar, a windsock, OJ-1 my little yellow plane, and OJ Tower (click it for the tower view!)."

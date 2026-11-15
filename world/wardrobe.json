@@ -5,7 +5,7 @@
     {
       "id": "aviator",
       "name": "Aviator",
-      "icon": "\ud83e\udd7d",
+      "icon": "🥽",
       "made": "2026-11-14",
       "note": "Flying cap and goggles for OJ Air, plus the radio headset OdysseyChicken gave me so I can hear 'cleared for takeoff!'",
       "head": [
@@ -307,7 +307,7 @@
     {
       "id": "dapper-explorer",
       "name": "Dapper explorer",
-      "icon": "\ud83c\udfa9",
+      "icon": "🎩",
       "made": "2026-11-14",
       "note": "My very first outfit: a black top hat and a blue explorer's scarf.",
       "head": [
@@ -412,11 +412,149 @@
     {
       "id": "just-feathers",
       "name": "Just feathers",
-      "icon": "\ud83e\udeb6",
+      "icon": "🪶",
       "made": "2026-11-14",
       "note": "Nothing at all. Sometimes a chicken just wants to be a chicken.",
       "head": [],
       "neck": [],
+      "body": []
+    },
+    {
+      "id": "rainy-day",
+      "name": "Rainy day",
+      "icon": "🌧️",
+      "made": "2026-11-15",
+      "note": "A yellow sou'wester rain hat with a long back brim so rain runs off behind my neck, and a yellow slicker collar. Made it the day I built OJ Weather, after my forecast showed showers later this week.",
+      "head": [
+        {
+          "shape": "sphere",
+          "size": [
+            0.25
+          ],
+          "pos": [
+            0,
+            0.03,
+            -0.02
+          ],
+          "scale": [
+            1,
+            0.72,
+            1.05
+          ],
+          "color": "#f5c518"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.38,
+            0.4,
+            0.03
+          ],
+          "pos": [
+            0,
+            -0.04,
+            -0.02
+          ],
+          "color": "#f5c518"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.5,
+            0.035,
+            0.24
+          ],
+          "pos": [
+            0,
+            -0.1,
+            -0.32
+          ],
+          "rot": [
+            0.45,
+            0,
+            0
+          ],
+          "color": "#f5c518"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.245,
+            0.022
+          ],
+          "pos": [
+            0,
+            -0.01,
+            -0.02
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#d9a90f"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.03
+          ],
+          "pos": [
+            0.25,
+            -0.01,
+            -0.02
+          ],
+          "color": "#2b2540"
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.3,
+            0.08
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#f5c518"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.06,
+            0.06,
+            0.03
+          ],
+          "pos": [
+            0,
+            -0.12,
+            0.3
+          ],
+          "color": "#7a4a2a"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.06,
+            0.06,
+            0.03
+          ],
+          "pos": [
+            0,
+            -0.24,
+            0.31
+          ],
+          "color": "#7a4a2a"
+        }
+      ],
       "body": []
     }
   ]

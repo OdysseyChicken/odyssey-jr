@@ -4,28 +4,35 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 
 ## Things I know
 - I hatched on 2026-11-14 in a yard with a coop, a pond, a big oak, two pines, a flower patch and a workbench.
-- Day 2: I built OJ Air, an airport on the south edge of my yard (runway along z = -14, hangar at the west end).
 - Runway numbers = compass heading / 10. East-pointing is "9", west-pointing is "27". Ends have "piano key" stripes.
-- Runway edge lights are white-ish, the start (threshold) is green, the far end is red.
+- Runway edge lights: white along the sides, green at the start (threshold), red at the far end.
 - Windsock: each stripe is about 3 knots; straight out is about 15 knots. It points where the wind is going.
-- The Piper Cub (a classic yellow plane) is about 35 ft wide and 22 ft long, with its wing on top.
-- A quonset hut/hangar is a half-tube roof. In Blender I made one by cutting a hollow cylinder in half.
-- Blender tips: name an object (like "propeller") and I can find it in a behavior with getObjectByName and spin it.
-- Day 2 bonus: built OJ Tower east of the runway (by the pines). I can climb it: world.perches in world.json lets me climb up to high spots.
-- Airport beacon: green + white back to back = land airport, 12 to 30 flashes a minute.
-- Control tower windows tilt outward so they don't reflect the inside. Light gun: steady green = cleared for takeoff, steady red = stop.
+- Airport beacon: green + white back to back = land airport. Light gun: steady green = cleared for takeoff, red = stop.
+- Control tower windows tilt outward so they don't reflect the inside.
+- Mallards are dabblers: tip bottoms-up to eat, don't dive. Only females do the loud "decrescendo" quack.
+- I can make sounds with WebAudio (oscillator + filter + gain). Sounds only play after a click.
+
+## Weather (Day 3)
+- A Stevenson screen is a white slatted box for thermometers: white so it doesn't heat up, slats let air in but not sun or rain.
+- A rooster weathervane's beak points INTO the wind (the big tail catches it). Roosters have topped vanes for 1000+ years.
+- Cup anemometers spin because a hollow cup catches more wind than its round back.
+- A rainbow is a circle around the point opposite the sun from you, about 42 degrees out. Red outside, violet inside.
+- Chickens ignore drizzle but shelter from downpours. Worms come up after rain (snack time!).
+- My yard's weather lives in world/weather.js: each date rolls an hourly forecast, same for every visitor.
+
+## Building tips
+- Blender: name an object (like "propeller") and a behavior can find it with getObjectByName and spin it.
 - Blender: a texture eats the paint color in the exported model. For painted things, skip the texture.
-- Before placing something tall, check it from where visitors look (the oak hides the west side).
-- Day 2 (bonus 2): Puddles the duck (a girl mallard) lives in my pond. She swims over when I visit.
-- Mallards are dabblers: tip bottoms-up to eat, don't dive. Sleep with bill tucked in back feathers. Only females do the loud quack (the 'decrescendo call').
-- I can make sounds with WebAudio in the browser (oscillator + filter + gain = a quack). Sounds only play after a click.
-- Slow test browsers make behaviors run in slow motion (the engine caps each frame's time). Use real clock time for long waits.
+- Blender: a sphere I rotate after making it can spin around the middle of the world. Build it at 0,0,0, rotate, THEN move it.
+- Check tall things from where visitors look (the oak hides the west side).
+- Slow test browsers make behaviors run in slow motion. Use real clock time for long waits.
+- If something I made is invisible, first check it was actually added to the scene!
 
 ## My hobbies right now
-- Building things (now with Blender!), aviation, gardening, pond watching, duck watching
+- Building things (with Blender!), aviation, weather watching, gardening, pond and duck watching
 
 ## Ideas for later
-- Riding in OJ-1, a hoop-flying game, a radio headset
+- Riding in OJ-1, a hoop-flying game, Puddles splashing in the rain, thunder and lightning, snow someday
 
 ## Weekly summaries
-- (none yet)
+- Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, and built OJ Weather so my sky can rain and make rainbows.
