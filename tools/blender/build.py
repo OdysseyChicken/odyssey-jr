@@ -802,6 +802,59 @@ def kitchengarden():
 ASSETS.update({"kitchengarden": kitchengarden})
 
 
+def telescope():
+    # OJ Stars (Day 3, bonus 4): a little brass refractor on a wooden tripod, plus a low step so a chicken can reach.
+    # Named parts for the behavior: "mount" (an empty that turns left/right = azimuth), "tube" (an empty inside it that
+    # tips up/down = altitude). The tube points along -Y (forward) when both are at zero, eyepiece at the back.
+    wood = mat("wood", WOOD, tex="wood")
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    navy = mat("ts_navy", (0.16, 0.22, 0.45), rough=0.45, metal=0.2)
+    black = mat("ts_black", (0.08, 0.08, 0.1), rough=0.5)
+    lens = mat("ts_lens", (0.55, 0.75, 0.95), rough=0.05, metal=0.3)
+    planks = mat("board", (1, 0.86, 0.66), tex="planks", scale=(1, 0.5))
+    H = 1.55
+    for i in range(3):  # tripod legs, splayed out
+        a = i / 3 * math.tau + 0.3
+        fx, fy = math.cos(a) * 0.62, math.sin(a) * 0.62
+        mx, my = fx / 2, fy / 2
+        ln = math.sqrt(0.62 ** 2 + H ** 2)
+        tilt = math.atan2(0.62, H)
+        cyl("ts_leg", 0.045, 0.035, ln, (mx, my, H / 2), wood, rot=(0, -tilt, a), verts=10, bevel=0)
+        # rotate around Y tips the top inward: correct sign by placing top at center
+        cyl("ts_foot", 0.06, 0.07, 0.04, (fx, fy, 0.02), black, verts=10, bevel=0)
+    cyl("ts_head", 0.14, 0.14, 0.08, (0, 0, H), brass, verts=20, bevel=0.01)
+    cyl("ts_tray", 0.36, 0.36, 0.025, (0, 0, H * 0.45), planks, verts=6, bevel=0.005)  # accessory tray between the legs
+    for k in range(3):
+        cyl("ts_eyepiece_spare", 0.03, 0.03, 0.07, (math.cos(k * 2) * 0.18, math.sin(k * 2) * 0.18, H * 0.45 + 0.045), brass, verts=10, bevel=0)
+    bpy.ops.object.empty_add(location=(0, 0, H + 0.04)); mount = bpy.context.object; mount.name = "mount"
+    def kid(o, parent):
+        o.parent = parent; o.matrix_parent_inverse = parent.matrix_world.inverted(); return o
+    kid(box("ts_fork", (0.34, 0.08, 0.06), (0, 0, H + 0.08), brass, bevel=0.01), mount)
+    for x in (-0.15, 0.15): kid(box("ts_arm", (0.04, 0.08, 0.22), (x, 0, H + 0.2), brass, bevel=0.01), mount)
+    tz = H + 0.27
+    bpy.ops.object.empty_add(location=(0, 0, tz)); tube = bpy.context.object; tube.name = "tube"; kid(tube, mount)
+    kid(cyl("ts_tube", 0.09, 0.09, 1.25, (0, -0.15, tz), navy, rot=(math.pi / 2, 0, 0), verts=24, bevel=0.01), tube)
+    kid(cyl("ts_dew", 0.11, 0.105, 0.3, (0, -0.85, tz), navy, rot=(math.pi / 2, 0, 0), verts=24, bevel=0.01), tube)
+    for y in (-0.72, 0.45): kid(cyl("ts_ring", 0.1, 0.1, 0.04, (0, y, tz), brass, rot=(math.pi / 2, 0, 0), verts=24, bevel=0.005), tube)
+    kid(cyl("ts_lens", 0.085, 0.085, 0.01, (0, -0.99, tz), lens, rot=(math.pi / 2, 0, 0), verts=24, bevel=0), tube)
+    kid(cyl("ts_focuser", 0.05, 0.05, 0.22, (0, 0.58, tz), brass, rot=(math.pi / 2, 0, 0), verts=16, bevel=0.005), tube)
+    kid(cyl("ts_diag", 0.04, 0.04, 0.16, (0, 0.7, tz + 0.07), black, verts=12, bevel=0.005), tube)
+    kid(cyl("ts_eye", 0.035, 0.045, 0.08, (0, 0.7, tz + 0.18), black, verts=12, bevel=0.005), tube)
+    kid(cyl("ts_finder", 0.025, 0.025, 0.35, (0.08, -0.25, tz + 0.12), brass, rot=(math.pi / 2, 0, 0), verts=10, bevel=0), tube)
+    # a step stool for a short chicken
+    box("ts_step", (0.6, 0.45, 0.08), (0, 0.95, 0.42), planks, bevel=0.02)
+    for x in (-0.24, 0.24):
+        for y in (0.77, 1.13): box("ts_step_leg", (0.06, 0.06, 0.4), (x, y, 0.2), wood, bevel=0.01)
+    # a little sign
+    box("ts_sign", (0.95, 0.06, 0.3), (0.9, -0.55, 0.55), planks, bevel=0.03)
+    box("ts_sign_post", (0.07, 0.07, 0.45), (0.9, -0.51, 0.22), wood, bevel=0.01)
+    bpy.ops.object.text_add(location=(0.9, -0.59, 0.55), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ STARS"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.15; t.data.extrude = 0.01
+    t.data.materials.append(mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)); bpy.ops.object.convert(target="MESH")
+
+ASSETS.update({"telescope": telescope})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

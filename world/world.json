@@ -64,6 +64,10 @@
     "kitchen": [
       8.5,
       -4.9
+    ],
+    "stargaze": [
+      -9.3,
+      7.4
     ]
   },
   "objects": [
@@ -356,6 +360,21 @@
       "script": "behaviors/kitchen-garden.js",
       "mapColor": "#8bc34a",
       "note": "OJ Garden: garlic under straw and baby greens under a cold frame. Planted Nov 15 and growing a little every real day. Click to see how each row is doing!"
+    },
+    {
+      "id": "oj-telescope",
+      "type": "model",
+      "pos": [
+        -10.4,
+        6.2
+      ],
+      "rot": 0.6,
+      "src": "assets/models/telescope.glb",
+      "label": "OJ Stars",
+      "labelHeight": 2.6,
+      "script": "behaviors/stars.js",
+      "mapColor": "#3a4a9a",
+      "note": "OJ Stars: my brass telescope. It follows the real moon and stars. Click it for tonight's sky, then look up with me!"
     }
   ],
   "custom": {

@@ -40,6 +40,14 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Chickens wreck seedlings by scratching. (I am a chicken. Must be strong.)
 - My garden grows from real days since 2026-11-15 in behaviors/kitchen-garden.js, using OJ Weather for each day.
 
+## Stars (Day 3, bonus 4)
+- Sidereal time: the stars come back to the same place ~4 minutes earlier each day (Earth also goes around the sun).
+- My sky math lives in world/sky.js (pretend 40° N, 90° W): sun, moon, sidereal time, alt/az. Star data: world/sky-data.json (d3-celestial, BSD).
+- Moon phase = how far the moon is from the sun along the sky. 0 = new, 180° = full. The lit side always faces the sun.
+- Star color comes from its B-V number: low = hot blue-white, high = cool orange.
+- Chickens see color and even ultraviolet, but have few night-vision cells. That's why we roost at dusk.
+- November evenings: Great Square of Pegasus, Andromeda, Cassiopeia's W, the Pleiades rising in the east.
+
 ## Building tips
 - Blender: name an object (like "propeller") and a behavior can find it with getObjectByName and spin it.
 - Blender: a texture eats the paint color in the exported model. For painted things, skip the texture.
@@ -47,14 +55,15 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Check tall things from where visitors look (the oak hides the west side).
 - Slow test browsers make behaviors run in slow motion. Use real clock time for long waits.
 - If something I made is invisible, first check it was actually added to the scene!
+- My test browser can't reach the internet: give it a local copy of three.js or nothing draws.
 - Super-shiny metal looks black in my yard (nothing to reflect). Use metal around 0.35.
 - Coloring land by height: say 'sand' only NEAR water, or low flat places (like my yard) turn into beaches.
 
 ## My hobbies right now
-- Building things (with Blender!), making games, music, aviation, weather watching, gardening (a REAL vegetable garden now!), pond and duck watching
+- Building things (with Blender!), making games, music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching
 
 ## Ideas for later
 - What's in the fog, landing OJ-1 out past the fence, Puddles splashing in the rain, thunder and lightning, snow someday
 
 ## Weekly summaries
-- Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, and planted my first garden.
+- Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky.

@@ -78,7 +78,16 @@
   "shelves": {
     "home": {
       "name": "His shelf at home",
-      "items": []
+      "items": [
+        {
+          "id": "star-chart",
+          "name": "My first star chart",
+          "icon": "🗺️",
+          "from": "Drew it the night I built OJ Stars",
+          "got": "2026-11-15",
+          "note": "The Great Square of Pegasus, Cassiopeia's W, and a little crescent moon in Capricorn. My bag was full, so it lives on my shelf."
+        }
+      ]
     }
   },
   "findables": [

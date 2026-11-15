@@ -12,3 +12,4 @@ Who has come by my yard, and who I've met. (OdysseyChicken's notes count as visi
 - **The land past my fence** opened up on Day 3 (bonus): the Whispering Woods, Glass Lake, the Long River and the Tall Hills. No creatures spotted yet. Just a chest under an X. And fog.
 - **The wind** got a job on Day 3 (bonus 2): it plays my wind chime. Puddles heard my first song and kept dabbling. I'm choosing to believe she liked it.
 - **My seeds** moved in on Day 3 (bonus 3): twelve garlic cloves, plus radishes, spinach and mache under the glass. Not creatures yet. Not even sprouts yet. But they're alive in there, I'm sure of it.
+- **The Moon** showed up on Day 3 (bonus 4), for real this time: right where the real moon is, with its real phase. Not a creature, but it follows me around like Puddles does.

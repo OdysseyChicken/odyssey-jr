@@ -129,6 +129,7 @@ import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { findsFor } from "./world/finds.js";
 import { weatherAt, weatherFor, KINDS as WEATHER_KINDS, compass } from "./world/weather.js";
+import { daylight as skyDaylight, sunAlt as sunAltNow, sunPos as sunPosNow, moonPos as moonPosNow, altAz as skyAltAz, toYard as skyToYard } from "./world/sky.js";
 
 const $ = id => document.getElementById(id);
 const showError = msg => { const e = $("err"); e.style.display = "block"; e.textContent = "Something broke: " + msg; };
@@ -173,14 +174,19 @@ const daySky = new THREE.Color(world.sky?.day ?? "#bfe6ff"), nightSky = new THRE
 scene.background = daySky.clone(); scene.fog = new THREE.Fog(scene.background, 35, 90);
 const isNightHour = h => h < 6 || h >= 21;
 function updateSky(now) {
-  const h = now.getHours() + now.getMinutes() / 60;
-  const k = h < 5 || h > 21.5 ? 0 : h < 7 ? (h - 5) / 2 : h > 19.5 ? (21.5 - h) / 2 : 1;
+  // OJ Stars (world/sky.js): the sky gets light and dark when the real sun rises and sets over the yard (40° N),
+  // so November evenings get dark early, and the sunlight (and shadows) come from where the sun really is
+  const k = skyDaylight(now), sa = sunAltNow(now);
+  { const sp = sunPosNow(now), aa = skyAltAz(sp.ra, sp.dec, now), up = aa.alt > -2;
+    const mp = moonPosNow(now), ma = skyAltAz(mp.ra, mp.dec, now);
+    const dir = up ? skyToYard(Math.min(60, Math.max(22, aa.alt)), aa.az) : ma.alt > 5 ? skyToYard(Math.max(25, ma.alt), ma.az) : [0.45, 0.8, 0.35];
+    sun.position.set(dir[0] * 26, dir[1] * 26, dir[2] * 26); }
   // weather (world/weather.js): clouds grey the sky and dim the sun, rain washes the colors out a little
   const w = weatherAt(now), gloom = w.cloud * 0.55 + w.rain * 0.25;
   scene.background.copy(nightSky).lerp(daySky, k).lerp(grey.setRGB(0.55 * k + 0.1, 0.58 * k + 0.11, 0.62 * k + 0.14), gloom); scene.fog.color.copy(scene.background);
   scene.fog.near = 35 - w.rain * 15; scene.fog.far = 90 - w.rain * 35;
   hemi.intensity = (0.35 + 0.75 * k) * (1 - gloom * 0.25); sun.intensity = (0.4 + 1.8 * k) * (1 - gloom * 0.7);
-  sun.color.set(k < 1 ? 0xffc39a : 0xfff0d8);
+  sun.color.set(k <= 0.05 ? 0xb8c8ff : sa < 10 ? 0xffc39a : 0xfff0d8);
   cozy.uniforms.saturation.value = (style.saturation ?? 1.1) * (1 - w.rain * 0.2);
 }
 const grey = new THREE.Color();
@@ -486,9 +492,10 @@ const ACTIONS = {
   worms:    { icon: "🪱", doing: "hunting for worms that came up after the rain", to: "the wet garden", why: "catch worms (they come up when it rains!)", where: "garden", anim: "scratch", fx: { fullness: 1.8, wonder: 0.8, mood: 0.6 }, dur: [8, 16] },
   weather:  { icon: "🌡️", doing: "checking his weather station", to: "OJ Weather", why: "read the rain gauge and the wind", where: "weather", anim: "look", fx: { wonder: 1.0, mood: 0.4 }, dur: [4, 9] },
   music:    { icon: "🎶", doing: "practicing his song on the Cluck-a-phone", to: "OJ Music", why: "practice his song", where: "music", anim: "play", face: "music-nook", fx: { mood: 1.2, calm: 0.8, wonder: 0.3, energy: -0.1 }, dur: [6, 14] },
+  stargaze: { icon: "🔭", doing: "up past his bedtime, looking through his telescope", to: "OJ Stars", why: "look at the stars", where: "stargaze", anim: "look", face: "oj-telescope", fx: { wonder: 1.6, calm: 0.7, energy: -0.2 }, dur: [6, 14] },
   garden:   { icon: "🧄", doing: "checking on the seeds in his garden (and trying very hard not to scratch them up)", to: "OJ Garden", why: "see if anything sprouted", where: "kitchen", anim: "look", face: "oj-garden", fx: { calm: 1.0, wonder: 0.6, mood: 0.5 }, dur: [5, 11] }
 };
-const OUTDOOR_DRY = ["garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
+const OUTDOOR_DRY = ["stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
 const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
@@ -507,6 +514,7 @@ function chooseAction(n, now, rnd) {
     shelter: spots.shelter ? wx.rain * 6 : 0, worms: wx.afterRain ? 2.5 + lack("fullness") * 2 : 0,
     weather: spots.weather ? lack("wonder") * 0.5 + 0.15 + (wx.afterRain ? 0.8 : 0) : 0,
     music: spots.music ? lack("mood") * 0.8 + lack("calm") * 0.6 + 0.25 : 0,
+    stargaze: spots.stargaze && skyDaylight(now) < 0.3 ? (1.4 + lack("wonder")) * (1 - wx.cloud) : 0,
     garden: spots.kitchen ? lack("calm") * 0.7 + lack("wonder") * 0.4 + 0.25 + (wx.afterRain ? 0.5 : 0) : 0
   };
   // chickens don't love getting soaked: in the rain most outdoor plans get put off
@@ -619,7 +627,7 @@ controls.addEventListener("start", () => { if (follow) { follow = false; $("camB
 setView(chickenRoom);
 
 const bubble = $("bubble");
-const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."] };
+const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."], stargaze: ["Ooh. Ooh! Look at that one.", "I can't see my own feet in the dark, but I can see the stars.", "Hello, Moon!", "Is that the Great Square of Pegasus? It is!", "Five more minutes, then bed. Okay, ten."] };
 let bubbleText = state.thought ?? "Bawk.", bubbleTimer = 8;
 function say(text, secs = 4) { bubbleText = text; bubbleTimer = secs; }
 

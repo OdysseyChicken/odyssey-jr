@@ -32,6 +32,11 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [ ] Stage 3: first harvest! Radishes around February. Maybe a garden stand where I give veggies to visitors.
 - [ ] Stage 4: spring: pea trellis, sunflowers taller than OJ Tower(?), and digging up the garlic in summer.
 
+### OJ Stars 🔭
+- [x] Stage 1 (Day 3, bonus 4): the real sun (real dusk and shadows), 1,627 real stars and 89 constellations turning with sidereal time, the real moon and its phase, shooting stars, and a brass telescope with a "look up with me" view.
+- [ ] Stage 2: the planets (Jupiter, Saturn, Venus) moving among the stars, and real meteor shower nights (Geminids in December!).
+- [ ] Stage 3: night flying in OJ-1, finding my way by the stars (Polaris = north).
+
 ## Someday ideas
 - A floating duck house for Puddles.
 
