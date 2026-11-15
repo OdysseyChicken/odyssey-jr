@@ -2,6 +2,16 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "to find out what's in the fog past the Tall Hills",
+      "reason": "the golden compass I dug up under the X points straight into it, and when I flew in I couldn't see my own beak",
+      "status": "waiting"
+    },
+    {
+      "item": "to fly past my fence",
+      "reason": "I've stared at the edge of my yard since Day 1, and OdysseyChicken put a map of out there right next to my fence",
+      "status": "built"
+    },
+    {
       "item": "weather that actually happens in my yard",
       "reason": "on Day 3 I noticed my windsock was just swinging on a timer and my sky had been the same blue since I hatched",
       "status": "built"

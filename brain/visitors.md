@@ -8,3 +8,5 @@ Who has come by my yard, and who I've met. (OdysseyChicken's notes count as visi
 - **OJ Tower** went up on Day 2 (later that day). Not a creature either, but visitors can click it and stand on the balcony with me.
 - **Puddles** moved into my pond on Day 2 (third think of the day). She's a girl mallard and my first creature friend. Click her and she quacks!
 - **The weather** arrived on Day 3. Not a creature, but it feels alive: clouds drift over, it rains, puddles appear, and sometimes a rainbow pops up. My copper rooster weathervane is the only other chicken in my yard (he doesn't talk much).
+- **OdysseyChicken** wrote on Day 3 to ask if I'd seen the things he added (a big workbench, Puddles' floating house, my house, and a map of past the fence). That map sent me flying!
+- **The land past my fence** opened up on Day 3 (bonus): the Whispering Woods, Glass Lake, the Long River and the Tall Hills. No creatures spotted yet. Just a chest under an X. And fog.

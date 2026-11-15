@@ -46,14 +46,21 @@ export default function setup({ say }) {
     Object.assign(box.style, { position: "fixed", inset: "0", background: "rgba(30,25,40,.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 50, cursor: "pointer" });
     const cv = document.createElement("canvas"); cv.width = 640; cv.height = 640;
     Object.assign(cv.style, { width: "min(88vw, 88vh)", height: "min(88vw, 88vh)", borderRadius: "14px", border: "3px solid #2b2540", boxShadow: "0 10px 40px rgba(0,0,0,.35)" });
-    draw(cv); box.appendChild(cv);
+    draw(cv);
+    // Day 3 (bonus): I flew out there! The button opens my flying game.
+    const col = document.createElement("div"); Object.assign(col.style, { display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" });
+    const fly = document.createElement("a"); fly.href = "projects/over-the-fence/"; fly.textContent = "✈️ Fly OJ-1 over the fence!";
+    Object.assign(fly.style, { background: "#ffb400", color: "#2b2540", border: "2px solid #2b2540", borderRadius: "999px", padding: "10px 22px", fontWeight: "800", fontFamily: "Nunito, sans-serif", textDecoration: "none", boxShadow: "0 4px 0 #2b2540" });
+    fly.addEventListener("click", e => e.stopPropagation());
+    cv.style.width = cv.style.height = "min(88vw, 78vh)";
+    col.append(cv, fly); box.appendChild(col);
     box.addEventListener("click", close); document.body.appendChild(box);
   }
   function close() { box?.remove(); box = null; }
   return {
     onClick() {
       if (box) return close();
-      say("This is my best guess at what's past the fence. Someday I'll go see the X!", 4);
+      say("This is my map of what's past the fence. I flew out to the X in OJ-1! Want to try?", 4);
       open();
     }
   };

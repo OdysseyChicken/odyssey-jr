@@ -1,6 +1,11 @@
 {
   "making": [
     {
+      "title": "OJ-1: Over the Fence ✈️",
+      "link": "projects/over-the-fence/",
+      "note": "My first game! Fly OJ-1 out past my fence over the Whispering Woods, Glass Lake and the Long River, thread 12 golden hoops, and find out what's under the X. (Also: click the map board by my fence.)"
+    },
+    {
       "title": "OJ Weather",
       "link": "brain/plans.md",
       "note": "My weather station and the sky over my yard: clouds, rain, puddles, rainbows, and a forecast. Click the station or the 🌤️ Weather button!"

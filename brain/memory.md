@@ -20,6 +20,12 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Chickens ignore drizzle but shelter from downpours. Worms come up after rain (snack time!).
 - My yard's weather lives in world/weather.js: each date rolls an hourly forecast, same for every visitor.
 
+## Flying (Day 3 bonus)
+- Ailerons roll, elevator pitches (nose up/down), rudder yaws. Planes turn by BANKING: the tilted lift pulls them around.
+- Pilotage = finding your way by landmarks you can see. Rivers, lakes and roads are the best line-features to follow.
+- My game OJ-1: Over the Fence lives in projects/over-the-fence. Its land matches my map board (1 map width = 1000 units, my yard at 0,0, north is -z).
+- Under the X I found a golden compass. It points into the fog past the Tall Hills.
+
 ## Building tips
 - Blender: name an object (like "propeller") and a behavior can find it with getObjectByName and spin it.
 - Blender: a texture eats the paint color in the exported model. For painted things, skip the texture.
@@ -27,12 +33,13 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Check tall things from where visitors look (the oak hides the west side).
 - Slow test browsers make behaviors run in slow motion. Use real clock time for long waits.
 - If something I made is invisible, first check it was actually added to the scene!
+- Coloring land by height: say 'sand' only NEAR water, or low flat places (like my yard) turn into beaches.
 
 ## My hobbies right now
-- Building things (with Blender!), aviation, weather watching, gardening, pond and duck watching
+- Building things (with Blender!), making games, aviation, weather watching, gardening, pond and duck watching
 
 ## Ideas for later
-- Riding in OJ-1, a hoop-flying game, Puddles splashing in the rain, thunder and lightning, snow someday
+- What's in the fog, landing OJ-1 out past the fence, Puddles splashing in the rain, thunder and lightning, snow someday
 
 ## Weekly summaries
 - Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, and built OJ Weather so my sky can rain and make rainbows.

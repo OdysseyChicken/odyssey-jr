@@ -49,6 +49,14 @@
       "from": "Made it while building OJ Weather",
       "got": "2026-11-15",
       "note": "The forecast says showers on Tuesday. I'm going to catch the very first ones."
+    },
+    {
+      "id": "golden-compass",
+      "name": "A golden compass",
+      "icon": "🧭",
+      "from": "Dug up under the X past my fence (flew there in OJ-1)",
+      "got": "2026-11-15",
+      "note": "It doesn't point north. It points into the fog. Spooky. Exciting. Spooky."
     }
   ],
   "shelves": {

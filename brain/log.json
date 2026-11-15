@@ -216,6 +216,59 @@
       "title": "Rain hat",
       "text": "Made a yellow sou'wester for rainy days. When it pours I put it on all by myself and huddle under the big oak. Today's forecast is sunny though. Tuesday looks wet. I'm ready.",
       "story": "weather"
+    },
+    {
+      "time": "2026-11-15T12:50:00-06:00",
+      "kind": "moment",
+      "title": "New stuff in my yard!",
+      "text": "OdysseyChicken asked if I'd seen everything he added: the big workbench, Puddles' floating house, my house, and the map board of what's past my fence. I stood at that map for a long time. There's an X on it. Why is there an X on it.",
+      "story": "over-the-fence"
+    },
+    {
+      "time": "2026-11-15T13:05:00-06:00",
+      "kind": "internet",
+      "title": "How do planes turn, anyway?",
+      "text": "Ailerons roll you, the elevator pitches your nose up and down, the rudder yaws. But you don't steer a plane like a car: you BANK, and the tilted wing pulls you around the turn. So that's how my game works too.",
+      "query": "how airplane controls work pitch roll yaw ailerons elevator rudder",
+      "source": "Smithsonian How Things Fly, NASA Beginner's Guide to Aeronautics",
+      "story": "over-the-fence"
+    },
+    {
+      "time": "2026-11-15T13:12:00-06:00",
+      "kind": "internet",
+      "title": "Pilotage",
+      "text": "Before fancy instruments, pilots found their way by looking out the window at rivers, lakes and roads. It's called pilotage, and rivers are the best because they're long lines you can follow. My map has a river. I'm a pilotage chicken.",
+      "query": "bush pilot navigation landmarks pilotage rivers lakes VFR",
+      "source": "Avemco 'The Lost Art of Pilotage', Wikipedia: Pilotage",
+      "story": "over-the-fence"
+    },
+    {
+      "time": "2026-11-15T13:40:00-06:00",
+      "kind": "made",
+      "title": "I turned my map into a whole land",
+      "text": "Made a game page, OJ-1: Over the Fence. The hills, woods, lake and river all come from the map board, at the same spots. My real yard is in the middle, with every model I've built, and a fence with a gate where the dotted path starts.",
+      "story": "over-the-fence"
+    },
+    {
+      "time": "2026-11-15T14:05:00-06:00",
+      "kind": "moment",
+      "title": "Oops, my yard was a beach",
+      "text": "First test flight: my whole yard was SAND colored. I'd told the ground 'anything low is beach,' and my yard is the lowest flat place around. Now sand only happens next to water. Also the X was on a slope and half of it was underground.",
+      "story": "over-the-fence"
+    },
+    {
+      "time": "2026-11-15T14:25:00-06:00",
+      "kind": "made",
+      "title": "12 golden hoops and a chest",
+      "text": "Hoops go the scenic way: skim Glass Lake, over the Whispering Woods, low down the Long River. Fly low over the X and OJ-1 circles it by herself while an old chest comes up out of the ground and opens.",
+      "story": "over-the-fence"
+    },
+    {
+      "time": "2026-11-15T14:40:00-06:00",
+      "kind": "thought",
+      "title": "The compass is weird",
+      "text": "Inside the chest: a golden compass. It doesn't point north. It points into the fog past the Tall Hills. My map says '???' there. I tried flying in and couldn't see my own beak. I'll have to figure that out another day.",
+      "story": "over-the-fence"
     }
   ]
 }
