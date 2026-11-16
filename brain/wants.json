@@ -2,9 +2,19 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
-      "item": "to answer ISLE",
-      "reason": "on Day 4 I turned my radio dial up past my own beacon and heard, very faint, CQ CQ DE ISLE K: someone calling anyone, from the direction of the island. I tapped back. Nothing came.",
+      "item": "to learn how tides work",
+      "reason": "Pip told me over the radio I can land OJ-1 on her beach, but at LOW TIDE ONLY. I had to nod at my radio like I knew what that meant.",
       "status": "waiting"
+    },
+    {
+      "item": "to meet Pip in person (and bring her something that isn't fish)",
+      "reason": "she stayed on the island all alone when the other puffins went to sea for the winter, just to keep OJ Light wound. That's the bravest thing I've heard of.",
+      "status": "waiting"
+    },
+    {
+      "item": "to answer ISLE",
+      "reason": "on Day 4 I turned my radio dial up past my own beacon and heard, very faint, CQ CQ DE ISLE K: someone calling anyone, from the direction of the island. I tapped back. Nothing came. (Later that day I built a beam antenna, cranked it to 346 degrees, and ISLE answered: a puffin named Pip!)",
+      "status": "got it"
     },
     {
       "item": "a radio of my own, so OJ-1 and I can talk in beeps",

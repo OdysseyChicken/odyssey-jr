@@ -1204,6 +1204,73 @@ def radioshack():
 
 ASSETS.update({"radioshack": radioshack})
 
+def beam():
+    # OJ Beam (Day 4 bonus): a 2-meter Yagi-Uda beam antenna on a pole, turned by hand with a crank (hams call that the
+    # "armstrong rotator"). Reflector (longest) at the back, the driven element (a split dipole with a feed box) next,
+    # then three directors, each a bit shorter. The beam points where the directors point (Blender -Y = glTF +Z).
+    # Named parts: "beam_head" (pivot, turns around the pole), "crank" (pivot, the hand wheel spins while I turn it),
+    # "beam_lamp" (a little green lamp that glows when the beam is aimed at the island).
+    alu = mat("bm_alu", (0.82, 0.84, 0.86), rough=0.35, metal=0.35)
+    black = mat("rs_bake", (0.12, 0.1, 0.09), rough=0.5)
+    wood = mat("wood", WOOD, tex="wood")
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    redp = mat("rs_redpaint", (0.85, 0.2, 0.18), rough=0.6)
+    green = mat("bm_green", (0.42, 0.62, 0.48), tex="planks", scale=(1, 1))
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    cream = mat("rs_cream", (0.93, 0.88, 0.74), rough=0.6)
+    ink = mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)
+    H = 4.6
+    # a round stone pad with a compass rose painted on it (N is Blender +Y here; the world rotates it)
+    cyl("bm_pad", 1.0, 1.05, 0.08, (0, 0, 0.04), stone, verts=40, bevel=0.02)
+    cyl("bm_rose", 0.85, 0.85, 0.012, (0, 0, 0.086), cream, verts=40, bevel=0)
+    for k in range(8):
+        a = k / 8 * math.tau; L = 0.8 if k % 2 == 0 else 0.5
+        box("bm_point", (0.06, L, 0.008), (math.sin(a) * L / 2, math.cos(a) * L / 2, 0.096), redp if k == 0 else ink, rot=(0, 0, -a), bevel=0)
+    # the pole (wood), with a base box that holds the crank
+    cyl("bm_pole", 0.07, 0.06, H, (0, 0, H / 2 + 0.08), wood, verts=16, bevel=0.01)
+    box("bm_gearbox", (0.36, 0.3, 0.46), (0, 0, 0.55), green, bevel=0.04)
+    box("bm_gearlid", (0.42, 0.36, 0.05), (0, 0, 0.8), trim, bevel=0.02)
+    cyl("bm_axle", 0.025, 0.025, 0.16, (0, -0.22, 0.55), brass, rot=(math.pi / 2, 0, 0), verts=10, bevel=0)
+    cp = _pivot("crank", (0, -0.3, 0.55))
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.18, minor_radius=0.02, location=(0, -0.3, 0.55), rotation=(math.pi / 2, 0, 0), major_segments=28, minor_segments=8)
+    o = bpy.context.object; o.name = "bm_wheel"; finish(o, redp); _kid(o, cp)
+    for k in range(3):
+        a = k / 3 * math.tau
+        _kid(box("bm_spoke", (0.18, 0.02, 0.02), (math.cos(a) * 0.09, -0.3, 0.55 + math.sin(a) * 0.09), redp, rot=(0, -a, 0), bevel=0), cp)
+    _kid(cyl("bm_handle", 0.025, 0.025, 0.12, (0.18, -0.36, 0.55), wood, rot=(math.pi / 2, 0, 0), verts=10, bevel=0.005), cp)
+    # a little green lamp on the gearbox: lights up when I'm pointed right at ISLE
+    sphere("beam_lamp", 0.05, (0.12, -0.16, 0.72), mat("bm_lamp", (0.3, 0.75, 0.35), rough=0.3, emit=(0.2, 1, 0.3), emit_strength=0.0), sub=2)
+    # coax cable down the pole to the gearbox
+    cyl("bm_coax", 0.015, 0.015, H - 0.9, (0.08, 0.02, (H + 0.85) / 2), black, verts=6, bevel=0)
+    # the turning head: a collar, a mast clamp, the boom and the elements
+    hp = _pivot("beam_head", (0, 0, H + 0.1))
+    _kid(cyl("bm_collar", 0.1, 0.1, 0.14, (0, 0, H + 0.1), black, verts=16, bevel=0.01), hp)
+    _kid(box("bm_plate", (0.16, 0.16, 0.03), (0, 0, H + 0.2), alu, bevel=0.005), hp)
+    z = H + 0.25; L = 2.1
+    _kid(box("bm_boom", (0.07, L, 0.07), (0, -0.15, z), alu, bevel=0.01), hp)
+    y0 = -0.15 + L / 2 - 0.1   # the back end
+    elems = [("reflector", 1.08, 0.0), ("driven", 1.0, 0.42), ("dir1", 0.94, 0.85), ("dir2", 0.92, 1.35), ("dir3", 0.9, 1.9)]
+    for nm, ln, off in elems:
+        y = y0 - off
+        _kid(box("bm_clamp", (0.08, 0.06, 0.08), (0, y, z), black, bevel=0.01), hp)
+        if nm == "driven":   # a split dipole: two halves and a little feed box in the middle
+            for s in (-1, 1): _kid(cyl("bm_el", 0.024, 0.024, ln / 2 - 0.05, (s * (ln / 4 + 0.025), y, z + 0.06), alu, rot=(0, math.pi / 2, 0), verts=8, bevel=0), hp)
+            _kid(box("bm_feed", (0.12, 0.08, 0.08), (0, y, z + 0.06), black, bevel=0.01), hp)
+        else:
+            _kid(cyl("bm_el", 0.024, 0.024, ln, (0, y, z + 0.04), alu, rot=(0, math.pi / 2, 0), verts=8, bevel=0), hp)
+        for s in (-1, 1): _kid(sphere("bm_tip", 0.032, (s * ln / 2, y, z + (0.06 if nm == "driven" else 0.04)), black, sub=1), hp)
+    # a pointer flag on the front tip so you can see where it aims
+    _kid(cyl("bm_flagpole", 0.01, 0.01, 0.3, (0, y0 - 2.0, z + 0.15), wood, verts=6, bevel=0), hp)
+    _kid(box("bm_flag", (0.012, 0.22, 0.13), (0, y0 - 2.1, z + 0.23), redp, bevel=0), hp)
+    # a little wooden sign on the pole
+    box("bm_sign", (0.62, 0.05, 0.22), (0, -0.12, 1.45), wood, bevel=0.02)
+    bpy.ops.object.text_add(location=(0, -0.15, 1.45), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ BEAM"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.13; t.data.extrude = 0.008
+    t.data.materials.append(ink); bpy.ops.object.convert(target="MESH")
+
+ASSETS.update({"beam": beam})
+
 
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)

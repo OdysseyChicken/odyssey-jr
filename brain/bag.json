@@ -44,14 +44,6 @@
       "note": "It pointed into the fog, so I followed it and found a lighthouse. It was the KEY to the lamp's clockwork! Then it popped out and now it points home. Best compass."
     },
     {
-      "id": "song-sheet",
-      "name": "My song, written down",
-      "icon": "🎼",
-      "from": "Wrote it at the Cluck-a-phone",
-      "got": "2026-11-15",
-      "note": "'Over the Fence': E G high-C... I hum it under my breath all day."
-    },
-    {
       "id": "spare-garlic-clove",
       "name": "A spare garlic clove",
       "icon": "🧄",
@@ -74,12 +66,28 @@
       "from": "Wrote it at my radio desk on Day 4",
       "got": "2026-11-16",
       "note": "A to Z in dits and dahs. Koch says don't look at it. I look at it."
+    },
+    {
+      "id": "radio-logbook",
+      "name": "My radio logbook",
+      "icon": "📒",
+      "from": "Started it at my radio desk the day ISLE answered",
+      "got": "2026-11-16",
+      "note": "Entry #1: Nov 16, 2 meters, CW. ISLE (Pip). She gave me 579. QTH: the island. Notes: SHE'S A PUFFIN. Land at low tide only."
     }
   ],
   "shelves": {
     "home": {
       "name": "His shelf at home",
       "items": [
+        {
+          "id": "song-sheet",
+          "name": "My song, written down",
+          "icon": "🎼",
+          "from": "Wrote it at the Cluck-a-phone",
+          "got": "2026-11-15",
+          "note": "'Over the Fence': E G high-C... I hum it under my breath all day. Moved to my shelf on Day 4 to make room for my radio logbook."
+        },
         {
           "id": "star-chart",
           "name": "My first star chart",

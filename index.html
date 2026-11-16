@@ -499,9 +499,11 @@ const ACTIONS = {
   alarm:    { icon: "😱", doing: "frozen flat with one eye on the sky", to: "cover", why: "hide from a hawk", where: "shelter", anim: "alarm", fx: {}, dur: [1, 1] },
   garden:   { icon: "🧄", doing: "checking on the seeds in his garden (and trying very hard not to scratch them up)", to: "OJ Garden", why: "see if anything sprouted", where: "kitchen", anim: "look", face: "oj-garden", fx: { calm: 1.0, wonder: 0.6, mood: 0.5 }, dur: [5, 11] },
   // Day 4: OJ Radio. He taps Morse code on his straight key (anim "key": his beak goes down exactly when the key does).
-  radio:    { icon: "📻", doing: "in his radio shack, tapping Morse code on his straight key", to: "OJ Radio", why: "practice his Morse code", where: "radio", anim: "key", face: "oj-radio", fx: { wonder: 0.9, calm: 0.7, mood: 0.6, energy: -0.1 }, dur: [6, 14] }
+  radio:    { icon: "📻", doing: "in his radio shack, tapping Morse code on his straight key", to: "OJ Radio", why: "practice his Morse code", where: "radio", anim: "key", face: "oj-radio", fx: { wonder: 0.9, calm: 0.7, mood: 0.6, energy: -0.1 }, dur: [6, 14] },
+  // Day 4 bonus: OJ Beam. He cranks his Yagi antenna around, listening, and settles it on the island where ISLE (Pip) lives.
+  beam:     { icon: "📡", doing: "cranking his beam antenna around to listen for ISLE", to: "OJ Beam", why: "point his antenna at the island", where: "beam", anim: "build", face: "oj-beam", fx: { wonder: 1.1, mood: 0.5, energy: -0.15 }, dur: [5, 10] }
 };
-const OUTDOOR_DRY = ["oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
+const OUTDOOR_DRY = ["beam", "oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
 const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
@@ -523,7 +525,8 @@ function chooseAction(n, now, rnd) {
     stargaze: spots.stargaze && skyDaylight(now) < 0.3 ? (1.4 + lack("wonder")) * (1 - wx.cloud) : 0,
     oakwatch: spots.oakwatch && skyDaylight(now) > 0.4 ? lack("wonder") * 0.7 + 0.25 : 0,
     garden: spots.kitchen ? lack("calm") * 0.7 + lack("wonder") * 0.4 + 0.25 + (wx.afterRain ? 0.5 : 0) : 0,
-    radio: spots.radio ? lack("wonder") * 0.6 + lack("calm") * 0.4 + 0.3 + wx.rain * 1.2 : 0 // the shack has a roof: a good rainy-day hobby
+    radio: spots.radio ? lack("wonder") * 0.6 + lack("calm") * 0.4 + 0.3 + wx.rain * 1.2 : 0, // the shack has a roof: a good rainy-day hobby
+    beam: spots.beam ? lack("wonder") * 0.6 + 0.2 : 0
   };
   // chickens don't love getting soaked: in the rain most outdoor plans get put off
   for (const k of OUTDOOR_DRY) scores[k] *= 1 - wx.rain * 0.85;

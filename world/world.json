@@ -76,6 +76,10 @@
     "radio": [
       12.7,
       3.8
+    ],
+    "beam": [
+      16.8,
+      7.9
     ]
   },
   "objects": [
@@ -448,6 +452,21 @@
       "label": "OJ Radio",
       "labelHeight": 3.0,
       "note": "My radio shack (Day 4). The lever of my straight key has a smooth stick I found by the lookout inside the knob. Click it to send Morse code."
+    },
+    {
+      "id": "oj-beam",
+      "type": "model",
+      "src": "assets/models/beam.glb",
+      "pos": [
+        16.8,
+        7.2
+      ],
+      "rot": 0,
+      "scale": 1.15,
+      "script": "behaviors/beam.js",
+      "label": "OJ Beam",
+      "labelHeight": 6.2,
+      "note": "My Yagi beam antenna (Day 4 bonus). Turn it with the hand crank toward the island at 346 degrees, and ISLE comes in loud."
     }
   ],
   "custom": {

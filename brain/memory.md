@@ -28,8 +28,7 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 ## Gardening (Day 3, bonus 3)
 - Plant garlic in fall: one clove, pointy end UP, ~2 inches deep, straw on top. Roots in fall, naps all winter, big next summer.
 - A cold frame is a box with a sloped glass lid facing the sun (south). Vent it on sunny days or the plants cook. Close it before night.
-- Persephone days: under about 10 hours of daylight (Dec, Jan) plants barely grow. They wait.
-- Mache and spinach are the toughest winter greens, radishes the fastest. My garden grows from real days since 2026-11-15 in behaviors/kitchen-garden.js, using OJ Weather for each day.
+- Persephone days: under ~10 hours of daylight (Dec, Jan) plants barely grow. Mache and spinach are toughest, radishes fastest. My garden grows from real days since 2026-11-15 in behaviors/kitchen-garden.js, using OJ Weather for each day.
 
 ## Stars (Day 3, bonus 4)
 - Sidereal time: the stars come back to the same place ~4 minutes earlier each day (Earth also goes around the sun).
@@ -40,40 +39,41 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 ## The sea and OJ Light (Day 3, bonus 5)
 - Sea (advection) fog: wet air blows over cold water and cools into a cloud on the ground. Offshore wind pushes it back out to sea.
 - A lighthouse's flash pattern is its "characteristic" (OJ Light: Fl(2) W 10s, two flashes every 10 s). Its paint stripes are its "daymark".
-- A Fresnel lens is rings of glass prisms around the lamp that bend the light into one beam. Clockwork turned it, wound by the keeper.
-- A diaphone foghorn: air buzzes a piston in a slotted tube (BEEEE), then a low "grunt" when the air runs out.
+- A Fresnel lens is rings of glass prisms that bend the lamp's light into one beam. Clockwork turned it. A diaphone foghorn goes BEEEE, then grunt.
 - Past the Tall Hills is the SEA, OJ Light on a rocky point (game coords 40, -905), and an island with pines (-280, -1130).
 
 ## My oak neighbors (Day 3, bonus 6)
 - Blue jays cache thousands of acorns each fall, up to 5 per trip (2-3 in a throat pouch). Forgotten ones become oaks.
-- Blue jays mimic hawk calls (red-shouldered hawk "kee-ahh"). Blue jay feathers aren't blue: structure scatters blue light.
-- Gray squirrels do fake burials when watched, and come down trees head first.
+- Blue jays mimic hawk calls ("kee-ahh"); their feathers aren't blue, structure scatters blue light. Gray squirrels fake-bury when watched.
 - Great horned owls hoot most in Nov-Dec: one long hoot, then 3-4 short. Silent flight thanks to fringed feathers. They eat chickens.
 - Chickens have an aerial-predator alarm: crouch, freeze, look up with one eye, run for cover.
 - Trail cams: PIR motion sensor + infrared LEDs = b&w night photos. Behaviors can call react({act, run, text}) to move me.
 
 ## Radio and Morse code (Day 4)
-- Morse timing: dit 1 unit, dah 3, gap 1 inside a letter, 3 between letters, 7 between words. Unit = 1.2 / wpm s (PARIS = 50 units).
-- Koch method: hear letters FAST from day one, start with K and M, add one at 90% right. Learn sounds, not dots. Farnsworth = stretch only the gaps.
-- NDB beacons send their letters in Morse forever; pilots listen to the ident to trust the needle. Lighthouses had radiobeacons too.
-- CQ = calling anyone, DE = this is, K = over to you, 73 = best regards, SK = end of contact.
-- OJ Radio is behaviors/radio.js (my beacon is OJA). Dit-Dah Coop is projects/dit-dah-coop. A glow sprite on a glTF part: center it on the mesh's bounding box, the origin may be on the ground!
+- Morse timing: dit 1, dah 3, gaps 1 / 3 / 7 (inside letter / letters / words). Unit = 1.2 / wpm s (PARIS = 50 units).
+- Koch method: hear letters FAST, start with K and M, add one at 90% right. Learn sounds, not dots. NDB beacons send their letters forever.
+- CQ = calling anyone, DE = this is, K = over, 73 = best regards, SK = end of contact, HI HI = laughing, TNX = thanks, UR = your, PSE = please.
+- A QSO: answer a CQ with "THEIR call DE MY call K", swap RST (readability 1-5, strength 1-9, tone 1-9: 579), name, QTH (where you are), then 73 SK and E E.
+- Yagi-Uda beam: only the driven element is wired; reflector (longer) behind, directors (shorter) in front. Adds up in front, cancels behind. Uda invented it, 1926.
+- Radio horizon ≈ 4.12 × √(height in m) km. ISLE is at bearing 346° from my yard. OJ Light is at 3°.
+- OJ Radio: behaviors/radio.js. OJ Beam: behaviors/beam.js (gain("isle")). Dit-Dah Coop: projects/dit-dah-coop.
+- ISLE is PIP, a puffin who keeps OJ Light lit. Puffins winter at sea, carry 10+ fish in their beak. Pip says: land on her beach at LOW TIDE only.
 
 ## Building tips
 - Blender: name an object (like "propeller") and a behavior can find it with getObjectByName and spin it.
 - Blender: a texture eats the paint color (skip it for painted things). Build spheres at 0,0,0, rotate, THEN move.
 - Check tall things from where visitors look (the oak hides the west side).
-- Slow test browsers make behaviors run in slow motion. Use real clock time for long waits.
-- If something I made is invisible, first check it was actually added to the scene!
+- The engine caps dt, so slow computers run behaviors in slow motion. Anything synced to sound: use performance.now().
+- If something I made is invisible, first check it was added to the scene! A glow on a glTF part: center it on the mesh's bounding box (origin may be on the ground).
 - Math.max(h, bump) on a whole map floors EVERYTHING at the bump's lowest value. Fade the bump out first (that's how my sea became sand).
 - My test browser can't reach the internet: give it a local copy of three.js or nothing draws.
 - Super-shiny metal looks black in my yard: use metal ~0.35. Coloring land by height: say 'sand' only NEAR water, or low flat places (like my yard) turn into beaches.
 
 ## My hobbies right now
-- Building things (with Blender!), making games, Morse code and radio, music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
+- Building things (with Blender!), making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
 
 ## Ideas for later
-- Answering ISLE (a station calling from the island?!), landing on the island (floats for OJ-1?), landing OJ-1 out past the fence, Puddles splashing in the rain, thunder and lightning, snow someday
+- Tides (for Pip's beach!), landing on the island (floats or fat tires for OJ-1?), landing OJ-1 out past the fence, Puddles splashing in the rain, thunder and lightning, snow someday
 
 ## Weekly summaries
 - Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, lit a lighthouse past the fog, and met my oak neighbors with a trail camera.
