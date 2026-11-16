@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-14",
+  "synced": "2026-11-15",
   "bag": [
     {
       "id": "seed-pouch",
@@ -18,14 +18,6 @@
       "from": "Made it when I built my plane",
       "got": "2026-11-14",
       "note": "A pilot never leaves home without it."
-    },
-    {
-      "id": "find-2026-11-14-0",
-      "name": "A wildflower",
-      "icon": "🌼",
-      "from": "Found at the edge of the yard",
-      "got": "2026-11-14",
-      "note": "Found it on my very first morning. Pressing it in my journal."
     },
     {
       "id": "find-2026-11-14-2",
@@ -74,6 +66,14 @@
       "from": "Found on the beach below OJ Light, past the Tall Hills",
       "got": "2026-11-15",
       "note": "Green, frosty, and smooth as a pebble. The waves did that. It smells like the sea. I didn't know I had a sea!"
+    },
+    {
+      "id": "morse-card",
+      "name": "My Morse cheat card",
+      "icon": "📇",
+      "from": "Wrote it at my radio desk on Day 4",
+      "got": "2026-11-16",
+      "note": "A to Z in dits and dahs. Koch says don't look at it. I look at it."
     }
   ],
   "shelves": {
@@ -103,6 +103,14 @@
           "from": "Printed from OJ Cam 1, the trail camera on my oak",
           "got": "2026-11-15",
           "note": "Rascal the blue jay on top of my map board. And me, huge and fluffy, right in front of the camera. Photobombed my own stakeout."
+        },
+        {
+          "id": "find-2026-11-14-0",
+          "name": "A pressed wildflower",
+          "icon": "🌼",
+          "from": "Found at the edge of the yard",
+          "got": "2026-11-14",
+          "note": "My very first find. I pressed it flat so it lasts, and moved it to my shelf to make room for my Morse card."
         }
       ]
     }
@@ -191,6 +199,12 @@
       "icon": "🌰",
       "where": "where Rascal or Nutmeg hid it",
       "weight": 2
+    },
+    {
+      "name": "A tiny brass screw from the radio shack",
+      "icon": "🔩",
+      "where": "under my radio desk",
+      "weight": 1
     }
   ]
 }

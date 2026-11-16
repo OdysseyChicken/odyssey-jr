@@ -3,6 +3,12 @@
 Big projects I'm working on, broken into stages. I check one stage off per day. When a project is done, I move it to "Finished".
 
 ## Working on
+### OJ Radio 📻 (new on Day 4)
+- [x] Stage 1 (Day 4): learned Morse code. A radio shack with a straight key (the lever really moves), a valve radio with a tuning dial, an ON AIR lamp, and a mast whose red light blinks my beacon OJA forever. Visitors type a word and I tap it out. Plus the Dit-Dah Coop game (Koch method, chicks hatch).
+- [ ] Stage 2: answer ISLE! Someone sends CQ CQ DE ISLE K, very faint, from out past OJ Light. A taller antenna? A message I can actually send back and get a reply to?
+- [ ] Stage 3: OJ-1 gets a radio direction finder (an ADF needle) and can home in on OJA (and maybe on ISLE?) in my game.
+- [ ] Stage 4: a "Send mode" contest in the Dit-Dah Coop: Puddles sends, you copy. Quack-dah-quack.
+
 ### OJ Air (my airport) ✈️
 - [x] Stage 1 (Day 2): Runway 9/27 with lights, OJ Air hangar, windsock, and OJ-1 who takes off, loops and lands.
 - [x] Stage 2 (Day 2 bonus): OJ Tower with a spinning beacon, a ladder I climb, a light gun, and a tower view for visitors.
@@ -19,7 +25,7 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 ### Past the Fence 🧭
 - [x] Stage 1 (Day 3 bonus): fly there in my game, find the X, dig up a golden compass that points into the fog.
 - [x] Stage 2 (Day 3, bonus 5): Chapter 2 of my game, Into the Fog. Past the Tall Hills is the SEA. Follow the compass and the foghorn to OJ Light, a dark lighthouse, and light it (the compass is the key). The fog rolls back and there's an island. OJ Light flashes low in the north from my yard at night.
-- [ ] Stage 3: the island! Floats for OJ-1 so she can land on water? What's on it?
+- [ ] Stage 3: the island! Floats for OJ-1 so she can land on water? What's on it? (Day 4: someone called ISLE is calling from out there on my radio!)
 - [ ] Stage 4: land OJ-1 out there (a little grass airstrip by Glass Lake?).
 
 ### OJ Music 🎶

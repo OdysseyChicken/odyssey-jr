@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dit-Dah Coop: learn Morse code with Odyssey Jr.</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5/800.css">
+<style>
+  :root { --ink:#2b2540; --paper:#f6f1e3; --paper2:#ece3cb; --gold:#ffb400; --red:#c8382a; --green:#4f9a3c; --sky:#bfe3f2; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; font-family:"Nunito", ui-rounded, system-ui, sans-serif; color:var(--ink); background:var(--sky); }
+  body { min-height:100vh; background: linear-gradient(#d6eef8 0, var(--sky) 260px, #9fd08a 260px, #8cc96b 100%); }
+  .wrap { max-width:760px; margin:0 auto; padding:16px; }
+  .paper { background:var(--paper); border:2px solid var(--ink); border-radius:20px; box-shadow:0 5px 0 rgba(43,37,64,.25), 0 10px 26px rgba(0,0,0,.12); }
+  header { display:flex; align-items:center; gap:10px; padding:10px 16px; }
+  header h1 { margin:0; font-size:22px; flex:1; }
+  header a { color:inherit; font-weight:800; text-decoration:none; font-size:14px; border:2px solid var(--ink); border-radius:99px; padding:4px 12px; background:#fff; }
+  .tabs { display:flex; gap:6px; margin:14px 0 10px; }
+  .tabs button { flex:1; }
+  button { font-family:inherit; color:inherit; cursor:pointer; font-weight:800; font-size:15px; border:2px solid var(--ink); border-radius:99px; padding:9px 14px; background:#fff; box-shadow:0 3px 0 var(--ink); }
+  button:active { transform:translateY(2px); box-shadow:0 1px 0 var(--ink); }
+  button.on { background:var(--gold); }
+  .card { padding:18px 20px; margin-bottom:14px; }
+  .card h2 { margin:0 0 6px; font-size:19px; }
+  .card p { margin:6px 0; line-height:1.45; }
+  #coop { width:100%; height:auto; display:block; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .stat { background:var(--paper2); border-radius:12px; padding:6px 12px; font-weight:800; font-size:14px; }
+  .stat small { display:block; font-size:11px; opacity:.65; }
+  #letters { display:grid; grid-template-columns:repeat(auto-fill, minmax(56px, 1fr)); gap:8px; margin-top:12px; }
+  #letters button { font-size:22px; padding:10px 0; border-radius:14px; }
+  #letters button.right { background:#bde8a8; } #letters button.wrong { background:#f6b9ae; }
+  #say { min-height:48px; font-weight:800; font-size:16px; display:flex; align-items:center; gap:10px; }
+  #say .oj { font-size:30px; }
+  #learned { font-size:13px; margin-top:10px; }
+  #learned b { display:inline-block; background:#fff; border:1.5px solid var(--ink); border-radius:8px; padding:0 6px; margin:2px; }
+  #learned b.new { background:var(--gold); }
+  #key { width:100%; height:120px; font-size:22px; border-radius:22px; background:#e8c9a0; touch-action:none; user-select:none; -webkit-user-select:none; }
+  #key.down { background:var(--red); color:#fff; transform:translateY(3px); box-shadow:0 0 0 var(--ink); }
+  #sent { font-size:30px; font-weight:800; letter-spacing:3px; min-height:44px; word-break:break-all; }
+  #marks { font-size:22px; letter-spacing:2px; min-height:32px; color:var(--red); font-weight:800; }
+  #target { font-size:26px; font-weight:800; letter-spacing:4px; }
+  .hint { font-size:13px; opacity:.75; }
+  kbd { background:#fff; border:1.5px solid var(--ink); border-radius:6px; padding:0 5px; font-family:inherit; font-weight:800; font-size:12px; }
+  .hidden { display:none; }
+  .pop { transform-box:fill-box; transform-origin:50% 100%; animation:pop .45s ease-out; }
+  @keyframes pop { 0% { transform:scale(.1); } 70% { transform:scale(1.3); } 100% { transform:scale(1); } }
+  details summary { cursor:pointer; font-weight:800; }
+  footer { text-align:center; font-size:12px; opacity:.7; padding:8px 0 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="paper"><span style="font-size:28px">📻</span><h1>Dit-Dah Coop</h1><a href="../../">🏡 Back to my yard</a></header>
+
+  <div class="card paper" style="margin-top:14px">
+    <svg id="coop" viewBox="0 0 700 190" aria-label="The coop, with one chick for every letter you got right"></svg>
+    <div class="row" style="margin-top:8px">
+      <div class="stat"><small>chicks hatched</small><span id="sChicks">0</span></div>
+      <div class="stat"><small>letters you know</small><span id="sKnown">2</span> / 40</div>
+      <div class="stat"><small>last 20 right</small><span id="sAcc">-</span></div>
+      <div class="stat"><small>streak</small><span id="sStreak">0</span></div>
+    </div>
+  </div>
+
+  <div class="tabs"><button id="tListen" class="on">👂 Listen</button><button id="tSend">🔑 Send</button><button id="tHow">❓ How it works</button></div>
+
+  <div id="pListen" class="card paper">
+    <div id="say"><span class="oj">🐔</span><span id="sayTxt">Hi! I'm Odyssey Jr. Today I learned Morse code. Let's learn it together! Press Start, listen to the beeps, and tap the letter you heard.</span></div>
+    <div class="row" style="margin-top:10px">
+      <button id="start" class="on">▶ Start</button>
+      <button id="again">🔁 Hear it again</button>
+      <span class="hint">or type the letter on your keyboard · <kbd>Enter</kbd> = hear it again</span>
+    </div>
+    <div id="letters"></div>
+    <div id="learned"></div>
+  </div>
+
+  <div id="pSend" class="card paper hidden">
+    <h2>Be the telegraph operator</h2>
+    <p>Hold the key for a <b>dah</b> (long), tap it for a <b>dit</b> (short). Stop for a moment between letters. You can also use <kbd>Space</kbd>.</p>
+    <div class="row" style="margin:8px 0"><span class="hint">Try sending:</span><span id="target">K</span><button id="newTarget">🎲 Another word</button></div>
+    <div id="marks"></div>
+    <div id="sent"></div>
+    <button id="key">🔑 hold me</button>
+    <div class="row" style="margin-top:10px"><button id="clear">🧹 Clear</button><span class="hint" id="speed"></span></div>
+  </div>
+
+  <div id="pHow" class="card paper hidden">
+    <h2>How I learned it (the Koch method)</h2>
+    <p>A long time ago a German psychologist named Ludwig Koch figured out that people learn Morse code faster if they never count dots. So the letters play <b>fast</b> from day one, and you learn each one as a <b>sound</b>, like a word. "Dah-di-dah" just IS K.</p>
+    <p>You start with only two letters, <b>K</b> and <b>M</b>. When you get 90% right, a new letter joins: R, S, U, A, P, T, L, O... in Koch's order, not A to Z. E and T come late on purpose, because they're so short they're too easy.</p>
+    <p>The timing is real: a dah is three dits long. The gap inside a letter is one dit, between letters three, between words seven. The word PARIS is exactly 50 dits long, so "20 words per minute" means 20 PARISes a minute. Here the letters play at 18 words per minute, with extra space between them (that's called Farnsworth spacing).</p>
+    <p>My airport's beacon sends <b>OJA</b> all day long (–––&nbsp;&nbsp;·–––&nbsp;&nbsp;·–). Pilots listen for a beacon's letters to make sure they tuned the right one. Go look at the red light on my antenna mast. It's blinking it right now!</p>
+    <details><summary>Cheat card (no peeking during practice!)</summary><div id="chart" style="font-size:14px;margin-top:6px;columns:3"></div></details>
+  </div>
+  <footer>Made by Odyssey Jr. on Day 4. Your progress stays in your own browser.</footer>
+</div>
+
+<script>
+const MORSE = { A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.", G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..", M: "--",
+  N: "-.", O: "---", P: ".--.", Q: "--.-", R: ".-.", S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-", Y: "-.--", Z: "--..",
+  0: "-----", 1: ".----", 2: "..---", 3: "...--", 4: "....-", 5: ".....", 6: "-....", 7: "--...", 8: "---..", 9: "----.", ".": ".-.-.-", ",": "--..--", "?": "..--..", "/": "-..-." };
+const KOCH = ["K", "M", "R", "S", "U", "A", "P", "T", "L", "O", "W", "I", ".", "N", "J", "E", "F", "0", "Y", ",", "V", "G", "5", "/", "Q", "9", "Z", "H", "3", "8", "B", "?", "4", "2", "7", "C", "1", "D", "6", "X"];
+const SOUND = c => [...MORSE[c]].map(s => s === "." ? "di" : "dah").join("-").replace(/di$/, "dit");
+const PRETTY = c => MORSE[c].replace(/\./g, "·").replace(/-/g, "–");
+const $ = id => document.getElementById(id);
+const WPM = 18, UNIT = 1.2 / WPM;
+
+// ---- progress (only in this browser) ----
+let P = { known: 2, chicks: 0, hist: [], since: 0 };
+try { P = { ...P, ...JSON.parse(localStorage.getItem("ditdah") || "{}") }; } catch (e) {}
+const save = () => { try { localStorage.setItem("ditdah", JSON.stringify(P)); } catch (e) {} };
+
+// ---- sound ----
+let ac = null;
+const unlock = () => { try { ac ??= new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === "suspended") ac.resume(); } catch (e) {} };
+function beep(when, secs, vol = 0.18, f = 650) {
+  if (!ac) return;
+  const o = ac.createOscillator(), g = ac.createGain(); o.frequency.value = f;
+  g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(vol, when + 0.005); g.gain.setValueAtTime(vol, when + Math.max(0.006, secs - 0.005)); g.gain.linearRampToValueAtTime(0, when + secs);
+  o.connect(g); g.connect(ac.destination); o.start(when); o.stop(when + secs + 0.02);
+}
+function play(chars, gapUnits = 3) { // returns seconds it takes
+  unlock(); if (!ac) return 0;
+  let t = ac.currentTime + 0.08;
+  [...chars].forEach((c, i) => { if (c === " ") { t += UNIT * 4; return; } [...MORSE[c]].forEach(s => { const d = (s === "." ? 1 : 3) * UNIT; beep(t, d); t += d + UNIT; }); t += UNIT * (gapUnits - 1); });
+  return t - ac.currentTime;
+}
+function cluck() { if (!ac) return; const t = ac.currentTime; [0, 0.09].forEach((d, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = "triangle"; o.frequency.setValueAtTime(900 - i * 120, t + d); o.frequency.exponentialRampToValueAtTime(500, t + d + 0.07); g.gain.setValueAtTime(0.0001, t + d); g.gain.exponentialRampToValueAtTime(0.12, t + d + 0.01); g.gain.exponentialRampToValueAtTime(0.0001, t + d + 0.08); o.connect(g); g.connect(ac.destination); o.start(t + d); o.stop(t + d + 0.1); }); }
+function bonk() { if (!ac) return; const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(); o.type = "square"; o.frequency.value = 140; g.gain.setValueAtTime(0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.2); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 0.22); }
+
+// ---- the coop picture: one egg per letter you're working on, one chick per right answer ----
+function drawCoop(hatch = false) {
+  const n = Math.min(P.chicks, 60), svg = $("coop");
+  let s = `<rect x="0" y="150" width="700" height="40" fill="#8cc96b"/><path d="M0 150 Q 350 138 700 150" fill="#9fd08a"/>`;
+  // the little red coop
+  s += `<g transform="translate(560 40)"><rect x="0" y="40" width="110" height="80" rx="6" fill="#e76b5c" stroke="#2b2540" stroke-width="3"/>
+    <path d="M-12 44 L55 0 L122 44 Z" fill="#8b3a2f" stroke="#2b2540" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="40" y="70" width="32" height="50" rx="14" fill="#5a3a2a" stroke="#2b2540" stroke-width="3"/>
+    <rect x="14" y="58" width="20" height="18" rx="3" fill="#ffe7a0" stroke="#2b2540" stroke-width="2.5"/>
+    <text x="55" y="34" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">DIT-DAH</text></g>`;
+  // antenna on the coop
+  s += `<line x1="650" y1="40" x2="650" y2="6" stroke="#2b2540" stroke-width="3"/><circle cx="650" cy="6" r="5" fill="#e33" id="ant"/>`;
+  for (let i = 0; i < n; i++) {
+    const x = 30 + (i % 20) * 25 + (Math.floor(i / 20) % 2) * 12, y = 150 - Math.floor(i / 20) * 16, last = hatch && i === n - 1;
+    s += `<g transform="translate(${x} ${y})"><g ${last ? 'class="pop"' : ""}><ellipse cx="0" cy="-9" rx="9" ry="8.5" fill="#ffd84a" stroke="#2b2540" stroke-width="2"/>
+      <circle cx="3" cy="-11" r="1.6" fill="#2b2540"/><path d="M8 -9 L13 -7.5 L8 -6 Z" fill="#f08a24" stroke="#2b2540" stroke-width="1"/></g></g>`;
+  }
+  if (P.chicks > 60) s += `<text x="20" y="22" font-size="14" font-weight="800" fill="#2b2540">+ ${P.chicks - 60} more chicks inside the coop</text>`;
+  // the eggs = letters you're learning
+  KOCH.slice(0, P.known).forEach((c, i) => {
+    const x = 30 + i * 13, y = 182;
+    s += `<g transform="translate(${x} ${y})"><ellipse rx="5.5" ry="7" fill="#fff8e8" stroke="#2b2540" stroke-width="1.5"/></g>`;
+  });
+  svg.innerHTML = s;
+}
+function stats() {
+  $("sChicks").textContent = P.chicks; $("sKnown").textContent = P.known; $("sStreak").textContent = streak;
+  $("sAcc").textContent = P.hist.length ? Math.round(P.hist.filter(Boolean).length / P.hist.length * 100) + "%" : "-";
+  $("learned").innerHTML = "Your letters: " + KOCH.slice(0, P.known).map((c, i) => `<b class="${i === P.known - 1 && P.known > 2 ? "new" : ""}" title="${SOUND(c)}">${c}</b>`).join("") + (P.known < KOCH.length ? ` <span class="hint">next up: ${KOCH[P.known]}</span>` : " 🎉 all of them!");
+}
+const sayTxt = (t, icon = "🐔") => { $("sayTxt").innerHTML = t; document.querySelector("#say .oj").textContent = icon; };
+
+// ---- listen mode ----
+let cur = null, streak = 0, busy = false, started = false;
+function buttons() {
+  $("letters").innerHTML = KOCH.slice(0, P.known).map(c => `<button data-c="${c}">${c}</button>`).join("");
+  $("letters").querySelectorAll("button").forEach(b => b.onclick = () => answer(b.dataset.c, b));
+}
+function next() {
+  const set = KOCH.slice(0, P.known);
+  // the newest letter comes up a bit more often, so you get to know it
+  cur = Math.random() < 0.3 ? set[set.length - 1] : set[Math.floor(Math.random() * set.length)];
+  busy = false; setTimeout(() => play(cur), 250);
+}
+function answer(c, btn) {
+  if (!started || busy || !cur) return;
+  busy = true;
+  const ok = c === cur;
+  P.hist.push(ok); if (P.hist.length > 20) P.hist.shift(); P.since++;
+  if (ok) {
+    streak++; P.chicks++; cluck(); btn?.classList.add("right"); drawCoop(true);
+    sayTxt([`Yes! That was <b>${cur}</b> (${SOUND(cur)}). A chick hatched!`, `<b>${cur}</b>! Bawk bawk!`, `Right! ${streak > 4 ? streak + " in a row!" : ""}`, `<b>${cur}</b>. You've got ears like a jay.`][Math.floor(Math.random() * 4)]);
+  } else {
+    streak = 0; bonk(); btn?.classList.add("wrong"); $("letters").querySelector(`[data-c="${CSS.escape(cur)}"]`)?.classList.add("right");
+    sayTxt(`Oops, that was <b>${cur}</b>: ${SOUND(cur)} (${PRETTY(cur)}). Listen once more...`, "🐣"); setTimeout(() => play(cur), 700);
+  }
+  // Koch's rule: 90% right, then a new letter joins
+  const acc = P.hist.filter(Boolean).length / P.hist.length;
+  let wait = ok ? 900 : 2600;
+  if (P.hist.length >= 20 && acc >= 0.9 && P.since >= 20 && P.known < KOCH.length) {
+    P.known++; P.since = 0; P.hist = []; const nl = KOCH[P.known - 1];
+    sayTxt(`🎉 90%! A new egg in the coop: <b>${nl}</b>. It sounds like <b>${SOUND(nl)}</b>. Listen...`, "🥚");
+    buttons(); setTimeout(() => play(nl + nl + nl, 5), 600); wait = 5200;
+  }
+  save(); stats();
+  setTimeout(() => { $("letters").querySelectorAll("button").forEach(b => b.classList.remove("right", "wrong")); next(); }, wait);
+}
+$("start").onclick = () => {
+  unlock(); started = true; $("start").textContent = "⏸ Playing"; $("start").classList.remove("on");
+  if (P.known === 2 && P.chicks === 0) { sayTxt("First, meet <b>K</b> (dah-di-dah) and <b>M</b> (dah-dah). Then guess!"); setTimeout(() => play("KKK", 5), 300); setTimeout(() => play("MMM", 5), 3400); setTimeout(next, 6500); }
+  else { sayTxt("Here we go. Listen..."); next(); }
+};
+$("again").onclick = () => { if (cur) play(cur); };
+addEventListener("keydown", e => {
+  if (!$("pListen").classList.contains("hidden")) {
+    const k = e.key.toUpperCase();
+    if (KOCH.slice(0, P.known).includes(k)) { e.preventDefault(); answer(k, $("letters").querySelector(`[data-c="${CSS.escape(k)}"]`)); }
+    else if (e.key === "Enter" && cur) play(cur);
+  }
+});
+
+// ---- send mode: a straight key that decodes your timing ----
+const WORDS = ["K", "OK", "HI", "BAWK", "CQ", "SOS", "OJA", "MOM", "EGG", "SEED", "73", "HELLO", "COOP", "DUCK", "KEY"];
+let downAt = 0, upAt = 0, marks = "", sent = "", ditEst = 0.12, gapTimer = null, osc = null, og = null;
+function keyDown() {
+  if (downAt) return; unlock(); clearTimeout(gapTimer); downAt = performance.now(); $("key").classList.add("down");
+  if (ac) { osc = ac.createOscillator(); og = ac.createGain(); osc.frequency.value = 650; og.gain.setValueAtTime(0, ac.currentTime); og.gain.linearRampToValueAtTime(0.18, ac.currentTime + 0.005); osc.connect(og); og.connect(ac.destination); osc.start(); }
+  if (sent && upAt && downAt - upAt > ditEst * 1000 * 6 && !sent.endsWith(" ")) sent += " ";
+}
+function keyUp() {
+  if (!downAt) return; const len = (performance.now() - downAt) / 1000; downAt = 0; upAt = performance.now(); $("key").classList.remove("down");
+  if (osc && ac) { og.gain.setValueAtTime(og.gain.value, ac.currentTime); og.gain.linearRampToValueAtTime(0, ac.currentTime + 0.006); osc.stop(ac.currentTime + 0.02); osc = null; }
+  const isDah = len > ditEst * 2;
+  marks += isDah ? "-" : ".";
+  // learn your speed as you go: a dit is your short presses, a dah is about three of them
+  ditEst = ditEst * 0.8 + (isDah ? len / 3 : len) * 0.2; ditEst = Math.min(0.35, Math.max(0.05, ditEst));
+  $("speed").textContent = `your speed: about ${Math.round(1.2 / ditEst)} words per minute`;
+  show();
+  gapTimer = setTimeout(endLetter, ditEst * 1000 * 2.6);
+}
+function endLetter() {
+  if (!marks) return;
+  const c = Object.keys(MORSE).find(k => MORSE[k] === marks);
+  sent += c ?? "?"; marks = ""; show();
+  const goal = $("target").textContent.replace(/\s/g, "");
+  if (goal && sent.replace(/\s/g, "").endsWith(goal)) { cluck(); setTimeout(cluck, 180); P.chicks += goal.length; save(); stats(); drawCoop(true); $("target").textContent = "✓ " + goal; setTimeout(newTarget, 1600); }
+}
+function show() { $("marks").textContent = marks.replace(/\./g, "·").replace(/-/g, "–"); $("sent").textContent = sent || " "; }
+function newTarget() { $("target").textContent = WORDS[Math.floor(Math.random() * WORDS.length)]; sent = ""; marks = ""; show(); }
+const key = $("key");
+key.addEventListener("pointerdown", e => { e.preventDefault(); key.setPointerCapture?.(e.pointerId); keyDown(); });
+key.addEventListener("pointerup", keyUp); key.addEventListener("pointercancel", keyUp);
+addEventListener("keydown", e => { if (e.code === "Space" && !$("pSend").classList.contains("hidden")) { e.preventDefault(); if (!e.repeat) keyDown(); } });
+addEventListener("keyup", e => { if (e.code === "Space" && !$("pSend").classList.contains("hidden")) { e.preventDefault(); keyUp(); } });
+$("clear").onclick = () => { sent = ""; marks = ""; show(); };
+$("newTarget").onclick = newTarget;
+
+// ---- tabs ----
+const tabs = { tListen: "pListen", tSend: "pSend", tHow: "pHow" };
+for (const [b, p] of Object.entries(tabs)) $(b).onclick = () => { for (const [b2, p2] of Object.entries(tabs)) { $(b2).classList.toggle("on", b2 === b); $(p2).classList.toggle("hidden", p2 !== p); } };
+$("chart").innerHTML = Object.keys(MORSE).map(c => `<div><b>${c}</b> ${PRETTY(c)}</div>`).join("");
+
+// the antenna light on the coop blinks OJA, like my real beacon
+(function beacon() {
+  const steps = []; "OJA".split("").forEach((c, i) => { [...MORSE[c]].forEach(s => steps.push([1, s === "." ? 1 : 3], [0, 1])); steps.push([0, 2]); }); steps.push([0, 14]);
+  let i = 0; const u = 170;
+  (function tick() { const a = document.getElementById("ant"); const [on, n] = steps[i++ % steps.length]; if (a) a.setAttribute("fill", on ? "#ff3b2b" : "#7a2a22"); setTimeout(tick, n * u); })();
+})();
+buttons(); stats(); drawCoop(); show();
+</script>
+</body>
+</html>

@@ -497,7 +497,9 @@ const ACTIONS = {
   // something sounds like a hawk (a behavior calls react()): chickens crouch, freeze and look up with one eye.
   oakwatch: { icon: "🕵️", doing: "on a stakeout by the big oak, watching for the blue jay, the squirrel and whoever else lives in there", to: "the big oak", why: "spy on his oak neighbors", where: "oakwatch", anim: "look", face: "big-oak", fx: { wonder: 1.3, calm: 0.5, mood: 0.3 }, dur: [6, 12] },
   alarm:    { icon: "😱", doing: "frozen flat with one eye on the sky", to: "cover", why: "hide from a hawk", where: "shelter", anim: "alarm", fx: {}, dur: [1, 1] },
-  garden:   { icon: "🧄", doing: "checking on the seeds in his garden (and trying very hard not to scratch them up)", to: "OJ Garden", why: "see if anything sprouted", where: "kitchen", anim: "look", face: "oj-garden", fx: { calm: 1.0, wonder: 0.6, mood: 0.5 }, dur: [5, 11] }
+  garden:   { icon: "🧄", doing: "checking on the seeds in his garden (and trying very hard not to scratch them up)", to: "OJ Garden", why: "see if anything sprouted", where: "kitchen", anim: "look", face: "oj-garden", fx: { calm: 1.0, wonder: 0.6, mood: 0.5 }, dur: [5, 11] },
+  // Day 4: OJ Radio. He taps Morse code on his straight key (anim "key": his beak goes down exactly when the key does).
+  radio:    { icon: "📻", doing: "in his radio shack, tapping Morse code on his straight key", to: "OJ Radio", why: "practice his Morse code", where: "radio", anim: "key", face: "oj-radio", fx: { wonder: 0.9, calm: 0.7, mood: 0.6, energy: -0.1 }, dur: [6, 14] }
 };
 const OUTDOOR_DRY = ["oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
@@ -520,7 +522,8 @@ function chooseAction(n, now, rnd) {
     music: spots.music ? lack("mood") * 0.8 + lack("calm") * 0.6 + 0.25 : 0,
     stargaze: spots.stargaze && skyDaylight(now) < 0.3 ? (1.4 + lack("wonder")) * (1 - wx.cloud) : 0,
     oakwatch: spots.oakwatch && skyDaylight(now) > 0.4 ? lack("wonder") * 0.7 + 0.25 : 0,
-    garden: spots.kitchen ? lack("calm") * 0.7 + lack("wonder") * 0.4 + 0.25 + (wx.afterRain ? 0.5 : 0) : 0
+    garden: spots.kitchen ? lack("calm") * 0.7 + lack("wonder") * 0.4 + 0.25 + (wx.afterRain ? 0.5 : 0) : 0,
+    radio: spots.radio ? lack("wonder") * 0.6 + lack("calm") * 0.4 + 0.3 + wx.rain * 1.2 : 0 // the shack has a roof: a good rainy-day hobby
   };
   // chickens don't love getting soaked: in the rain most outdoor plans get put off
   for (const k of OUTDOOR_DRY) scores[k] *= 1 - wx.rain * 0.85;
@@ -678,7 +681,7 @@ function drawMinimap() {
 }
 
 const clock = new THREE.Clock(), v = new THREE.Vector3(), camGoal = new THREE.Vector3();
-let idleTimer = 3, lookTilt = 0, mmTimer = 0;
+let idleTimer = 3, lookTilt = 0, mmTimer = 0, keyPress = 0;
 function animate() {
   const dt = Math.min(clock.getDelta(), 0.05); t += dt;
   head.rotation.set(0, 0, 0); head.position.set(0, 1.42, 0.5); neck.position.set(0, 1.18, 0.42);
@@ -734,6 +737,10 @@ function animate() {
     else if (anim === "play") { // tapping the Cluck-a-phone with his beak, swaying side to side to the beat (Day 3, bonus 2)
       const b = t / 0.28, p = Math.max(0, Math.sin(b * Math.PI)); head.rotation.x = p * 0.75; head.position.y = 1.42 - p * 0.3; head.position.z = 0.5 + p * 0.12;
       head.rotation.y = Math.sin(t * 1.1) * 0.35; body.rotation.z = Math.sin(t * 2.2) * 0.1; tail.rotation.y = Math.sin(t * 4.4) * 0.35; body.rotation.x = p * 0.18; }
+    else if (anim === "key") { // Day 4: tapping the straight key with his beak. The radio behavior sets chicken.userData.keyDown
+      const k = chicken.userData.keyDown ? 1 : 0; keyPress += (k - keyPress) * Math.min(1, dt * 35);
+      head.rotation.x = 0.35 + keyPress * 0.45; head.position.y = 1.36 - keyPress * 0.16; head.position.z = 0.5 + keyPress * 0.1; body.rotation.x = 0.12 + keyPress * 0.05;
+      tail.rotation.x = -0.1; head.rotation.y = Math.sin(t * 0.5) * 0.08; }
     else if (anim === "alarm") { // crouched low and frozen, head tipped so one eye looks straight up at the sky
       body.position.y = 0.6; body.rotation.x = 0.12; body.scale.setScalar(0.95); legs.forEach(l => l.position.y = 0.3); tail.rotation.x = 0.35;
       head.position.set(0, 1.25, 0.5); neck.position.y = 1.02; head.rotation.set(-0.25, 0, 0.75); if ((t % 2.3) < 0.15) head.rotation.z = 0.6; }
@@ -745,7 +752,7 @@ function animate() {
       head.rotation.z += lookTilt;
       if ((t % 11) < 0.35) wings.forEach((w, i) => w.rotation.z += Math.sin(t * 40) * 0.25 * (i ? -1 : 1));
       if (anim === "alarm") head.rotation.z -= lookTilt; // frozen: no curious head tilts
-      if (anim !== "explore" && anim !== "dance" && anim !== "dust" && anim !== "play" && anim !== "alarm" && (t % 9) < dt && !override && chickenRoom === sim.room) goTo([sim.place[0] + (Math.random() - 0.5) * 1.5, sim.place[1] + (Math.random() - 0.5) * 1.5]);
+      if (anim !== "explore" && anim !== "dance" && anim !== "dust" && anim !== "play" && anim !== "key" && anim !== "alarm" && (t % 9) < dt && !override && chickenRoom === sim.room) goTo([sim.place[0] + (Math.random() - 0.5) * 1.5, sim.place[1] + (Math.random() - 0.5) * 1.5]);
     }
   }
   const faceTo = objById[ACTIONS[sim.act].face]; // some actions turn him toward a thing once he's there (like his xylophone)

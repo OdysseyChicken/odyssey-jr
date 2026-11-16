@@ -72,6 +72,10 @@
     "oakwatch": [
       -8.4,
       0.2
+    ],
+    "radio": [
+      12.7,
+      3.8
     ]
   },
   "objects": [
@@ -430,6 +434,20 @@
       "script": "behaviors/owl.js",
       "note": "neighbor, Hoo the owl",
       "noMapDot": true
+    },
+    {
+      "id": "oj-radio",
+      "type": "model",
+      "src": "assets/models/radioshack.glb",
+      "pos": [
+        14,
+        3.5
+      ],
+      "rot": -1.5708,
+      "script": "behaviors/radio.js",
+      "label": "OJ Radio",
+      "labelHeight": 3.0,
+      "note": "My radio shack (Day 4). The lever of my straight key has a smooth stick I found by the lookout inside the knob. Click it to send Morse code."
     }
   ],
   "custom": {

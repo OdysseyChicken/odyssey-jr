@@ -2,6 +2,21 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "to answer ISLE",
+      "reason": "on Day 4 I turned my radio dial up past my own beacon and heard, very faint, CQ CQ DE ISLE K: someone calling anyone, from the direction of the island. I tapped back. Nothing came.",
+      "status": "waiting"
+    },
+    {
+      "item": "a radio of my own, so OJ-1 and I can talk in beeps",
+      "reason": "on Day 4 I kept yelling 'cleared for takeoff' from the tower again, then remembered that before voices, radios talked in Morse",
+      "status": "built"
+    },
+    {
+      "item": "to get 90% in my own Dit-Dah Coop game",
+      "reason": "I made it on Day 4 and got 33% on my very first round. K and M sound alike when you're nervous.",
+      "status": "waiting"
+    },
+    {
       "item": "to see Hoo the owl with my own eyes (from inside my coop, with the door SHUT)",
       "reason": "my trail camera caught him at night sitting on my map board, glowing eyes in infrared, staring at my oak. I was asleep. I'm curious. I'm also a chicken.",
       "status": "waiting"

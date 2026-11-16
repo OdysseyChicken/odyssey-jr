@@ -1091,6 +1091,120 @@ def trailcam():
 ASSETS.update({"bluejay": bluejay, "squirrel": squirrel, "owl": owl, "trailcam": trailcam})
 
 
+def radioshack():
+    # OJ Radio (Day 4): a little lean-to radio shack with a straight key, a valve radio with a glowing dial, headphones on
+    # a hook, and a tall antenna mast with a red beacon light on top. Front (open side) faces -Y. Odyssey stands at
+    # about (0, -1.25) facing +Y while he keys.
+    # Named parts for the behavior: "key_lever" (pivot, tips down for each dit/dah), "tx_lamp" (glows while sending),
+    # "dial_needle" (pivot, swings while tuning), "mast_light" (blinks the OJA beacon ident), "dial" (warm glow).
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("rs_planks", (0.55, 0.72, 0.62), tex="planks", scale=(1.4, 1))
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    roof = mat("rs_roof", (0.78, 0.36, 0.3), tex="shingles", scale=(3, 1.6))
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    black = mat("rs_bake", (0.12, 0.1, 0.09), rough=0.5)
+    cream = mat("rs_cream", (0.93, 0.88, 0.74), rough=0.6)
+    case = mat("rs_case", (0.55, 0.33, 0.2), tex="wood")
+    grille = mat("rs_grille", (0.35, 0.28, 0.22), rough=0.95)
+    steel = mat("rs_steel", (0.75, 0.77, 0.8), rough=0.35, metal=0.35)
+    wire = mat("rs_wire", (0.2, 0.18, 0.16), rough=0.8)
+    redp = mat("rs_redpaint", (0.85, 0.2, 0.18), rough=0.6)
+    whitep = mat("rs_whitepaint", (0.95, 0.94, 0.9), rough=0.6)
+    box("rs_pad", (2.9, 2.2, 0.08), (0, -0.25, 0.04), stone, bevel=0.03)
+    W, D = 2.5, 1.4
+    # back wall + two side walls (planks), a little window in the right side
+    box("rs_back", (W, 0.1, 2.0), (0, D / 2, 1.08), planks, bevel=0.02)
+    for s in (-1, 1):
+        box("rs_side", (0.1, D, 1.9), (s * W / 2, 0, 1.03), planks, bevel=0.02)
+        box("rs_corner", (0.14, 0.14, 2.1), (s * W / 2, -D / 2, 1.1), trim, bevel=0.03)
+        box("rs_corner", (0.14, 0.14, 2.1), (s * W / 2, D / 2, 1.1), trim, bevel=0.03)
+    box("rs_window", (0.06, 0.5, 0.45), (W / 2 + 0.03, 0, 1.4), mat("rs_glass", (0.7, 0.85, 0.95), rough=0.1), bevel=0.01)
+    box("rs_wframe", (0.05, 0.62, 0.57), (W / 2 + 0.06, 0, 1.4), trim, bevel=0.02)
+    # lean-to roof, high at the front so you can see in
+    ang = math.radians(10)
+    box("rs_roof", (W + 0.5, D + 0.6, 0.1), (0, -0.05, 2.25), roof, rot=(-ang, 0, 0), bevel=0.03)
+    box("rs_fascia", (W + 0.55, 0.06, 0.16), (0, -D / 2 - 0.36, 2.33), trim, bevel=0.02)
+    # the desk
+    top = 0.78
+    box("rs_desk", (W - 0.2, 0.75, 0.07), (0, 0.25, top), wood, bevel=0.02)
+    for x in (-1.05, 1.05):
+        for y in (-0.08, 0.58): box("rs_dleg", (0.07, 0.07, top), (x, y, top / 2), wood, bevel=0.01)
+    box("rs_shelf", (1.8, 0.3, 0.05), (0.2, 0.52, 1.62), wood, bevel=0.01)
+    for i, c in enumerate([(0.3, 0.55, 0.85), (0.9, 0.75, 0.3), (0.5, 0.75, 0.45)]):  # jars of spare parts
+        cyl("rs_jar", 0.06, 0.06, 0.14, (-0.45 + i * 0.16, 0.52, 1.715), mat(f"rs_jar{i}", c, rough=0.25), verts=14, bevel=0.01)
+    box("rs_manual", (0.32, 0.22, 0.06), (0.75, 0.52, 1.675), mat("rs_book", (0.25, 0.4, 0.7), rough=0.7), bevel=0.01)
+    # the radio (on the desk, against the wall): wooden case, cream front, a glowing dial, two knobs, a speaker grille
+    rx, ry = -0.35, 0.42
+    box("rs_radio", (0.95, 0.4, 0.5), (rx, ry, top + 0.29), case, bevel=0.04)
+    box("rs_face", (0.85, 0.02, 0.4), (rx, ry - 0.205, top + 0.29), cream, bevel=0.01)
+    d = box("dial", (0.4, 0.015, 0.14), (rx - 0.15, ry - 0.218, top + 0.4), mat("rs_dialglow", (1, 0.85, 0.55), rough=0.4, emit=(1, 0.7, 0.35), emit_strength=1.2), bevel=0.005)
+    for i in range(7): box("rs_tick", (0.006, 0.005, 0.03), (rx - 0.32 + i * 0.057, ry - 0.228, top + 0.44), black, bevel=0)
+    piv = _pivot("dial_needle", (rx - 0.15, ry - 0.23, top + 0.34))
+    _kid(box("rs_needle", (0.008, 0.006, 0.12), (rx - 0.15, ry - 0.23, top + 0.4), redp, bevel=0), piv)
+    box("rs_grille", (0.3, 0.015, 0.26), (rx + 0.22, ry - 0.215, top + 0.3), grille, bevel=0.01)
+    for k, x in enumerate((rx - 0.28, rx - 0.02)):
+        cyl("rs_knob", 0.045, 0.04, 0.05, (x, ry - 0.24, top + 0.17), black, rot=(math.pi / 2, 0, 0), verts=18, bevel=0.01)
+    # a glass valve (tube) on top, glowing a little orange
+    cyl("rs_valvebase", 0.05, 0.05, 0.04, (rx + 0.3, ry + 0.05, top + 0.56), black, verts=14, bevel=0)
+    sphere("rs_valve", 0.06, (rx + 0.3, ry + 0.05, top + 0.66), mat("rs_valveglass", (1, 0.7, 0.45), rough=0.1, emit=(1, 0.45, 0.15), emit_strength=0.8), scale=(1, 1, 1.6), sub=2)
+    # the straight key, front of the desk. Base, brass lever on a pivot, a knob, spring, contacts.
+    kx, ky = 0.45, 0.05
+    box("rs_keybase", (0.5, 0.22, 0.04), (kx, ky, top + 0.055), mat("rs_keywood", (0.4, 0.22, 0.12), tex="wood"), bevel=0.01)
+    for x in (kx + 0.02, kx + 0.08): box("rs_trunnion", (0.02, 0.1, 0.07), (x, ky, top + 0.11), brass, bevel=0.005)
+    piv = _pivot("key_lever", (kx + 0.05, ky, top + 0.13))
+    _kid(box("rs_lever", (0.42, 0.04, 0.025), (kx - 0.08, ky, top + 0.13), brass, bevel=0.006), piv)
+    _kid(cyl("rs_keyknob", 0.05, 0.045, 0.035, (kx - 0.26, ky, top + 0.17), black, verts=20, bevel=0.01), piv)
+    _kid(cyl("rs_keyskirt", 0.06, 0.06, 0.008, (kx - 0.26, ky, top + 0.148), black, verts=20, bevel=0), piv)
+    cyl("rs_spring", 0.012, 0.012, 0.06, (kx + 0.15, ky, top + 0.1), steel, verts=8, bevel=0)
+    cyl("rs_contact", 0.012, 0.012, 0.04, (kx - 0.15, ky, top + 0.095), steel, verts=8, bevel=0)
+    for x in (kx + 0.21, kx + 0.24): cyl("rs_post", 0.014, 0.014, 0.05, (x, ky + 0.07, top + 0.1), brass, verts=8, bevel=0)
+    # the "on air" lamp on the wall
+    box("rs_lampbox", (0.26, 0.05, 0.14), (0.45, D / 2 - 0.07, 1.8), black, bevel=0.01)
+    box("tx_lamp", (0.2, 0.02, 0.09), (0.45, D / 2 - 0.1, 1.8), mat("rs_txlamp", (0.75, 0.25, 0.2), rough=0.4, emit=(1, 0.15, 0.08), emit_strength=0.0), bevel=0.005)
+    # headphones on a hook, a notepad and pencil, a little Morse chart pinned to the wall
+    cyl("rs_hook", 0.012, 0.012, 0.12, (-1.0, D / 2 - 0.1, 1.65), brass, rot=(math.pi / 2, 0, 0), verts=8, bevel=0)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.13, minor_radius=0.015, location=(-1.0, D / 2 - 0.12, 1.55), rotation=(math.pi / 2, 0, 0), major_segments=24, minor_segments=6)
+    o = bpy.context.object; o.name = "rs_band"; finish(o, black)
+    for s in (-1, 1): cyl("rs_cup", 0.06, 0.06, 0.04, (-1.0 + s * 0.13, D / 2 - 0.12, 1.47), black, rot=(math.pi / 2, 0, 0), verts=16, bevel=0.01)
+    box("rs_pad_paper", (0.22, 0.28, 0.01), (0.9, 0.2, top + 0.04), cream, rot=(0, 0, 0.2), bevel=0)
+    cyl("rs_pencil", 0.008, 0.008, 0.2, (0.95, 0.12, top + 0.05), mat("rs_pencilm", (0.98, 0.8, 0.2), rough=0.6), rot=(0, math.pi / 2, 0.5), verts=6, bevel=0)
+    box("rs_chart", (0.45, 0.01, 0.5), (0.75, D / 2 - 0.06, 1.2), cream, bevel=0)
+    for i in range(6):
+        for j in range(3): box("rs_chartline", (0.08 + (i * 7 + j) % 3 * 0.04, 0.004, 0.012), (0.6 + j * 0.15, D / 2 - 0.068, 1.42 - i * 0.08), black, bevel=0)
+    # the antenna mast, behind and right of the shack, red and white bands, guy wires, a red light on top
+    mx, my, H = 1.85, 1.0, 6.0
+    cyl("rs_mastfoot", 0.2, 0.22, 0.15, (mx, my, 0.075), stone, verts=16)
+    n = 6
+    for i in range(n):
+        cyl("rs_mast", 0.07, 0.07, H / n, (mx, my, 0.15 + H / n * (i + 0.5)), redp if i % 2 == 0 else whitep, verts=14, bevel=0)
+    cyl("rs_mastcap", 0.1, 0.1, 0.05, (mx, my, H + 0.17), black, verts=14, bevel=0)
+    sphere("mast_light", 0.11, (mx, my, H + 0.28), mat("rs_mastlamp", (0.9, 0.2, 0.15), rough=0.3, emit=(1, 0.08, 0.04), emit_strength=0.0), sub=2)
+    def rod(name, a, b, m, r=0.012):
+        a, b = Vector(a), Vector(b); v = b - a
+        o = cyl(name, r, r, v.length, (a + b) / 2, m, verts=6, bevel=0)
+        o.rotation_mode = "QUATERNION"; o.rotation_quaternion = v.to_track_quat("Z", "Y"); return o
+    for k in range(3):
+        ang = k / 3 * math.tau + 0.9
+        g = (mx + math.cos(ang) * 2.3, my + math.sin(ang) * 2.3, 0.05)
+        rod("rs_guy", (mx, my, H * 0.72), g, wire, 0.008)
+        cyl("rs_peg", 0.05, 0.04, 0.12, g, wood, verts=8, bevel=0)
+    # the long wire antenna from the mast to the shack roof, with little insulators
+    rod("rs_lwire", (mx, my, H * 0.92), (-W / 2 - 0.1, 0.5, 2.35), wire, 0.01)
+    rod("rs_feed", (-W / 2 - 0.1, 0.5, 2.35), (-W / 2 - 0.05, 0.5, 1.9), wire, 0.01)
+    for t in (0.08, 0.9):
+        p = Vector((mx, my, H * 0.92)).lerp(Vector((-W / 2 - 0.1, 0.5, 2.35)), t)
+        sphere("rs_insul", 0.045, tuple(p), whitep, scale=(1, 1, 1.4), sub=2)
+    # sign over the front
+    box("rs_sign", (1.3, 0.06, 0.3), (-0.4, -D / 2 - 0.4, 2.05), planks, bevel=0.03)
+    bpy.ops.object.text_add(location=(-0.4, -D / 2 - 0.44, 2.05), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ RADIO"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.17; t.data.extrude = 0.01
+    t.data.materials.append(mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)); bpy.ops.object.convert(target="MESH")
+    for x in (-0.9, 0.1): cyl("rs_signchain", 0.008, 0.008, 0.2, (x, -D / 2 - 0.4, 2.27), steel, verts=6, bevel=0)
+
+ASSETS.update({"radioshack": radioshack})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:
