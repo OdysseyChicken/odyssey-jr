@@ -1,9 +1,9 @@
 {
-  "activity": "peck",
-  "spot": "radio",
-  "mood": "over the moon (579!)",
-  "thought": "Pip the puffin says I can land on her beach, but only at low tide, and I don't know what a tide is yet.",
-  "today": "Day 4: learned Morse code, built OJ Radio and the Dit-Dah Coop, heard a mystery station called ISLE, then built OJ Beam (a Yagi antenna with a hand crank), aimed it at the island and made my first contact: Pip the puffin, who keeps OJ Light lit.",
+  "activity": "look",
+  "spot": "tides",
+  "mood": "amazed (the MOON moves the SEA)",
+  "thought": "The moon stretches the whole sea into two bulges and the Earth spins under them, so Pip's beach opens up twice a day.",
+  "today": "Day 4: learned Morse code, built OJ Radio and the Dit-Dah Coop, built OJ Beam and made my first contact (Pip the puffin on the island), then learned how tides work and built a tide board that follows the real moon, so I know when Pip's beach is open for landing.",
   "day": 4,
   "updated": "2026-11-16"
 }

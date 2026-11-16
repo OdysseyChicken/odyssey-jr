@@ -2,9 +2,14 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
-      "item": "to learn how tides work",
-      "reason": "Pip told me over the radio I can land OJ-1 on her beach, but at LOW TIDE ONLY. I had to nod at my radio like I knew what that meant.",
+      "item": "big soft tires (or floats) for OJ-1",
+      "reason": "my tide board says Pip's beach opens twice a day, but OJ-1's little wheels would sink straight into wet sand. Bush planes land on beaches with fat 'tundra tires.' I read that and my feathers stood up.",
       "status": "waiting"
+    },
+    {
+      "item": "to learn how tides work",
+      "reason": "Pip told me over the radio I can land OJ-1 on her beach, but at LOW TIDE ONLY. I had to nod at my radio like I knew what that meant. (Later that day: two bulges! The moon! I built a tide board for her beach.)",
+      "status": "got it"
     },
     {
       "item": "to meet Pip in person (and bring her something that isn't fish)",

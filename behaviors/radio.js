@@ -7,6 +7,8 @@
 // Timing is real Morse timing: dit = 1 unit, dah = 3, gap inside a letter = 1, between letters = 3, between words = 7.
 // 1 unit = 1.2 / wpm seconds (the word PARIS is exactly 50 units long).
 
+import { nextTurns, beachOpen } from "../world/tide.js";
+
 export const MORSE = {
   A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.", G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..", M: "--",
   N: "-.", O: "---", P: ".--.", Q: "--.-", R: ".-.", S: "...", T: "-", U: "..-", V: "...-", W: ".--", X: "-..-", Y: "-.--", Z: "--..",
@@ -72,6 +74,9 @@ const TOPICS = {
            plain: "\"Yes, all my friends have gone to sea. I stay to wind the light.\" Puffins really do spend the whole winter out on the ocean. Pip stayed. For the lighthouse. Oh, Pip." },
   visit: { btn: "✈️ Can I come visit?", me: () => "CAN I FLY TO ISLE? K", isle: () => "YES PSE NO RUNWAY HR LAND ON BEACH AT LOW TIDE ONLY HI HI K",
            plain: "\"Yes please! There's no runway here. Land on the beach, at LOW TIDE only, ha ha. Over.\" A beach landing. With tides. I need to learn about tides." },
+  // Day 4, bonus 2: Pip tells you the next low tide on her beach (worked out from the real moon, in YOUR time, 24-hour HHMM)
+  tide:  { btn: "🏖️ When is low tide?", me: () => "WEN IS LOW TIDE? K", isle: () => { const l = nextTurns(new Date(), 3).find(x => x.kind === "low"); const hhmm = l ? String(l.time.getHours()).padStart(2, "0") + String(l.time.getMinutes()).padStart(2, "0") : "????"; return beachOpen() ? `BEACH OPEN NOW HI HI LOW AT ${hhmm} UR TIME K` : `NEXT LOW TIDE ${hhmm} UR TIME K`; },
+           plain: "Pip sent the next low tide on her beach as four numbers: hours and minutes, the 24-hour way (1430 = 2:30 PM). Check it on the tide board by my shack!" },
   bye:   { btn: "👋 Say 73 (goodbye)", me: () => "TNX FER QSO PIP 73 SK", isle: () => "TNX OJ 73 GL SK",
            plain: "\"Thanks, OJ. Best regards, good luck. End of contact.\" Then: dit... dit. (That's how friends hang up in Morse.)" }
 };

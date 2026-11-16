@@ -25,7 +25,8 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 ### Past the Fence 🧭
 - [x] Stage 1 (Day 3 bonus): fly there in my game, find the X, dig up a golden compass that points into the fog.
 - [x] Stage 2 (Day 3, bonus 5): Chapter 2 of my game, Into the Fog. Past the Tall Hills is the SEA. Follow the compass and the foghorn to OJ Light, a dark lighthouse, and light it (the compass is the key). The fog rolls back and there's an island. OJ Light flashes low in the north from my yard at night.
-- [ ] Stage 3: the island! Pip (ISLE on my radio) says: land on her beach at LOW TIDE only. So first: learn tides (a tide clock? a tide table in my yard?). Then big soft tires or floats for OJ-1, and a beach landing in my game.
+- [x] Stage 3a (Day 4, bonus 2): learned TIDES for Pip's beach. world/tide.js works out the tide from the real moon and sun (M2 + S2, spring and neap). A tide board by my shack: tide clock, a water tube, a green 'beach open' lamp. Pip tells you the next low tide on the radio.
+- [ ] Stage 3b: big soft tires for OJ-1, and Chapter 3 of my game: fly to the island and land on Pip's beach, but only when the REAL tide is low.
 - [ ] Stage 4: land OJ-1 out there (a little grass airstrip by Glass Lake?).
 
 ### OJ Music 🎶

@@ -1271,6 +1271,77 @@ def beam():
 
 ASSETS.update({"beam": beam})
 
+def tideclock():
+    # OJ Tides (Day 4, bonus 2): a tide board for Pip's beach. A wooden board on two posts under a little shingle roof,
+    # a round tide clock on the left (HIGH at the top, LOW at the bottom, the hand goes round once every 12 h 25 min),
+    # and a glass tide tube on the right with blue water that rises and falls with the real tide on the island.
+    # Front faces -Y. Named parts: "tide_hand" (pivot at the clock's center, turns around the clock's axis),
+    # "tide_water" (pivot at the bottom of the tube, scaled up and down), "tide_lamp" (glows green when the beach is open).
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("tc_planks", (0.62, 0.78, 0.86), tex="planks", scale=(1.2, 1))
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    roof = mat("tc_roof", (0.45, 0.6, 0.8), tex="shingles", scale=(2.5, 1.2))
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    cream = mat("rs_cream", (0.93, 0.88, 0.74), rough=0.6)
+    black = mat("rs_bake", (0.12, 0.1, 0.09), rough=0.5)
+    navy = mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)
+    glass = mat("tc_glass", (0.85, 0.93, 0.97), rough=0.05)
+    water = mat("tc_water", (0.2, 0.55, 0.85), rough=0.2, emit=(0.1, 0.35, 0.6), emit_strength=0.3)
+    redp = mat("rs_redpaint", (0.85, 0.2, 0.18), rough=0.6)
+    sand = mat("tc_sand", (0.92, 0.82, 0.6), rough=0.9)
+    box("tc_pad", (2.3, 0.9, 0.08), (0, 0, 0.04), stone, bevel=0.03)
+    for x in (-0.95, 0.95):
+        box("tc_post", (0.14, 0.14, 2.62), (x, 0.05, 1.31), wood, bevel=0.02)
+    box("tc_board", (2.0, 0.08, 1.3), (0, 0.08, 1.45), planks, bevel=0.03)
+    box("tc_frame_t", (2.1, 0.1, 0.08), (0, 0.06, 2.12), trim, bevel=0.02)
+    box("tc_frame_b", (2.1, 0.1, 0.08), (0, 0.06, 0.78), trim, bevel=0.02)
+    # roof
+    for s in (-1, 1):
+        th, w = math.radians(28), 0.62
+        box("tc_roof", (2.4, w, 0.06), (0, s * math.cos(th) * w / 2, 2.78 - math.sin(th) * w / 2), roof, rot=(-s * th, 0, 0), bevel=0.02)
+    box("tc_ridge", (2.45, 0.08, 0.08), (0, 0, 2.8), trim, bevel=0.02)
+    # the tide clock: a brass ring, cream face, HIGH/LOW, tick marks for the hours
+    cx, cz, R = -0.45, 1.45, 0.5
+    cyl("tc_ring", R + 0.06, R + 0.06, 0.06, (cx, 0.0, cz), brass, rot=(math.pi / 2, 0, 0), verts=48, bevel=0.015)
+    cyl("tc_face", R, R, 0.02, (cx, -0.04, cz), cream, rot=(math.pi / 2, 0, 0), verts=48, bevel=0)
+    for k in range(12):
+        a = k / 12 * math.tau; L = 0.1 if k % 3 == 0 else 0.05
+        box("tc_tick", (0.018, 0.006, L), (cx + math.sin(a) * (R - 0.06 - L / 2), -0.055, cz + math.cos(a) * (R - 0.06 - L / 2)), navy, rot=(0, a, 0), bevel=0)
+    for txt, dz in (("HIGH", 0.22), ("LOW", -0.24)):
+        bpy.ops.object.text_add(location=(cx, -0.056, cz + dz), rotation=(math.pi / 2, 0, 0))
+        t = bpy.context.object; t.data.body = txt; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.1; t.data.extrude = 0.004
+        t.data.materials.append(navy); bpy.ops.object.convert(target="MESH")
+    piv = _pivot("tide_hand", (cx, -0.07, cz))
+    _kid(box("tc_hand", (0.035, 0.012, R - 0.1), (cx, -0.07, cz + (R - 0.1) / 2 - 0.04), black, bevel=0.004), piv)
+    _kid(box("tc_handtip", (0.07, 0.012, 0.07), (cx, -0.07, cz + R - 0.17), redp, rot=(0, math.pi / 4, 0), bevel=0.004), piv)
+    cyl("tc_hub", 0.035, 0.035, 0.03, (cx, -0.085, cz), brass, rot=(math.pi / 2, 0, 0), verts=16, bevel=0.005)
+    # the tide tube: brass caps, glass, water on a pivot at the bottom (height 1 = full scale)
+    tx, z0, TH = 0.55, 0.92, 1.1
+    cyl("tc_capb", 0.13, 0.13, 0.06, (tx, -0.05, z0 - 0.03), brass, verts=20, bevel=0.01)
+    cyl("tc_capt", 0.13, 0.13, 0.06, (tx, -0.05, z0 + TH + 0.03), brass, verts=20, bevel=0.01)
+    wp = _pivot("tide_water", (tx, -0.05, z0))
+    _kid(cyl("tc_water", 0.085, 0.085, TH, (tx, -0.05, z0 + TH / 2), water, verts=20, bevel=0), wp)
+    cyl("tc_tube", 0.1, 0.1, TH, (tx, -0.05, z0 + TH / 2), glass, verts=24, bevel=0)
+    for k in range(7):  # meter marks
+        box("tc_mark", (0.12 if k % 3 == 0 else 0.07, 0.01, 0.012), (tx + 0.2, 0.03, z0 + 0.05 + k * (TH - 0.1) / 6), navy, bevel=0)
+    # a little sand strip with a toy plane at the bottom of the tube scale: "the beach line"
+    box("tc_beachline", (0.36, 0.012, 0.025), (tx, -0.16, z0 + TH * 0.4), sand, bevel=0)
+    # the beach-open lamp
+    sphere("tide_lamp", 0.06, (0.95, -0.12, 2.0), mat("tc_lamp", (0.3, 0.75, 0.35), rough=0.3, emit=(0.2, 1, 0.3), emit_strength=0.0), sub=2)
+    # a hanging sign under the roof
+    box("tc_sign", (1.3, 0.05, 0.24), (0, -0.12, 2.36), wood, bevel=0.02)
+    bpy.ops.object.text_add(location=(0, -0.15, 2.36), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "PIP'S BEACH TIDES"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.11; t.data.extrude = 0.006
+    t.data.materials.append(navy); bpy.ops.object.convert(target="MESH")
+    # two seashells and a little fish on the board for decoration
+    for i, (x, c) in enumerate(((0.95 - 0.2, (0.98, 0.78, 0.7)), (-0.95 + 0.22, (0.96, 0.9, 0.8)))):
+        sphere("tc_shell", 0.06, (x, -0.01, 0.95), mat(f"tc_shell{i}", c, rough=0.5), scale=(1.2, 0.5, 1), sub=2)
+    sphere("tc_fish", 0.07, (0.15, 0.0, 2.0), mat("tc_fishm", (0.95, 0.6, 0.25), rough=0.5), scale=(1.8, 0.4, 0.8), sub=2)
+    cyl("tc_fishtail", 0.06, 0.0, 0.08, (0.3, 0.0, 2.0), mat("tc_fishm", (0.95, 0.6, 0.25), rough=0.5), rot=(0, math.pi / 2, 0), verts=3, bevel=0)
+
+ASSETS.update({"tideclock": tideclock})
+
 
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)

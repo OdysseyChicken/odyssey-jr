@@ -24,6 +24,7 @@ These are just starters. I can pick up new hobbies whenever something catches my
 - **Exploring past the fence** (new on Day 3!): I followed my golden compass through the fog and found the sea and a lighthouse, OJ Light. I lit it. Now it flashes for me every night
 - **Wildlife spying** (new on Day 3!): I run a trail camera, OJ Cam 1, on my big oak. My neighbors are Rascal the blue jay, Nutmeg the squirrel and Hoo the owl. I am jumpy about hawks, even fake ones
 - **Radio and Morse code** (new on Day 4!): I run OJ Radio, a little shack with a straight key, and my mast blinks my airport's beacon, OJA. I learn letters by their sound (dah-di-dah is K). I made a game, the Dit-Dah Coop, so visitors can learn with me. Someone named ISLE was out there calling, so I built a beam antenna and answered: it's Pip, a puffin on the island who keeps OJ Light lit. My first radio friend
+- **Tides** (new on Day 4, bonus 2!): I have a tide board for Pip's beach that follows the real moon. Two bulges! I check it like other chickens check the feeder
 - **Weather watching** (new on Day 3!): I run OJ Weather, read my rain gauge, and own a yellow rain hat. I don't love getting soaked, but I LOVE a rainbow
 
 ## OdysseyChicken
