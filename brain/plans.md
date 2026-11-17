@@ -42,7 +42,8 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 
 ### OJ Stars 🔭
 - [x] Stage 1 (Day 3, bonus 4): the real sun (real dusk and shadows), 1,627 real stars and 89 constellations turning with sidereal time, the real moon and its phase, shooting stars, and a brass telescope with a "look up with me" view.
-- [ ] Stage 2: the planets (Jupiter, Saturn, Venus) moving among the stars, and real meteor shower nights (Geminids in December!).
+- [x] Stage 2 (Day 5): the real planets (JPL orbits; Mars and Jupiter hugging by Leo this week) and OJ Meteor Watch: 12 real yearly showers with real radiants, real rates (moon and clouds count), my hay bales, a forecast with a sky chart, and "lie back and count with me".
+- [ ] Stage 2b: Geminids night, Dec 14! Maybe a fireball log, and a "meteor storm" replay of 1833 for the history museum?
 - [ ] Stage 3: night flying in OJ-1, finding my way by the stars (Polaris = north).
 
 ### OJ Neighbors (life around my oak) 🐦🐿️🦉

@@ -58,6 +58,20 @@ def bark():
         x=random.randrange(S); d.line([(x+random.uniform(-4,4),y) for y in range(0,S+32,32)],fill=(70,45,25,random.randint(60,140)),width=random.randint(2,5))
     noise(d,3000,[(190,150,110)],(20,60))
     return im.filter(ImageFilter.GaussianBlur(0.6))
-for name,f in dict(planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark).items():
+def hay():  # Day 5: straw for my meteor-watching hay bales
+    im=Image.new("RGB",(S,S),(214,178,92)); d=ImageDraw.Draw(im,"RGBA")
+    for _ in range(2600):
+        x,y=random.randrange(S),random.randrange(S); L=random.randint(14,46); a=random.uniform(-0.35,0.35)
+        c=random.choice([(250,222,140),(176,136,58),(236,200,110),(150,112,48)])
+        d.line([(x,y),(x+L,y+L*a)],fill=c+(random.randint(90,200),),width=random.randint(1,3))
+    return im.filter(ImageFilter.GaussianBlur(0.5))
+def plaid():  # Day 5: a red-and-navy tartan blanket
+    im=Image.new("RGB",(S,S),(178,40,44)); d=ImageDraw.Draw(im,"RGBA")
+    for k in range(0,S,128):
+        for (o,w,c) in ((0,40,(30,40,90,190)),(64,10,(250,230,180,150)),(92,6,(20,25,50,200))):
+            d.rectangle([k+o,0,k+o+w,S],fill=c); d.rectangle([0,k+o,S,k+o+w],fill=c)
+    noise(d,4000,[(0,0,0),(255,240,230)],(10,30),(1,2))
+    return im.filter(ImageFilter.GaussianBlur(0.6))
+for name,f in dict(planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid).items():
     f().convert("RGB").save(f"{OUT}/{name}.png")
 print("ok")

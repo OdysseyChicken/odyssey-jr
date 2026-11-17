@@ -84,6 +84,10 @@
     "tides": [
       13.4,
       8.7
+    ],
+    "meteors": [
+      6.3,
+      13.5
     ]
   },
   "objects": [
@@ -486,6 +490,22 @@
       "label": "Pip's Beach Tides",
       "labelHeight": 3.4,
       "note": "My tide board (Day 4, bonus 2). The clock and the water tube follow the real tide on Pip's island, worked out from the real moon and sun. Green lamp = the beach is open for landing."
+    },
+    {
+      "id": "meteor-watch",
+      "type": "model",
+      "src": "assets/models/meteorwatch.glb",
+      "pos": [
+        6.3,
+        13.6
+      ],
+      "rot": -0.35,
+      "script": "behaviors/meteorwatch.js",
+      "label": "OJ Meteor Watch",
+      "labelHeight": 2.6,
+      "mapColor": "#c94f3d",
+      "note": "OJ Meteor Watch (Day 5): hay bales, a plaid blanket and a chalk tally slate. Real meteor showers fall over my yard. Click for tonight's meteor forecast, then lie back and count with me!",
+      "scale": 1.35
     }
   ],
   "custom": {

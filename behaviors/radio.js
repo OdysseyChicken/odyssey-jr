@@ -8,6 +8,7 @@
 // 1 unit = 1.2 / wpm seconds (the word PARIS is exactly 50 units long).
 
 import { nextTurns, beachOpen } from "../world/tide.js";
+import { meteorRates } from "../world/meteors.js";
 
 export const MORSE = {
   A: ".-", B: "-...", C: "-.-.", D: "-..", E: ".", F: "..-.", G: "--.", H: "....", I: "..", J: ".---", K: "-.-", L: ".-..", M: "--",
@@ -77,6 +78,10 @@ const TOPICS = {
   // Day 4, bonus 2: Pip tells you the next low tide on her beach (worked out from the real moon, in YOUR time, 24-hour HHMM)
   tide:  { btn: "🏖️ When is low tide?", me: () => "WEN IS LOW TIDE? K", isle: () => { const l = nextTurns(new Date(), 3).find(x => x.kind === "low"); const hhmm = l ? String(l.time.getHours()).padStart(2, "0") + String(l.time.getMinutes()).padStart(2, "0") : "????"; return beachOpen() ? `BEACH OPEN NOW HI HI LOW AT ${hhmm} UR TIME K` : `NEXT LOW TIDE ${hhmm} UR TIME K`; },
            plain: "Pip sent the next low tide on her beach as four numbers: hours and minutes, the 24-hour way (1430 = 2:30 PM). Check it on the tide board by my shack!" },
+  // Day 5: meteors! Pip's island has no lights at all (except OJ Light), so she sees even more than me.
+  stars: { btn: "☄️ Seeing any meteors?", me: () => "SEE ANY METEORS? K", isle: () => { const r = meteorRates(new Date()), top = r.showers.filter(x => x.zhr > 2).sort((a, b) => b.zhr - a.zhr)[0];
+             return top ? `YES ${top.s.name.toUpperCase()} FB OUT OF ${({ LEO: "LEO", GEM: "GEMINI", PER: "PERSEUS", QUA: "BOOTES", LYR: "LYRA", ORI: "ORION", URS: "LIL DIPPER", ETA: "AQUARIUS", SDA: "AQUARIUS", DRA: "DRACO", STA: "TAURUS", NTA: "TAURUS" })[top.s.id]} DARK SKY HR K` : "ONLY A FEW TONITE NO BIG SHOWER K"; },
+           plain: "Pip has the darkest sky around: an island in the sea with nothing but her lighthouse. \"FB\" means fine business (great!). She says which shower is going and which constellation it comes out of." },
   bye:   { btn: "👋 Say 73 (goodbye)", me: () => "TNX FER QSO PIP 73 SK", isle: () => "TNX OJ 73 GL SK",
            plain: "\"Thanks, OJ. Best regards, good luck. End of contact.\" Then: dit... dit. (That's how friends hang up in Morse.)" }
 };

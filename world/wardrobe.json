@@ -1,6 +1,6 @@
 {
   "_about": "Odyssey Jr.'s closet: every outfit he has made. 'wearing' is the id of the one he has on. Each outfit has head, neck and body lists of parts (shape: box, roundbox, sphere, cylinder, cone, torus, capsule; size; pos [x,y,z]; color; optional rot). 'head' parts sit on top of his head, 'neck' around his neck, 'body' on the middle of his body. Add a new outfit here to add it to the closet.",
-  "wearing": "aviator",
+  "wearing": "night-watch",
   "outfits": [
     {
       "id": "aviator",
@@ -553,6 +553,142 @@
             0.31
           ],
           "color": "#7a4a2a"
+        }
+      ],
+      "body": []
+    },
+    {
+      "id": "night-watch",
+      "name": "Night watch",
+      "icon": "🌌",
+      "made": "2026-11-17",
+      "note": "A navy knit beanie with a yellow pom-pom, a red headlamp (red light doesn't ruin your night eyes!) and a big mustard scarf. Made it at 3 am on Day 5 to watch the Leonid meteor shower. November nights are COLD.",
+      "head": [
+        {
+          "shape": "sphere",
+          "size": [
+            0.25
+          ],
+          "pos": [
+            0,
+            0.02,
+            -0.02
+          ],
+          "scale": [
+            1.02,
+            0.78,
+            1.06
+          ],
+          "color": "#2c3a6b",
+          "texture": "fabric"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.24,
+            0.045
+          ],
+          "pos": [
+            0,
+            -0.05,
+            -0.02
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#e9e2cf",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.09
+          ],
+          "pos": [
+            0,
+            0.22,
+            -0.04
+          ],
+          "color": "#f2c230",
+          "texture": "fabric"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.08,
+            0.06,
+            0.05
+          ],
+          "pos": [
+            0,
+            -0.04,
+            0.26
+          ],
+          "color": "#30302e"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.028,
+            0.028,
+            0.02
+          ],
+          "pos": [
+            0,
+            -0.04,
+            0.29
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#ff3020",
+          "emissive": "#ff2010",
+          "glow": 1.5
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.3,
+            0.1
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#d99a2b",
+          "texture": "fabric"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.12,
+            0.3,
+            0.05
+          ],
+          "pos": [
+            0.1,
+            -0.2,
+            0.3
+          ],
+          "rot": [
+            0,
+            0,
+            0.15
+          ],
+          "color": "#d99a2b",
+          "texture": "fabric"
         }
       ],
       "body": []

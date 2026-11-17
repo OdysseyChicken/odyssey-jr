@@ -2,10 +2,13 @@
 // - 1,600+ real stars (brighter than magnitude 5) and the constellation stick figures, turning with the real time
 //   (world/sky.js does the math: my yard is pretend-placed at 40° north, 90° west).
 // - The moon is where the real moon is, with its real phase. You can see it in the daytime too, faintly, like real life.
-// - Stars fade in at dusk (the real sunset) and hide behind cloudy OJ Weather. Sometimes a shooting star.
+// - Stars fade in at dusk (the real sunset) and hide behind cloudy OJ Weather.
+// - Day 5: the real planets (they don't twinkle: they're tiny disks, not points). Shooting stars moved to behaviors/meteorwatch.js,
+//   where they fall at the real rate from real meteor showers.
 // - The telescope swings to the moon (or the brightest star that's up). Click it for tonight's sky and a "look up" view.
 // Star data: d3-celestial by Olaf Frohn (BSD-3-Clause), see assets/CREDITS.md.
 import { lst, sunPos, moonPos, altAz, toYard, daylight, skyMatrix, moonName } from "../world/sky.js";
+import { planetsAt } from "../world/planets.js";   // Day 5: the planets (JPL orbits)
 
 const R = 250;               // how far away the sky dome is (the camera can see 300)
 const D = Math.PI / 180;
@@ -71,11 +74,33 @@ export default function setup({ THREE, obj, scene, camera, controls, say, sim, w
   const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending }));
   glow.scale.setScalar(40); scene.add(glow);
 
-  // shooting stars
-  const meteorMat = new THREE.LineBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0, fog: false, depthWrite: false });
-  const meteorGeo = new THREE.BufferGeometry().setAttribute("position", new THREE.BufferAttribute(new Float32Array(6), 3));
-  const meteor = new THREE.Line(meteorGeo, meteorMat); meteor.frustumCulled = false; scene.add(meteor);
-  let shoot = null;
+  // the planets (Day 5): steady little lights that wander slowly along the zodiac, in the sky group so they turn with the stars
+  const planetMat = new THREE.ShaderMaterial({
+    uniforms: { opacity: { value: 0 }, px: { value: Math.min(2, window.devicePixelRatio || 1) } },
+    vertexShader: `attribute float size; attribute vec3 color; uniform float px; varying vec3 vColor; varying float vFade;
+      void main() { vec4 wp = modelMatrix * vec4(position, 1.0); vFade = smoothstep(0.0, 0.08, (wp.y - cameraPosition.y) / ${R.toFixed(1)});
+        vColor = color; gl_PointSize = size * px; gl_Position = projectionMatrix * viewMatrix * wp; }`,
+    fragmentShader: `uniform float opacity; varying vec3 vColor; varying float vFade;
+      void main() { float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.0, d) * 0.7 + smoothstep(0.18, 0.08, d) * 0.6;
+        if (a * vFade * opacity < 0.01) discard; gl_FragColor = vec4(vColor, min(1.0, a) * vFade * opacity); }`,
+    transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending
+  });
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(15), 3)); pGeo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(15), 3));
+  pGeo.setAttribute("size", new THREE.BufferAttribute(new Float32Array(5), 1));
+  const planetPts = new THREE.Points(pGeo, planetMat); planetPts.frustumCulled = false; sky.add(planetPts);
+  let planets = [], planetLabels = [], planetClock = 0;
+  function placePlanets(now) {
+    planets = planetsAt(now);
+    planets.forEach((p, i) => {
+      pGeo.attributes.position.array.set(eq(p.ra, p.dec, R * 0.99), i * 3); pGeo.attributes.color.array.set(p.color, i * 3);
+      pGeo.attributes.size.array[i] = Math.max(3, Math.min(17, 10 - p.mag * 2.2));
+      if (!planetLabels[i]) { planetLabels[i] = label(p.name); sky.add(planetLabels[i]); }
+      const v = new THREE.Vector3(...eq(p.ra, p.dec, R * 0.97)); v.y += 0; planetLabels[i].userData.dir = v.clone().normalize();
+      planetLabels[i].position.copy(v).add(new THREE.Vector3(0, 0, -5));  // a little below the dot (toward the south pole of the sky)
+    });
+    pGeo.attributes.position.needsUpdate = pGeo.attributes.color.needsUpdate = pGeo.attributes.size.needsUpdate = true;
+  }
 
   function label(text) {
     const c = document.createElement("canvas"), g = c.getContext("2d"); c.width = 256; c.height = 64;
@@ -116,6 +141,8 @@ export default function setup({ THREE, obj, scene, camera, controls, say, sim, w
     const m = moonPos(now), ma = altAz(m.ra, m.dec, now);
     if (ma.alt > 8) return { name: "the Moon", alt: ma.alt, az: ma.az };
     let best = null;
+    for (const p of planets) { if (p.mag > 1.5) continue; const a = altAz(p.ra, p.dec, now); if (a.alt > 10 && (!best || p.mag < best.mag)) best = { name: p.name, alt: a.alt, az: a.az, mag: p.mag }; }
+    if (best) return best;
     for (const [nm, ra, dec, mag] of data?.names ?? []) { const a = altAz(ra, dec, now); if (a.alt > 20 && (!best || mag < best.mag)) best = { name: nm, alt: a.alt, az: a.az, mag }; }
     return best ?? { name: "the sky", alt: 45, az: 180 };
   }
@@ -183,12 +210,14 @@ export default function setup({ THREE, obj, scene, camera, controls, say, sim, w
       }
       sky.matrix.copy(rot).setPosition(camera.position); sky.matrixWorldNeedsUpdate = true;
       starMat.uniforms.opacity.value = dark; starMat.uniforms.time.value = t;
+      planetClock -= dt; if (planetClock <= 0) { planetClock = 60; placePlanets(now); }
+      planetMat.uniforms.opacity.value = Math.min(1, dark * 1.3);
       const fl = flashAt(Date.now());
       farLight.position.copy(camera.position).addScaledVector(farDir, R * 0.85);
       farLight.material.opacity = lightSky * Math.min(1, 0.12 + fl); farLight.scale.setScalar(3 + fl * 9); farLight.visible = lightSky > 0.02;
       const map = performance.now() < mapUntil ? 1 : 0;
       lineMat.opacity += ((dark * (0.1 + map * 0.35)) - lineMat.opacity) * Math.min(1, dt * 2);
-      for (const l of labels) {
+      for (const l of [...labels, ...planetLabels]) {
         tmp.copy(l.userData.dir).applyMatrix4(rot);  // rot has no translation part here
         l.material.opacity += ((map && tmp.y > 0.05 ? dark : 0) - l.material.opacity) * Math.min(1, dt * 2);
         l.visible = l.material.opacity > 0.01;
@@ -202,19 +231,6 @@ export default function setup({ THREE, obj, scene, camera, controls, say, sim, w
         let dy = aimYaw - mount.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
         mount.rotation.y += dy * Math.min(1, dt * 0.6);
         tube.rotation.x += (-aimAlt - tube.rotation.x) * Math.min(1, dt * 0.6);
-      }
-      // shooting stars, only when it's properly dark
-      if (!shoot && dark > 0.6 && Math.random() < dt / 45) {
-        const az = Math.random() * 360, alt = 25 + Math.random() * 40, a = new THREE.Vector3(...toYard(alt, az)), b = new THREE.Vector3(...toYard(alt - 8 - Math.random() * 8, az + 6 + Math.random() * 10));
-        shoot = { a, b, t: 0 };
-        if (sim?.act === "stargaze") say(["A shooting star! Make a wish! (I wished for more seeds.)", "Did you see that?! Whoosh!", "Shooting star! That's a tiny space pebble burning up. Wow."][Math.floor(Math.random() * 3)], 4);
-      }
-      if (shoot) {
-        shoot.t += dt / 0.8; const k = shoot.t, p = meteorGeo.attributes.position.array;
-        const head = shoot.a.clone().lerp(shoot.b, Math.min(1, k)), tail = shoot.a.clone().lerp(shoot.b, Math.max(0, k - 0.35));
-        p.set([camera.position.x + tail.x * R * 0.9, camera.position.y + tail.y * R * 0.9, camera.position.z + tail.z * R * 0.9, camera.position.x + head.x * R * 0.9, camera.position.y + head.y * R * 0.9, camera.position.z + head.z * R * 0.9]);
-        meteorGeo.attributes.position.needsUpdate = true; meteorMat.opacity = Math.sin(Math.min(1, k) * Math.PI) * dark;
-        if (k > 1.3) { shoot = null; meteorMat.opacity = 0; }
       }
       if (sim?.act === "stargaze" && !saidMoon && target === "the Moon" && dark > 0.3) { saidMoon = true; say(`The moon tonight: ${moonName(moonPos(now).phase).toLowerCase()}! I can see its craters!`, 5); }
     },
@@ -235,6 +251,7 @@ export default function setup({ THREE, obj, scene, camera, controls, say, sim, w
         <p style="font-size:16px">${intro}</p>
         <p>🌙 <b>The Moon:</b> ${moonLine}</p>
         ${dl < 0.6 ? `<p>⭐ <b>Brightest stars up now:</b> ${up.map(s => `${s.nm} <span style="color:var(--muted)">(${dirWord(s.az)}, ${altWord(s.alt)})</span>`).join(", ") || "none yet"}</p>` : ""}
+        <p>🪐 <b>Planets up now:</b> ${planetsAt(now).map(p => ({ ...p, ...altAz(p.ra, p.dec, now) })).filter(p => p.alt > 3).map(p => `${p.name} <span style="color:var(--muted)">(${dirWord(p.az)}, ${altWord(p.alt)}, magnitude ${p.mag.toFixed(1)})</span>`).join(", ") || "none right now (they're all on the other side of the Earth, or too close to the sun)"}. Planets don't twinkle: they're tiny disks, not dots, so the wobbly air can't make them blink.</p>
         <p>✨ <b>Constellations high up${dl > 0.6 ? " (hiding in the daylight)" : ""}:</b> ${cons.map(c => c.name).join(", ")}</p>
         <p>🗼 <b>OJ Light:</b> after dark, look low in the <b>north</b>, past my fence and the Tall Hills. Two quick flashes every ten seconds. That's the lighthouse I lit!</p>
         <p style="margin:12px 0"><button class="btn paper pill" id="ojLookUp" style="padding:8px 14px;font-weight:800;cursor:pointer">🔭 Look up with me</button></p>

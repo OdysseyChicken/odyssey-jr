@@ -2,6 +2,16 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "a clear, dark night for the Geminids (Dec 14)",
+      "reason": "on Leonid night I counted shooting stars on my hay bales until the clouds came in at 4 am. The Geminids are TEN times stronger and the moon will only be a quarter lit. I'm already planning my snacks.",
+      "status": "waiting"
+    },
+    {
+      "item": "a place to lie back and count meteors",
+      "reason": "at 3 am on Day 5 I tried to watch the Leonids standing up with my head tipped back and nearly fell over. Built OJ Meteor Watch: hay bales and a blanket.",
+      "status": "built"
+    },
+    {
       "item": "big soft tires (or floats) for OJ-1",
       "reason": "my tide board says Pip's beach opens twice a day, but OJ-1's little wheels would sink straight into wet sand. Bush planes land on beaches with fat 'tundra tires.' I read that and my feathers stood up.",
       "status": "waiting"

@@ -1343,6 +1343,79 @@ def tideclock():
 ASSETS.update({"tideclock": tideclock})
 
 
+def meteorwatch():
+    # OJ Meteor Watch (Day 5): where I lie back and count shooting stars. A hay bale bed with a backrest bale, a plaid
+    # blanket, a pillow, a thermos of warm mash, a red flashlight (red light keeps your night eyes), a lantern on a
+    # shepherd's hook, and a chalk tally slate on a stake. Front faces -Y.
+    # Named parts: "mw_slate" (the behavior draws tonight's tally on it), "mw_lamp" (lantern glass, glows at night),
+    # "mw_red" (the flashlight lens).
+    hay = mat("mw_hay", WOOD, tex="hay", scale=(1.5, 1.5))
+    plaid = mat("mw_plaid", WOOD, tex="plaid", scale=(1.2, 1.2))
+    twine = mat("mw_twine", (0.55, 0.38, 0.2), rough=0.9)
+    wood = mat("wood", WOOD, tex="wood")
+    iron = mat("mw_iron", (0.18, 0.17, 0.16), rough=0.5, metal=0.4)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.35)
+    slate = mat("mw_slatem", (0.16, 0.2, 0.21), rough=0.9)
+    cream = mat("mw_cream", (0.95, 0.92, 0.84), rough=0.7)
+    pillow = mat("mw_pillow", (0.55, 0.68, 0.9), rough=0.9)
+    redp = mat("rs_redpaint", (0.85, 0.2, 0.18), rough=0.6)
+    navy = mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)
+    glow = mat("mw_glow", (1.0, 0.85, 0.5), rough=0.3, emit=(1.0, 0.7, 0.3), emit_strength=0.6)
+    redl = mat("mw_redl", (0.9, 0.1, 0.1), rough=0.3, emit=(1, 0.05, 0.05), emit_strength=0.8)
+    # the bale bed and its twine
+    b = box("mw_bale", (1.7, 1.0, 0.5), (0, 0, 0.25), hay, bevel=0.07); jitter(b, 0.004)
+    for x in (-0.45, 0.45):
+        box("mw_twine", (0.03, 1.02, 0.03), (x, 0, 0.505), twine, bevel=0)
+        box("mw_twine", (0.03, 0.03, 0.5), (x, -0.505, 0.25), twine, bevel=0)
+    # the backrest bale, leaning back
+    box("mw_back", (1.7, 0.45, 0.85), (0, 0.66, 0.52), hay, rot=(-0.38, 0, 0), bevel=0.07)
+    for x in (-0.45, 0.45):
+        box("mw_twine", (0.03, 0.47, 0.03), (x, 0.82, 0.93), twine, rot=(-0.38, 0, 0), bevel=0)
+    # plaid blanket on top, with a fold hanging over the front
+    box("mw_blanket", (1.5, 0.98, 0.04), (0.05, -0.04, 0.52), plaid, bevel=0.015)
+    box("mw_fold", (1.5, 0.04, 0.34), (0.05, -0.535, 0.38), plaid, rot=(0.08, 0, 0), bevel=0.015)
+    sphere("mw_pillowo", 0.26, (0.1, 0.42, 0.78), pillow, scale=(1.5, 0.55, 0.85), sub=3)
+    # the red flashlight on the blanket
+    cyl("mw_torch", 0.035, 0.035, 0.2, (-0.55, -0.2, 0.575), iron, rot=(0, math.pi / 2, 0.3), verts=16, bevel=0.005)
+    cyl("mw_red", 0.042, 0.042, 0.02, (-0.45, -0.17, 0.575), redl, rot=(0, math.pi / 2, 0.3), verts=16, bevel=0)
+    # thermos and mug on the grass
+    cyl("mw_thermos", 0.09, 0.09, 0.34, (1.02, -0.3, 0.17), redp, verts=24, bevel=0.02)
+    cyl("mw_thcap", 0.095, 0.095, 0.08, (1.02, -0.3, 0.38), cream, verts=24, bevel=0.015)
+    cyl("mw_mug", 0.065, 0.06, 0.12, (1.2, -0.45, 0.06), cream, verts=20, bevel=0.01)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.035, minor_radius=0.012, location=(1.27, -0.45, 0.07), rotation=(math.pi / 2, 0, 0))
+    finish(bpy.context.object, cream)
+    # the tally slate on its stake
+    sx, sy = -1.2, -0.55
+    box("mw_stake", (0.07, 0.07, 1.25), (sx, sy + 0.06, 0.62), wood, bevel=0.01)
+    box("mw_slate", (0.72, 0.04, 0.5), (sx, sy, 1.05), slate, bevel=0.005)
+    for dz in (-0.27, 0.27):
+        box("mw_frame", (0.8, 0.07, 0.05), (sx, sy, 1.05 + dz), wood, bevel=0.01)
+    for dx in (-0.38, 0.38):
+        box("mw_frame", (0.05, 0.07, 0.6), (sx + dx, sy, 1.05), wood, bevel=0.01)
+    box("mw_chalkledge", (0.6, 0.1, 0.03), (sx, sy - 0.04, 0.77), wood, bevel=0.005)
+    box("mw_chalk", (0.1, 0.025, 0.025), (sx + 0.15, sy - 0.06, 0.795), cream, bevel=0.005)
+    box("mw_sign", (0.9, 0.05, 0.16), (sx, sy, 1.47), wood, bevel=0.02)
+    bpy.ops.object.text_add(location=(sx, sy - 0.03, 1.47), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "METEOR WATCH"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.1; t.data.extrude = 0.006
+    t.data.materials.append(navy); bpy.ops.object.convert(target="MESH")
+    # little stars on the sign's corners
+    for dx in (-0.4, 0.4):
+        cyl("mw_star", 0.04, 0.04, 0.02, (sx + dx, sy - 0.03, 1.47), brass, rot=(math.pi / 2, 0, 0), verts=5, bevel=0)
+    # shepherd's hook with a lantern
+    hx, hy = 1.05, 0.62
+    cyl("mw_hook", 0.025, 0.025, 1.7, (hx, hy, 0.85), iron, verts=12, bevel=0)
+    box("mw_arm", (0.32, 0.03, 0.03), (hx + 0.15, hy, 1.69), iron, bevel=0)
+    cyl("mw_chain", 0.008, 0.008, 0.12, (hx + 0.3, hy, 1.63), iron, verts=8, bevel=0)
+    cyl("mw_lcap", 0.05, 0.1, 0.06, (hx + 0.3, hy, 1.55), iron, verts=16, bevel=0.01)
+    cyl("mw_lamp", 0.075, 0.075, 0.18, (hx + 0.3, hy, 1.43), glow, verts=16, bevel=0)
+    cyl("mw_lbase", 0.1, 0.1, 0.03, (hx + 0.3, hy, 1.325), iron, verts=16, bevel=0.005)
+    for a in range(4):
+        ang = a * math.pi / 2 + math.pi / 4
+        box("mw_lbar", (0.012, 0.012, 0.2), (hx + 0.3 + math.cos(ang) * 0.085, hy + math.sin(ang) * 0.085, 1.43), iron, bevel=0)
+
+ASSETS.update({"meteorwatch": meteorwatch})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-15",
+  "synced": "2026-11-16",
   "bag": [
     {
       "id": "seed-pouch",
@@ -28,28 +28,12 @@
       "note": "Not mine. MYSTERY SOLVED on Day 3: it's Rascal the blue jay's! And it's not even really blue: tiny bubbles in the feather scatter blue light. Hold it up to the light and it's brown."
     },
     {
-      "id": "raindrop-jar",
-      "name": "An empty jar for my first raindrops",
-      "icon": "🫙",
-      "from": "Made it while building OJ Weather",
-      "got": "2026-11-15",
-      "note": "The forecast says showers on Tuesday. I'm going to catch the very first ones."
-    },
-    {
       "id": "golden-compass",
       "name": "A golden compass",
       "icon": "🧭",
       "from": "Dug up under the X past my fence (flew there in OJ-1)",
       "got": "2026-11-15",
       "note": "It pointed into the fog, so I followed it and found a lighthouse. It was the KEY to the lamp's clockwork! Then it popped out and now it points home. Best compass."
-    },
-    {
-      "id": "spare-garlic-clove",
-      "name": "A spare garlic clove",
-      "icon": "🧄",
-      "from": "Left over after planting OJ Garden",
-      "got": "2026-11-15",
-      "note": "Twelve went in the ground, pointy end up. This one was too small. I'm keeping it for luck."
     },
     {
       "id": "sea-glass",
@@ -74,6 +58,22 @@
       "from": "Started it at my radio desk the day ISLE answered",
       "got": "2026-11-16",
       "note": "Entry #1: Nov 16, 2 meters, CW. ISLE (Pip). She gave me 579. QTH: the island. Notes: SHE'S A PUFFIN. Land at low tide only."
+    },
+    {
+      "id": "find-2026-11-16-0",
+      "name": "A glass marble",
+      "icon": "🔮",
+      "from": "Found in the dust bath",
+      "got": "2026-11-16",
+      "note": "Swirly tan and cream stripes. It looks EXACTLY like Jupiter in a telescope. I'm calling it Jupiter Jr."
+    },
+    {
+      "id": "red-flashlight",
+      "name": "My red flashlight",
+      "icon": "🔦",
+      "from": "Made it at 3 am on Day 5, for OJ Meteor Watch (red glass over a little lamp)",
+      "got": "2026-11-17",
+      "note": "White light ruins your night eyes for 20 minutes. Red light doesn't. I learned that the hard way at 3:05 am."
     }
   ],
   "shelves": {
@@ -119,6 +119,22 @@
           "from": "Found at the edge of the yard",
           "got": "2026-11-14",
           "note": "My very first find. I pressed it flat so it lasts, and moved it to my shelf to make room for my Morse card."
+        },
+        {
+          "id": "spare-garlic-clove",
+          "name": "A spare garlic clove",
+          "icon": "🧄",
+          "from": "Left over after planting OJ Garden",
+          "got": "2026-11-15",
+          "note": "Twelve went in the ground, pointy end up. This one was too small. I'm keeping it for luck. Moved to my shelf on Day 5 to make room for a marble that looks like a planet."
+        },
+        {
+          "id": "raindrop-jar",
+          "name": "A jar of my first raindrops",
+          "icon": "🫙",
+          "from": "Made it while building OJ Weather",
+          "got": "2026-11-15",
+          "note": "CAUGHT THEM. Tuesday, Nov 17, a little after 4 am, right after meteor watch: the shower came in and plink, plink, into the jar. My first raindrops ever. It lives on my shelf now so it doesn't spill."
         }
       ]
     }
@@ -212,6 +228,12 @@
       "name": "A tiny brass screw from the radio shack",
       "icon": "🔩",
       "where": "under my radio desk",
+      "weight": 1
+    },
+    {
+      "name": "A tiny black micrometeorite",
+      "icon": "🌑",
+      "where": "in the gutter of my coop roof (I check it with a magnet)",
       "weight": 1
     }
   ]
