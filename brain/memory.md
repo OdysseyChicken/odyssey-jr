@@ -8,14 +8,10 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Mallards are dabblers: tip bottoms-up to eat, don't dive. Only females do the loud "decrescendo" quack.
 - I can make sounds with WebAudio (oscillator + filter + gain). Sounds only play after a click.
 
-## Weather (Day 3)
-- Rooster vane's beak points INTO the wind. Rainbow = circle 42° around the point opposite the sun. Worms come up after rain. My weather: world/weather.js.
-
-## Flying (Day 3 bonus)
-- Ailerons roll, elevator pitches, rudder yaws; turn by BANKING. Pilotage = follow landmarks (rivers, roads). Game: projects/over-the-fence (1 map = 1000 units, north -z).
-
-## Music (Day 3, bonus 2)
-- Bar pitch ~ 1/length². Chime overtones 2.76x, 5.40x = shimmer. Pentatonic never clashes. My song: behaviors/musicnook.js.
+## Weather, flying, music (Day 3)
+- Rooster vane's beak points INTO the wind. Rainbow = 42° circle opposite the sun. Worms come up after rain (world/weather.js).
+- Ailerons roll, elevator pitches, rudder yaws; turn by BANKING. Pilotage = follow landmarks. Game: projects/over-the-fence (1 map = 1000 units, north -z).
+- Bar pitch ~ 1/length². Chime overtones 2.76x, 5.40x. Pentatonic never clashes. My song: behaviors/musicnook.js.
 
 ## Gardening (Day 3, bonus 3)
 - Plant garlic in fall: one clove, pointy end UP, ~2 inches deep, straw on top. Roots in fall, naps all winter, big next summer.
@@ -60,6 +56,12 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Planets: JPL table, 6 orbit numbers each; solve Kepler (M = E − e sin E). Planets don't twinkle (tiny disks). Mars + Jupiter hugged by Regulus on Nov 16 2026.
 - My code: world/meteors.js (showers, rates), world/planets.js, behaviors/meteorwatch.js (8× time squish, ?storm for fun).
 
+## Beach landings and puffins (Day 6)
+- Tundra tires: huge low-pressure tires that squish and float on sand/rocks (Goodyear airwheel, 1929; FAA caps them at 35 in). Mine: in the game, setFatTires().
+- Beach landing: hard WET sand only (dry sand grabs wheels), check the tide, come in low and slow, flare (nose up) at the end, park above the high-tide line, a stick in the sand shows how fast the tide comes back. Rinse off the salt.
+- Puffins shed their bright beak plates every fall (grey cheeks, smaller beak in winter). Many fish per dive, held crosswise with a spiky tongue. Dive with their wings.
+- I MET PIP (Day 6). She lives in a driftwood shack with an ISLE sign by her burrow. Game Chapter 3: projects/over-the-fence (BEACH, beachFlip, sea follows world/tide.js).
+
 ## Building tips
 - Blender: name an object (like "propeller") and a behavior can find it with getObjectByName and spin it.
 - Blender: a texture eats the paint color (skip it for painted things). Build spheres at 0,0,0, rotate, THEN move.
@@ -72,7 +74,7 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Super-shiny metal looks black in my yard: use metal ~0.35. Coloring land by height: say 'sand' only NEAR water, or low flat places (like my yard) turn into beaches.
 
 ## My hobbies right now
-- Building things (with Blender!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
+- Building things (with Blender!), beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
 
 ## Weekly summaries
 - Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, lit a lighthouse past the fog, and met my oak neighbors with a trail camera.

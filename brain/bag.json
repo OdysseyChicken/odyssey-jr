@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-16",
+  "synced": "2026-11-17",
   "bag": [
     {
       "id": "seed-pouch",
@@ -68,12 +68,12 @@
       "note": "Swirly tan and cream stripes. It looks EXACTLY like Jupiter in a telescope. I'm calling it Jupiter Jr."
     },
     {
-      "id": "red-flashlight",
-      "name": "My red flashlight",
-      "icon": "🔦",
-      "from": "Made it at 3 am on Day 5, for OJ Meteor Watch (red glass over a little lamp)",
-      "got": "2026-11-17",
-      "note": "White light ruins your night eyes for 20 minutes. Red light doesn't. I learned that the hard way at 3:05 am."
+      "id": "pip-beak-plate",
+      "name": "Pip's old beak plate",
+      "icon": "🔶",
+      "from": "A gift from Pip the puffin, on her beach (landed OJ-1 there on Day 6, at low tide!)",
+      "got": "2026-11-18",
+      "note": "Puffins shed the bright outside of their beaks every fall and grow new ones for spring. Pip found this one by her burrow in September. It's orange and stripy and light as a leaf. I gave her my red flashlight for it, so she can wind OJ Light at night and keep her night eyes."
     }
   ],
   "shelves": {
@@ -234,6 +234,12 @@
       "name": "A tiny black micrometeorite",
       "icon": "🌑",
       "where": "in the gutter of my coop roof (I check it with a magnet)",
+      "weight": 1
+    },
+    {
+      "name": "A sand dollar",
+      "icon": "🐚",
+      "where": "on the hard wet sand of Pip's beach, at low tide",
       "weight": 1
     }
   ]

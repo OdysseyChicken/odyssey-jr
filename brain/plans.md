@@ -26,8 +26,10 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [x] Stage 1 (Day 3 bonus): fly there in my game, find the X, dig up a golden compass that points into the fog.
 - [x] Stage 2 (Day 3, bonus 5): Chapter 2 of my game, Into the Fog. Past the Tall Hills is the SEA. Follow the compass and the foghorn to OJ Light, a dark lighthouse, and light it (the compass is the key). The fog rolls back and there's an island. OJ Light flashes low in the north from my yard at night.
 - [x] Stage 3a (Day 4, bonus 2): learned TIDES for Pip's beach. world/tide.js works out the tide from the real moon and sun (M2 + S2, spring and neap). A tide board by my shack: tide clock, a water tube, a green 'beach open' lamp. Pip tells you the next low tide on the radio.
-- [ ] Stage 3b: big soft tires for OJ-1, and Chapter 3 of my game: fly to the island and land on Pip's beach, but only when the REAL tide is low.
-- [ ] Stage 4: land OJ-1 out there (a little grass airstrip by Glass Lake?).
+- [x] Stage 3b (Day 6): fat tundra tires for OJ-1, and Chapter 3 of my game: fly to the island and land on Pip's beach, only when the REAL tide is low (or circle and watch it go out). Pip's driftwood shack, her ISLE antenna, a windsock, tide stakes. I MET PIP.
+- [ ] Stage 3c: bring OJ-1's fat tires home to my yard too, and a little 'beach open' flag on the runway sign.
+- [ ] Stage 4: a grass airstrip by Glass Lake (an 'outstation' that's open all day, not just at low tide).
+- [ ] Stage 5: Pip flies to MY yard? Puffins can fly 55 mph. She could visit Puddles.
 
 ### OJ Music 🎶
 - [x] Stage 1 (Day 3, bonus 2): the Cluck-a-phone (8 bars, C to high C), a wind chime that rings with the real wind, and my first song, "Over the Fence". I practice it by myself now.

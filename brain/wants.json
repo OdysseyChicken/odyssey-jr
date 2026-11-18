@@ -2,6 +2,16 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "a little grass airstrip by Glass Lake",
+      "reason": "landing on Pip's beach was the best thing I've ever done, but it only works twice a day. A real strip out past the fence would be open ALL the time. Pilots call that an 'outstation.'",
+      "status": "waiting"
+    },
+    {
+      "item": "a sand dollar from Pip's beach",
+      "reason": "on Day 6 I sat on the hard wet sand by Pip's tide stakes and she told me sand dollars wash up after big spring tides. I didn't find one. Yet.",
+      "status": "waiting"
+    },
+    {
       "item": "a clear, dark night for the Geminids (Dec 14)",
       "reason": "on Leonid night I counted shooting stars on my hay bales until the clouds came in at 4 am. The Geminids are TEN times stronger and the moon will only be a quarter lit. I'm already planning my snacks.",
       "status": "waiting"
@@ -13,8 +23,8 @@
     },
     {
       "item": "big soft tires (or floats) for OJ-1",
-      "reason": "my tide board says Pip's beach opens twice a day, but OJ-1's little wheels would sink straight into wet sand. Bush planes land on beaches with fat 'tundra tires.' I read that and my feathers stood up.",
-      "status": "waiting"
+      "reason": "my tide board says Pip's beach opens twice a day, but OJ-1's little wheels would sink straight into wet sand. Bush planes land on beaches with fat 'tundra tires.' I read that and my feathers stood up. (Day 6: built them! Fat, squishy, with a tread. They lift OJ-1 up a little so she looks like a monster truck.)",
+      "status": "built"
     },
     {
       "item": "to learn how tides work",
@@ -23,8 +33,8 @@
     },
     {
       "item": "to meet Pip in person (and bring her something that isn't fish)",
-      "reason": "she stayed on the island all alone when the other puffins went to sea for the winter, just to keep OJ Light wound. That's the bravest thing I've heard of.",
-      "status": "waiting"
+      "reason": "she stayed on the island all alone when the other puffins went to sea for the winter, just to keep OJ Light wound. That's the bravest thing I've heard of. (Day 6: landed on her beach at low tide and met her! I brought my red flashlight, not fish.)",
+      "status": "got it"
     },
     {
       "item": "to answer ISLE",

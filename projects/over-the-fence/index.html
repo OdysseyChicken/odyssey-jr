@@ -67,6 +67,23 @@
   <button id="go" class="big">Wheels up! 🐔</button>
   <p style="margin-top:14px;font-size:14px">Already found the X? <b>Chapter 2:</b> the golden compass points into the fog past the Tall Hills.</p>
   <button id="go2" class="big" style="background:#cfe3ef">🧭 Follow the compass</button>
+  <p style="margin-top:14px;font-size:14px">Lit the lighthouse? <b>Chapter 3:</b> OJ-1 has fat new tires. Land on Pip's beach, but only when the <b>real</b> tide is low.</p>
+  <button id="go3" class="big" style="background:#bfe6d6">🏝️ Fly to Pip's beach</button>
+</div></div>
+<div id="tideCard" class="card" style="display:none"><div class="paper">
+  <h1>🌊 The tide is in!</h1>
+  <p>Pip's beach is under the sea right now. The hard wet sand where I can land only comes out when the tide is <b>low</b>.</p>
+  <p id="tideNow" style="font-size:15px"></p>
+  <button id="waitTide" class="big">⏳ Circle and wait for low tide</button><br>
+  <button id="noWait" class="big" style="background:#ece3cb">Keep flying</button>
+</div></div>
+<div id="metCard" class="card" style="display:none"><div class="paper">
+  <h1>🏝️ I landed on Pip's beach!</h1>
+  <p>Fat tires, hard wet sand, a flare at the last second... and a puffin waddling down the beach to meet me. My first radio friend, in person!</p>
+  <p>I gave Pip my red flashlight (for winding the lighthouse at night). Pip gave me her old <b>beak plate</b>. Puffins shed the bright outside of their beaks every fall, and grow a new one for spring.</p>
+  <p id="metStats" style="font-size:14px"></p>
+  <button id="takeoff" class="big">🛫 Take off before the tide comes in</button><br>
+  <button id="stay" class="big" style="background:#ece3cb">Stay on the beach a while</button>
 </div></div>
 <div id="found" class="card" style="display:none"><div class="paper">
   <h1>🎉 I found the X!</h1>
@@ -95,6 +112,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { tideAt, nextTurns, BEACH_LINE } from "../../world/tide.js";
 
 const $ = id => document.getElementById(id);
 const showError = m => { $("err").style.display = "block"; $("err").textContent = "Something broke: " + m; };
@@ -115,6 +133,21 @@ const ISLAND = { x: -280, z: -1130 };  // a little island out at sea (who lives 
 const SEA_N = -1150;                   // how far out to sea OJ-1 will go
 const lhPoint = (x, z) => Math.exp(-(((x - LH.x) / 34) ** 2 + ((z - LH.z + 25) / 55) ** 2));
 const WATER_Y = -0.6;
+// Chapter 3 (Day 6): Pip's beach, on the south side of the island. A strip of hard wet sand that only comes out at LOW tide.
+// The sea in my game goes up and down with the real tide (world/tide.js), TIDE_K world units per real meter.
+const BEACH = { x: -280, z: -1074, hw: 62 };
+const TIDE_K = 0.7;
+const BEACH_Y = WATER_Y + BEACH_LINE * TIDE_K;  // the hard sand sits right at the "beach open" line
+const DRY_Y = WATER_Y + 1.3;                    // the soft dry sand up by the dunes (never land there!)
+const TIRE_LIFT = 0.18;                         // fat tires are taller: they lift OJ-1 a little
+function beachProfile(x, z) { // [height, how-much-beach 0..1]
+  const bx = Math.abs(x - BEACH.x), v = z - BEACH.z; // v < 0 is toward the island
+  const m = (1 - smooth(BEACH.hw, BEACH.hw + 14, bx)) * (1 - smooth(13, 22, v)) * (1 - smooth(-14, -24, v));
+  const y = v < -8 ? mix(BEACH_Y + 0.15, DRY_Y, smooth(-8, -14, v)) : BEACH_Y + 0.05 - (v + 8) * 0.012;
+  return [y, m];
+}
+const onHardSand = (x, z) => { const v = z - BEACH.z; return Math.abs(x - BEACH.x) < BEACH.hw - 3 && v > -7 && v < 12; };
+const onDrySand = (x, z) => { const v = z - BEACH.z; return Math.abs(x - BEACH.x) < BEACH.hw && v <= -7 && v > -16; };
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 const mix = (a, b, t) => a + (b - a) * t;
@@ -142,6 +175,7 @@ function H(x, z) {
   h = mix(h, -9, smooth(800, 872, -z));                                 // past the hills: cliffs, a beach, then the sea
   const pt = lhPoint(x, z); h = Math.max(h, mix(-20, 15 * smooth(0.18, 0.45, pt) + 2 * pt, smooth(0.03, 0.2, pt))); // the rocky point for the lighthouse
   const isl = Math.exp(-((x - ISLAND.x) ** 2 + (z - ISLAND.z) ** 2) / (46 * 46)); h = Math.max(h, mix(-20, 14 * smooth(0.12, 0.7, isl) - 2.5, smooth(0.02, 0.15, isl)));
+  if (z < -1030 && z > -1120) { const [by, bm] = beachProfile(x, z); h = mix(h, by, bm); } // Pip's beach
   h = mix(h, 0.6, 1 - smooth(16, 42, Math.hypot(x - XP.x, z - XP.z))); // a flat clearing around the X
   h = mix(h, -3.2, 1 - smooth(8, 24, riverDist(x, z)));
   h = mix(h, -4.5, 1 - smooth(0.82, 1.18, lakeE(x, z)));
@@ -174,12 +208,13 @@ scene.add(sun, sun.target);
 const SUN_DIR = new THREE.Vector3(0.5, 1, 0.35).normalize();
 
 // ---------- terrain ----------
+let water;
 {
   const SIZE = 1800, SEG = 360;
   const g = new THREE.PlaneGeometry(SIZE, SIZE, SEG, SEG); g.rotateX(-Math.PI / 2); g.translate(0, 0, -360);
   const p = g.attributes.position, col = new Float32Array(p.count * 3), c = new THREE.Color();
   const C = { grass: new THREE.Color("#86c262"), grass2: new THREE.Color("#a3cf6a"), wood: new THREE.Color("#4f8a44"), sand: new THREE.Color("#e6d69c"),
-    bed: new THREE.Color("#b5a273"), deep: new THREE.Color("#3d6f96"), rock: new THREE.Color("#93806c"), snow: new THREE.Color("#fbfbf8"), yard: new THREE.Color("#8cc96b"), path: new THREE.Color("#c9a46b") };
+    bed: new THREE.Color("#b5a273"), deep: new THREE.Color("#3d6f96"), rock: new THREE.Color("#93806c"), snow: new THREE.Color("#fbfbf8"), wet: new THREE.Color("#a3895c"), yard: new THREE.Color("#8cc96b"), path: new THREE.Color("#c9a46b") };
   for (let i = 0; i < p.count; i++) {
     const x = p.getX(i), z = p.getZ(i), h = H(x, z); p.setY(i, h);
     const n = 0.5 + 0.5 * Math.sin(x * .05) * Math.sin(z * .043 + 2);
@@ -194,12 +229,14 @@ const SUN_DIR = new THREE.Vector3(0.5, 1, 0.35).normalize();
     if (h < 1.2 && (riverDist(x, z) < 34 || lakeE(x, z) < 1.4 || z < -790)) c.lerp(C.sand, smooth(1.2, 0.2, h));
     if (h < WATER_Y - 0.3) c.copy(C.bed);
     if (h < -4) c.copy(C.deep);
+    if (z < -1030 && z > -1120) { const bm = beachProfile(x, z)[1]; // Pip's beach: dry sand up top, darker hard wet sand below
+      if (bm > 0.3) c.copy(onDrySand(x, z) || h > BEACH_Y + 0.4 ? C.sand : C.wet).lerp(C.bed, 1 - smooth(0.3, 0.8, bm)); }
     col.set([c.r, c.g, c.b], i * 3);
   }
   g.setAttribute("color", new THREE.BufferAttribute(col, 3)); g.computeVertexNormals();
   const land = new THREE.Mesh(g, new THREE.MeshLambertMaterial({ vertexColors: true }));
   land.receiveShadow = true; scene.add(land);
-  const water = new THREE.Mesh(new THREE.PlaneGeometry(SIZE, SIZE), new THREE.MeshStandardMaterial({ color: "#5f9fd6", roughness: 0.15, metalness: 0.1, transparent: true, opacity: 0.85 }));
+  water = new THREE.Mesh(new THREE.PlaneGeometry(SIZE, SIZE), new THREE.MeshStandardMaterial({ color: "#5f9fd6", roughness: 0.15, metalness: 0.1, transparent: true, opacity: 0.85 }));
   water.rotation.x = -Math.PI / 2; water.position.set(0, WATER_Y, -360); water.receiveShadow = true; scene.add(water);
 }
 
@@ -333,11 +370,123 @@ const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: (() => { const cv 
   g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(cv); })(), transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending, opacity: 0 }));
 glow.position.set(LH.x, LENS_Y, LH.z); scene.add(glow);
 
+// ---------- Chapter 3: Pip's beach (Day 6) ----------
+// Pip lives up on the dune in a driftwood shack, with a wire antenna for her radio (that's ISLE!) and a burrow in the turf.
+const C3 = { on: false, skip: 0, skipFrom: 0, skipTo: 0, waitT: -1, metT: -1, met: false, tideCardT: -99, landings: 0 };
+const tideDate = () => new Date(Date.now() + C3.skip);
+const seaY = () => C3.on ? WATER_Y + tideAt(tideDate()).h * TIDE_K : WATER_Y;
+// when does the beach next open (or go under)? step forward 5 minutes at a time
+function beachFlip(from) { const open = tideAt(from).h < BEACH_LINE; for (let k = 1; k < 26 * 12; k++) { const d = new Date(from.getTime() + k * 300000); if ((tideAt(d).h < BEACH_LINE) !== open) return d; } return null; }
+const fmtTime = d => d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+const beachProps = new THREE.Group(); scene.add(beachProps);
+const HUT = { x: -236, z: -1094 }, PIP_HOME = { x: -244, z: -1086 };
+{
+  const M = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: .9, ...o });
+  const drift = M("#a89a86"), drift2 = M("#8f8170"), roof = M("#6f6a62"), red = M("#c0301f", { emissive: "#c0301f", emissiveIntensity: .2 });
+  const add = (geo, mat, x, y, z, ry = 0, rz = 0, rx = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); m.castShadow = m.receiveShadow = true; beachProps.add(m); return m; };
+  // the shack: grey driftwood planks, a slanted roof, a round window and a door
+  const hy = H(HUT.x, HUT.z) - 0.2, hut = new THREE.Group(); hut.position.set(HUT.x, hy, HUT.z); hut.rotation.y = -0.25; beachProps.add(hut);
+  const hadd = (geo, mat, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); m.castShadow = m.receiveShadow = true; hut.add(m); return m; };
+  for (let i = 0; i < 7; i++) hadd(new THREE.BoxGeometry(0.62, 3 + (i % 2) * .15, 0.18), i % 2 ? drift : drift2, -1.9 + i * 0.63, 1.5, 1.6, 0, 0, (i % 3 - 1) * .02);
+  for (let i = 0; i < 7; i++) hadd(new THREE.BoxGeometry(0.62, 3, 0.18), i % 2 ? drift2 : drift, -1.9 + i * 0.63, 1.5, -1.6);
+  for (const sx of [-2.1, 2.1]) hadd(new THREE.BoxGeometry(0.18, 3, 3.3), drift2, sx, 1.5, 0);
+  hadd(new THREE.BoxGeometry(5, 0.2, 4.2), roof, 0, 3.25, 0.1, -0.12);
+  hadd(new THREE.BoxGeometry(1.1, 1.7, 0.08), M("#5b7f8f"), 0.7, 0.85, 1.71);                  // a blue-grey door (from a shipwreck?)
+  hadd(new THREE.TorusGeometry(0.38, 0.09, 8, 20), M("#b58a3a", { metalness: .5, roughness: .4 }), -1.0, 1.9, 1.72); // a brass porthole
+  hadd(new THREE.CircleGeometry(0.36, 20), M("#ffe9a8", { emissive: "#ffcf6a", emissiveIntensity: .8 }), -1.0, 1.9, 1.7);
+  hadd(new THREE.BoxGeometry(1.6, 0.5, 0.06), new THREE.MeshStandardMaterial({ roughness: .9, map: (() => { const cv = document.createElement("canvas"); cv.width = 256; cv.height = 80;
+    const g = cv.getContext("2d"); g.fillStyle = "#efe6cf"; g.fillRect(0, 0, 256, 80); g.fillStyle = "#2b2540"; g.font = "bold 44px sans-serif"; g.textAlign = "center"; g.fillText("ISLE", 128, 56);
+    const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; })() }), -0.3, 2.75, 1.73); // her sign: her call sign
+  // her antenna: a pole with a wire and a red light on top that blinks ISLE in Morse
+  hadd(new THREE.CylinderGeometry(.06, .08, 7, 6), drift2, 2.6, 3.5, -1.2);
+  C3.mastLamp = hadd(new THREE.SphereGeometry(.16, 10, 8), red, 2.6, 7.1, -1.2);
+  const wire = new THREE.Mesh(new THREE.CylinderGeometry(.015, .015, 6.2, 4), M("#333")); wire.position.set(-0.5, 5.2, -1.2); wire.rotation.z = 1.13; hut.add(wire);
+  // a burrow in the turf beside the shack (puffins dig them with their beaks and feet)
+  const by = H(HUT.x - 5, HUT.z - 1);
+  add(new THREE.SphereGeometry(0.75, 14, 8, 0, Math.PI * 2, 0, Math.PI / 2), M("#7d9b55"), HUT.x - 5, by - 0.25, HUT.z - 1).scale.set(1.2, 0.7, 1);
+  add(new THREE.CircleGeometry(0.45, 14), M("#2a2018"), HUT.x - 5, by - 0.05, HUT.z - 0.05, 0, 0, -0.25);
+  // driftwood logs on the dry sand (don't land up here!)
+  for (const [x, z, r, l] of [[-318, -1085, .4, 1.0], [-262, -1083, -.2, 1.4], [-305, -1088, 1.2, 0.8], [-232, -1082, .7, 1.1]])
+    add(new THREE.CylinderGeometry(.28, .34, 3.6 * l, 8), drift, x, H(x, z) + .25, z, r, Math.PI / 2);
+  // Pip's windsock: an orange-and-white stripy sock on a stick (every beach airport needs one)
+  const wx = -214, wz = -1080, wy = H(wx, wz);
+  add(new THREE.CylinderGeometry(.06, .06, 4, 6), drift2, wx, wy + 2, wz);
+  C3.sock = new THREE.Group(); C3.sock.position.set(wx, wy + 3.8, wz); beachProps.add(C3.sock);
+  for (let i = 0; i < 4; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(.3 - i * .05, .35 - i * .05, .5, 12, 1, true), M(i % 2 ? "#ffffff" : "#ff7a1a", { side: THREE.DoubleSide }));
+    c.rotation.z = Math.PI / 2; c.position.x = .3 + i * .5; c.castShadow = true; C3.sock.add(c); }
+  // little tide stakes along the beach: Pip's driftwood sticks to see how fast the water's coming (real beach pilots do this!)
+  for (let i = 0; i < 5; i++) { const x = BEACH.x - 48 + i * 24, z = BEACH.z + 10; add(new THREE.CylinderGeometry(.07, .07, 2.4, 5), drift2, x, BEACH_Y + 1.0, z); add(new THREE.BoxGeometry(.3, .12, .12), red, x, BEACH_Y + 2.1, z); }
+}
+// Pip! An Atlantic puffin in her winter look: black back, white front, grey cheeks, and a duller, smaller beak.
+const pip = new THREE.Group(); scene.add(pip);
+const pipParts = {};
+{
+  const M = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: .8, ...o });
+  const S = (r, mat, x, y, z, sx = 1, sy = 1, sz = 1, parent = pip) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 12), mat); m.position.set(x, y, z); m.scale.set(sx, sy, sz); m.castShadow = true; parent.add(m); return m; };
+  const black = M("#1d1b22"), white = M("#f4f2ec"), grey = M("#b9b7b2"), orange = M("#ff7a1a");
+  S(.42, black, 0, .7, -.05, 1, 1.25, .95);              // body
+  S(.36, white, 0, .62, .12, .92, 1.1, .8);              // belly
+  const head = new THREE.Group(); head.position.set(0, 1.28, .02); pip.add(head); pipParts.head = head;
+  S(.27, black, 0, 0, -.02, 1, 1, 1, head);
+  for (const sx of [-1, 1]) {
+    S(.17, grey, sx * .13, -.02, .08, .6, 1, 1, head);     // grey winter cheeks
+    S(.045, black, sx * .17, .04, .14, 1, 1, 1, head);      // eye
+    S(.02, M("#ffffff", { emissive: "#ffffff", emissiveIntensity: .3 }), sx * .19, .06, .17, 1, 1, 1, head);
+  }
+  // the beak: tall and flat from the side, with stripes (winter: smaller, the bright plates fell off)
+  const beak = new THREE.Group(); beak.position.set(0, -.04, .22); head.add(beak);
+  const tri = (h, len, col, z) => { const g = new THREE.ConeGeometry(h, len, 3); g.rotateX(Math.PI / 2); const m = new THREE.Mesh(g, M(col)); m.scale.set(.35, 1, 1); m.rotation.z = Math.PI; m.position.z = z; m.castShadow = true; beak.add(m); };
+  tri(.13, .26, "#4d5460", .08); tri(.11, .2, "#d9a64a", .13); tri(.08, .14, "#e0582a", .19);
+  for (const sx of [-1, 1]) { const w = S(.22, black, sx * .36, .78, -.05, .35, 1, .8); w.rotation.z = sx * .15; pipParts[sx < 0 ? "wl" : "wr"] = w; }
+  for (const sx of [-1, 1]) { const f = new THREE.Mesh(new THREE.BoxGeometry(.18, .05, .26), orange); f.position.set(sx * .14, .03, .1); f.castShadow = true; pip.add(f); pipParts[sx < 0 ? "fl" : "fr"] = f; }
+  S(.09, black, 0, .55, -.42, 1, .6, 1.4);               // little tail
+  pip.scale.setScalar(1.1);
+  pip.position.set(PIP_HOME.x, H(PIP_HOME.x, PIP_HOME.z), PIP_HOME.z); pip.rotation.y = 0.3;
+}
+// dit = on 1, dah = on 3, gap between parts 1, between letters 3, then a long rest
+const MORSE_ISLE = ["..", "...", ".-..", "."].map(l => [...l].map(c => c === "." ? "1" : "111").join("0")).join("000") + "0000000000";
+function pipUpdate(dt, t) {
+  // Pip's antenna blinks ISLE: .. ... .-.. .
+  const morse = MORSE_ISLE, u = Math.floor(t / 0.22) % morse.length;
+  if (C3.mastLamp) C3.mastLamp.material.emissiveIntensity = morse[u] === "1" ? 3 : 0.1;
+  if (C3.sock) C3.sock.rotation.z = -0.15 + Math.sin(t * 1.3) * 0.06, C3.sock.rotation.y = 0.6 + Math.sin(t * 0.7) * 0.15;
+  // idle: look around, flap now and then (puffins beat their wings ~400 times a minute!)
+  const walking = pip.userData.walking;
+  pipParts.head.rotation.y = walking ? 0 : Math.sin(t * 0.8) * 0.6;
+  const flap = pip.userData.flap > 0 ? Math.sin(t * 40) * 0.9 : 0; pip.userData.flap = Math.max(0, (pip.userData.flap ?? 0) - dt);
+  pipParts.wl.rotation.z = -.15 - Math.max(0, flap); pipParts.wr.rotation.z = .15 + Math.max(0, flap);
+  pip.rotation.z = walking ? Math.sin(t * 12) * 0.12 : 0;
+  pipParts.fl.position.z = .1 + (walking ? Math.sin(t * 12) * .12 : 0); pipParts.fr.position.z = .1 - (walking ? Math.sin(t * 12) * .12 : 0);
+}
+function pipWalkTo(x, z, dt, speed = 2.2) {
+  const dx = x - pip.position.x, dz = z - pip.position.z, d = Math.hypot(dx, dz);
+  // far away? Pip FLIES (puffins beat their wings ~400 times a minute and zoom along low). Close? She waddles.
+  const flying = d > 7; if (flying) { speed = 11; pip.userData.flap = 0.2; }
+  if (d > 0.2) { const s = Math.min(d, speed * dt); pip.position.x += dx / d * s; pip.position.z += dz / d * s; pip.rotation.y = Math.atan2(dx, dz); }
+  pip.userData.walking = !flying && d - speed * dt > 0.2;
+  pip.userData.hover = mix(pip.userData.hover ?? 0, flying ? 1.6 : 0, Math.min(1, dt * 3));
+  pip.position.y = H(pip.position.x, pip.position.z) + pip.userData.hover + (pip.userData.walking ? Math.abs(Math.sin(P.time * 12)) * .06 : 0);
+  return d <= 0.2;
+}
+
 // ---------- OJ-1 (and me in the cockpit) ----------
 const ship = new THREE.Group(); ship.rotation.order = "YXZ"; scene.add(ship);
 let prop = null;
-loadModel("assets/models/plane.glb").then(m => { const c = m.clone(); shadowy(c); ship.add(c); prop = c.getObjectByName("propeller");
-  c.traverse(n => { if (n.name.startsWith("prop_disc")) n.visible = false; }); }).catch(e => showError("couldn't load OJ-1: " + e.message));
+// fat tires for Chapter 3: big, soft, low-pressure "tundra tires" like bush planes use, so the wheels float on sand instead of digging in
+const fatTires = new THREE.Group(); fatTires.visible = false; ship.add(fatTires);
+{
+  const rub = new THREE.MeshStandardMaterial({ color: "#2b2a2e", roughness: .95 }), hubM = new THREE.MeshStandardMaterial({ color: "#d8d4c8", metalness: .35, roughness: .4 });
+  for (const sx of [-0.6, 0.6]) {
+    const t = new THREE.Mesh(new THREE.TorusGeometry(0.27, 0.17, 12, 28), rub); t.rotation.y = Math.PI / 2; t.scale.set(1, 1, 1.25); t.position.set(sx * 1.05, 0.24 + TIRE_LIFT, 0.75); t.castShadow = true; fatTires.add(t);
+    const h = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.34, 14), hubM); h.rotation.z = Math.PI / 2; h.position.copy(t.position); fatTires.add(h);
+    for (let k = 0; k < 10; k++) { const tr = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.05, 0.08), rub); const a = k / 10 * Math.PI * 2;
+      tr.position.set(t.position.x, t.position.y + Math.sin(a) * 0.44, t.position.z + Math.cos(a) * 0.44); tr.rotation.x = -a; fatTires.add(tr); } // tread
+  }
+}
+let planeModel = null;
+const setFatTires = on => { fatTires.visible = on; if (planeModel) { planeModel.position.y = on ? TIRE_LIFT : 0; for (const n of ["wheel", "wheel.001", "hub", "hub.001"]) { const w = planeModel.getObjectByName(n); if (w) w.visible = !on; } } };
+loadModel("assets/models/plane.glb").then(m => { const c = m.clone(); shadowy(c); ship.add(c); prop = c.getObjectByName("propeller"); planeModel = c;
+  c.traverse(n => { if (n.name.startsWith("prop_disc")) n.visible = false; }); setFatTires(C3.on); }).catch(e => showError("couldn't load OJ-1: " + e.message));
 const me = new THREE.Group(); ship.add(me);
 {
   const S = (r, c, x, y, z, sx = 1, sy = 1, sz = 1) => { const m = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 12), new THREE.MeshStandardMaterial({ color: c, roughness: .85 })); m.position.set(x, y, z); m.scale.set(sx, sy, sz); m.castShadow = true; me.add(m); return m; };
@@ -425,7 +574,8 @@ $("camBtn").onclick = cycleCam; $("muteBtn").onclick = toggleMute; $("homeBtn").
 // ---------- flight ----------
 const P = { pos: new THREE.Vector3(), yaw: 0, pitch: 0, roll: 0, speed: 0, phase: "parked", bumpT: 0, time: 0, found: false, flying: false };
 function reset(first) {
-  P.pos.set(-11, 0, -14); P.yaw = Math.PI / 2; P.pitch = P.roll = 0; P.speed = 0; P.phase = first ? "parked" : "roll"; P.snap = true;
+  if (C3.on && !first) { if (P.phase === "landed" && P.speed === 0) $("takeoff").onclick(); else if (P.phase !== "roll") startC3(); return; }
+  P.pos.set(-11, 0, -14); P.yaw = Math.PI / 2; P.rollYaw = Math.PI / 2; P.pitch = P.roll = 0; P.speed = 0; P.phase = first ? "parked" : "roll"; P.snap = true;
   if (!first) say("Back to Runway 9. Rolling... rotate... wheels up!", 3);
 }
 reset(true);
@@ -433,6 +583,29 @@ $("go").onclick = () => { $("start").style.display = "none"; startAudio(); P.pha
 $("keep").onclick = () => { $("found").style.display = "none"; P.flying = true; P.phase = "fly"; P.pitch = 0.35; P.pos.y += 8; P.yaw += Math.PI / 2; startC2(false); };
 $("go2").onclick = () => { $("start").style.display = "none"; startAudio(); startC2(true); };
 $("keep2").onclick = () => { $("lit").style.display = "none"; P.phase = "fly"; P.pitch = 0.3; say("The compass points home now. But first... let's look around!", 4); };
+$("go3").onclick = () => { $("start").style.display = "none"; startAudio(); startC3(true); };
+// Chapter 3: fat tires on, the lighthouse already lit, the fog gone, and a beach that's only there at low tide
+function startC3() {
+  C3.on = true; C2.on = true; C2.lit = true; C2.lift = 1; C2.heard = true; P.found = true; foundT = 99; setFatTires(true);
+  P.flying = true; P.phase = "fly"; P.pos.set(70, 45, -870); P.yaw = Math.atan2(BEACH.x - 70, BEACH.z + 10 - (-870)); P.pitch = 0; P.roll = 0; P.speed = 22; P.snap = true;
+  C3.waitT = -1; C3.metT = -1; C3.skip = 0; for (const k of ["fence", "woods", "lake", "river", "hills", "high", "c2fog", "salt", "opensea", "island", "fog", "controls"]) seen[k] = 1; pip.position.set(PIP_HOME.x, H(PIP_HOME.x, PIP_HOME.z), PIP_HOME.z);
+  const td = tideAt(tideDate()), open = td.h < BEACH_LINE, flip = beachFlip(tideDate()), low = nextTurns(tideDate(), 4).find(t => t.kind === "low");
+  say(`New fat tires! Soft and squishy, so they float on sand. Past OJ Light, out to the island... Pip's tide right now: <b>${td.h.toFixed(1)} m, ${td.rising ? "rising" : "falling"}</b>. ` +
+    (open ? `The beach is OPEN until about <b>${fmtTime(flip)}</b>!` : `Beach under water. It opens about <b>${fmtTime(flip)}</b> (low tide ${fmtTime(low.time)}).`), 7);
+}
+function showTideCard() {
+  const td = tideAt(tideDate()), low = nextTurns(tideDate(), 4).find(t => t.kind === "low");
+  $("tideNow").innerHTML = `Pip's tide right now: <b>${td.h.toFixed(2)} m</b> and <b>${td.rising ? "rising" : "falling"}</b>. The beach opens below ${BEACH_LINE} m.<br>Next low tide: <b>${fmtTime(low.time)}</b> (${low.h.toFixed(1)} m) your time.`;
+  $("tideCard").style.display = "flex"; C3.lowAt = low.time.getTime(); keys.ArrowUp = keys.ArrowDown = keys.ArrowLeft = keys.ArrowRight = false;
+}
+$("noWait").onclick = () => { $("tideCard").style.display = "none"; P.pitch = 0.3; };
+$("waitTide").onclick = () => { $("tideCard").style.display = "none";
+  // fast-forward the REAL tide until a bit after the next low (the sea drops in front of you, by the rule of twelfths)
+  C3.skipFrom = C3.skip; C3.skipTo = C3.lowAt - Date.now() - 20 * 60000; C3.waitT = 0;
+  P.phase = "circle3"; P.circleA = Math.atan2(P.pos.z - BEACH.z, P.pos.x - BEACH.x); };
+$("takeoff").onclick = () => { $("metCard").style.display = "none"; P.rollYaw = P.pos.x < BEACH.x ? Math.PI / 2 : -Math.PI / 2; P.yaw = P.rollYaw; P.phase = "roll"; P.speed = 0;
+  say("Pip pushed my tail around with her beak so I could take off along the beach. Full throttle! Fat tires rumbling...", 4); };
+$("stay").onclick = () => { $("metCard").style.display = "none"; C3.stay = true; say("I'm just going to sit here and listen to the waves. Press <b>🛫</b> (or R) when I should go.", 5); $("homeBtn").textContent = "🛫"; };
 function startC2(fromStart) {
   C2.on = true; C2.t0 = P.time; P.found = true; if (foundT < 0) foundT = 99;
   if (fromStart) { P.flying = true; P.phase = "fly"; P.pos.set(XP.x, X.position.y + 35, XP.z + 40); P.yaw = Math.PI; P.pitch = 0; P.speed = 22; P.snap = true; }
@@ -446,12 +619,13 @@ function fly(dt) {
   let inR = (keys.ArrowRight || keys.KeyD ? 1 : 0) - (keys.ArrowLeft || keys.KeyA ? 1 : 0) + stick.x;
   const boost = keys.ShiftLeft || keys.ShiftRight || keys.Space || touchBoost;
   if (P.phase === "roll") {
-    P.speed = Math.min(22, P.speed + 9 * dt); P.yaw = Math.PI / 2;
+    P.speed = Math.min(22, P.speed + 9 * dt); P.yaw = P.rollYaw ?? Math.PI / 2;
     P.pitch = mix(P.pitch, P.speed > 15 ? 0.28 : 0, dt * 2);
-    if (P.pos.y > 7) { P.phase = "fly"; once("controls", "You have the controls! The gate in my fence is to the north. Follow the dotted path to the <b>X</b>!", 5); }
+    if (C3.on && P.pos.y - Math.max(H(P.pos.x, P.pos.z), seaY()) > 5) { P.phase = "fly"; $("homeBtn").textContent = "↩︎"; once("c3up" + C3.landings, "Wheels up! Bye Pip! She waved a wing. Puffins flap SO fast, about 400 times a minute.", 4); }
+    else if (!C3.on && P.pos.y > 7) { P.phase = "fly"; once("controls", "You have the controls! The gate in my fence is to the north. Follow the dotted path to the <b>X</b>!", 5); }
   } else if (P.phase === "fly") {
     // stay inside my map: past the edges (and in the deep fog) OJ-1 turns herself around
-    const north = C2.on ? SEA_N : EDGE.n;
+    const north = C3.on ? -1230 : C2.on ? SEA_N : EDGE.n;
     const out = Math.abs(P.pos.x) > EDGE.x || P.pos.z < north || P.pos.z > EDGE.s;
     if (out) {
       const want = Math.atan2(0 - P.pos.x, -280 - P.pos.z), diff = wrap(want - P.yaw); inR = diff > 0 ? -1 : 1;
@@ -466,6 +640,12 @@ function fly(dt) {
     P.speed = clamp(P.speed, 11, 46);
   }
   if (P.phase === "parked") return;
+  if (P.phase === "landed") { landed(dt); return; }
+  if (P.phase === "circle3") { // autopilot: circle the island while the tide goes out
+    P.circleA += dt * 0.3; const a = P.circleA;
+    P.pos.set(BEACH.x + Math.cos(a) * 85, mix(P.pos.y, 30, dt), BEACH.z - 20 + Math.sin(a) * 85);
+    P.yaw = -a; P.roll = mix(P.roll, 0.3, dt * 2); P.pitch = mix(P.pitch, 0, dt * 2); P.speed = 18; return;
+  }
   if (P.phase === "circle") { // autopilot: circle the X while the chest comes up
     P.circleA += dt * 0.55; const a = P.circleA;
     P.pos.set(XP.x + Math.cos(a) * 32, mix(P.pos.y, X.position.y + 16, dt * 1.5), XP.z + Math.sin(a) * 32);
@@ -478,12 +658,15 @@ function fly(dt) {
   }
   fwd.set(Math.sin(P.yaw) * Math.cos(P.pitch), Math.sin(P.pitch), Math.cos(P.yaw) * Math.cos(P.pitch));
   P.pos.addScaledVector(fwd, P.speed * dt);
+  // over Pip's beach, low and slow, OJ-1 settles gently toward the sand (a chicken-friendly landing helper)
+  if (C3.on && P.phase === "fly" && Math.abs(P.pos.x - BEACH.x) < BEACH.hw + 10 && Math.abs(P.pos.z - BEACH.z) < 22 && P.pos.y - Math.max(H(P.pos.x, P.pos.z), seaY()) < 5 && P.speed < 32) P.pos.y -= 1.6 * dt;
   if (P.pos.y > 170) { P.pos.y = 170; P.pitch = Math.min(P.pitch, 0); once("ceil" + Math.floor(P.time / 40), "Brrr, it's cold up here and my comb is freezing. That's high enough!", 3); }
-  const ground = H(P.pos.x, P.pos.z), floor = Math.max(ground, WATER_Y) + (P.phase === "roll" ? 0.02 : 0.9);
+  const sea = seaY(), ground = H(P.pos.x, P.pos.z), floor = Math.max(ground, sea) + (P.phase === "roll" ? 0.02 : 0.9);
+  if (P.pos.y < floor && P.phase === "fly" && C3.on && tryLand(ground, sea)) return;
   if (P.pos.y < floor) {
     P.pos.y = floor;
     if (P.phase === "fly") { P.pitch = Math.max(P.pitch, 0.32); P.speed *= 0.85;
-      if (P.bumpT <= 0) { say(ground < WATER_Y ? "SPLASH! Wet wheels! Ducks make this look easy." : "Bonk! OJ-1 bounced right off the ground. She's tough. I'm fine. Bawk!", 3); P.bumpT = 4; chime([220, 165], .12); } }
+      if (P.bumpT <= 0) { if (!C3.said) say(ground < sea ? "SPLASH! Wet wheels! Ducks make this look easy." : "Bonk! OJ-1 bounced right off the ground. She's tough. I'm fine. Bawk!", 3); P.bumpT = 4; chime([220, 165], .12); } C3.said = false; }
   }
 }
 
@@ -500,7 +683,12 @@ function sightsee() {
   if (z < -770 && !C2.lit) once("c2fog", "I can't see ANYTHING. Just grey, grey, grey. And the compass needle, pointing straight ahead...", 4.5);
   if (z < -845 && !C2.lit) once("salt", "I smell salt. I hear... waves? Is that the SEA?! My map never said anything about a SEA!", 4.5);
   if (C2.lit && z < -980) once("opensea", "The open sea! It goes on forever. Well... except for that little island.", 4);
-  if (C2.lit && Math.hypot(x - ISLAND.x, z - ISLAND.z) < 90) once("island", "An island! With trees! Somebody should land there someday. Somebody named Odyssey.", 4.5);
+  if (C2.lit && !C3.on && Math.hypot(x - ISLAND.x, z - ISLAND.z) < 90) once("island", "An island! With trees! Somebody should land there someday. Somebody named Odyssey.", 4.5);
+  if (C3.on) {
+    const d = Math.hypot(x - BEACH.x, z - BEACH.z), open = H(BEACH.x, BEACH.z) > seaY() + 0.05;
+    if (d < 260) once("c3see" + C3.landings, open ? "There's the beach! See the dark strip by the water? Hard wet sand. Real beach pilots land there. And a little stripy windsock!" : "There's the island... and the beach is all water right now. Hmm. Let's go look anyway.", 5);
+    if (d < 140 && alt < 14 && open && P.pitch < -0.1) once("flare" + C3.landings, "Lower... lower... now ease the nose UP a little right before the sand (↑). Flare!", 4);
+  }
 }
 
 // ---------- hoops and the X ----------
@@ -586,6 +774,75 @@ function lhUpdate(dt) {
   }
 }
 
+
+// ---------- Chapter 3: landing on the beach ----------
+// Beach pilots say: land on the HARD WET sand (smooth, a bit grippy), never the soft dry sand (it grabs your wheels and flips you),
+// check the tide first, come in slow and shallow, and flare (nose up a little) right before the wheels touch.
+function tryLand(ground, sea) {
+  const { x, z } = P.pos, nearBeach = Math.abs(x - BEACH.x) < BEACH.hw + 6 && Math.abs(z - BEACH.z + 2) < 20;
+  if (!nearBeach) return false;
+  const msg = (t, s = 4) => { if (P.bumpT <= 0) { say(t, s); C3.said = true; } };
+  if (ground < sea + 0.05) { // the beach is under water
+    msg("SPLASH! The beach is under the sea! The tide's in. Pip did say LOW tide only...", 4);
+    if (P.time - C3.tideCardT > 20) { C3.tideCardT = P.time; setTimeout(showTideCard, 1200); }
+    return false;
+  }
+  if (onDrySand(x, z)) { msg("Not the DRY sand! It's soft and fluffy and grabs the wheels. Land on the hard, dark, wet sand down by the water!", 5); return false; }
+  if (!onHardSand(x, z)) return false;
+  if (P.pitch < -0.36) { msg("Too steep! Come down gently, then ease the nose UP just before the sand. That's called a <b>flare</b>.", 5); return false; }
+  if (P.speed > 34) { msg("Way too fast! Let go of Zoom, and come in slow, like a feather.", 4); return false; }
+  // touchdown!
+  P.phase = "landed"; C3.metT = -1; C3.landings++; C3.touch = { x, z, speed: P.speed, pitch: P.pitch };
+  chime([523, 659, 784], .16);
+  say(P.pitch > 0.05 ? "Flare... and... <b>TOUCHDOWN!</b> Fat tires on hard wet sand. Squish, squish, rumble. BUTTERY." : "<b>TOUCHDOWN!</b> A little flat, but the fat tires soaked it right up. Squish!", 4);
+  return true;
+}
+function landed(dt) {
+  const { x, z } = P.pos;
+  let drag = 6; if (onDrySand(x, z)) drag = 20; // dry sand grabs (that's why you don't land there)
+  P.speed = Math.max(0, P.speed - drag * dt);
+  P.pitch = mix(P.pitch, 0.2, Math.min(1, dt * 3)); P.roll = mix(P.roll, 0, Math.min(1, dt * 4)); // tail-dragger: the nose sits up on the ground
+  P.pos.x += Math.sin(P.yaw) * P.speed * dt; P.pos.z += Math.cos(P.yaw) * P.speed * dt;
+  const g = H(P.pos.x, P.pos.z), sea = seaY();
+  if (g < sea + 0.02 && P.speed > 0) { P.speed = 0; once("wetstop" + C3.landings, "Eep! Wet toes! I stopped right at the edge of the water.", 3); }
+  if (g > DRY_Y + 1 && P.speed > 0) { P.speed = 0; once("dunestop" + C3.landings, "Oof, stopped by the dune. OJ-1 is fine. Sand in my feathers though.", 3); }
+  P.pos.y = mix(P.pos.y, Math.max(g, sea) + 0.02, Math.min(1, dt * 6));
+  if (P.speed > 0) return;
+  // stopped: here comes Pip
+  if (C3.metT < 0) { C3.metT = 0; C3.metSaid = 0; }
+  const t0 = C3.metT; C3.metT += dt; const at = s => t0 < s && C3.metT >= s;
+  const side = new THREE.Vector3(Math.cos(P.yaw), 0, -Math.sin(P.yaw)), goal = { x: P.pos.x + side.x * 3.2 + Math.sin(P.yaw) * 1.2, z: P.pos.z + side.z * 3.2 + Math.cos(P.yaw) * 1.2 };
+  if (C3.metT > 1.5) { const there = pipWalkTo(goal.x, goal.z, dt); if (there) pip.rotation.y = Math.atan2(P.pos.x - pip.position.x, P.pos.z - pip.position.z); }
+  if (C3.stay) { if (at(1)) say("Back on the sand. Pip is coming to see me again!", 3); if (C3.metT > 6 && Math.random() < dt * 0.15) pip.userData.flap = 0.5; return; }
+  if (at(0.5)) say("We stopped! I'm on <b>PIP'S BEACH</b>! The sand is hard and smooth, like a runway the sea made just for me.", 4.5);
+  if (at(4.5)) { say("Someone's coming out of the driftwood shack... A <b>PUFFIN</b>! A real one! She flew over low and fast, wings buzzing, then plopped down and WADDLED. Like a wind-up toy.", 5); pip.userData.flap = 0.6; }
+  if (at(10)) say("'OJR? I'm Pip. Nice flare.' She talks just like her Morse: short and quick. HI HI.", 4.5);
+  if (at(15)) say("Her beak is smaller and greyer than in pictures. She says puffins <b>shed the bright outside of their beaks every fall</b> and grow new ones for spring. This is her winter look!", 6.5);
+  if (at(19)) say("I gave her my red flashlight, so she can wind OJ Light at night and still see the meteors. Red light keeps your night eyes! She tucked it under her wing.", 5);
+  if (at(24)) { say("And she gave ME her old beak plate. She found it in the grass by her burrow in September. Best present EVER. 🧡", 4.5); pip.userData.flap = 0.8; chime([659, 784, 988, 1319], .2); }
+  if (at(29)) {
+    const under = beachFlip(tideDate()), s = Math.round(P.time);
+    const tc = C3.touch;
+    $("metStats").innerHTML = `Touchdown at ${Math.round(tc.speed * 3)} kt, ${tc.pitch > 0.05 ? "nose up (a real flare!)" : "flat"} · Flight time ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}<br>` +
+      `Pip says: the sea covers this sand again at about <b>${fmtTime(under)}</b> your time. Don't leave OJ-1 parked on the wet sand!`;
+    $("metCard").style.display = "flex"; keys.ArrowUp = keys.ArrowDown = keys.ArrowLeft = keys.ArrowRight = false;
+    C3.met = true;
+    try { localStorage.setItem("oj-met-pip", "1"); } catch (e) {}
+  }
+}
+function tideWait(dt) {
+  if (C3.waitT < 0) return;
+  const t0 = C3.waitT; C3.waitT += dt; const at = s => t0 < s && C3.waitT >= s;
+  C3.skip = mix(C3.skipFrom, C3.skipTo, smooth(0, 14, C3.waitT));
+  const hrs = (C3.skip - C3.skipFrom) / 3600000;
+  if (at(0.3)) say("OK, I'll circle and wait. (Time is going FAST now: watch the sea go down!)", 4);
+  if (at(4.5)) say("Rule of twelfths: the sea drops 1/12, then 2/12, then 3/12, 3/12... slow, then fast in the middle, then slow again.", 5.5);
+  if (at(10)) say("I can see the sand coming out! Darker by the water: that's the hard wet sand. That's my runway.", 4.5);
+  $("arrowTxt").textContent = `⏳ waiting for low tide · +${hrs.toFixed(1)} h`;
+  if (C3.waitT >= 14) { C3.waitT = -1; P.phase = "fly"; P.pitch = 0;
+    say("<b>LOW TIDE.</b> The beach is open! Line up ALONG it like a runway, come in slow, and flare at the last second.", 6); }
+}
+
 // ---------- map in the corner (the same map as my board) ----------
 const mapCv = $("map").firstElementChild, mg = mapCv.getContext("2d"), MW = mapCv.width;
 const mapBg = document.createElement("canvas"); mapBg.width = mapBg.height = MW;
@@ -606,7 +863,8 @@ function drawMap() {
   const W = MW, toM = (x, z) => [(x / L + .5) * W, (z / L + .82) * W];
   mg.drawImage(mapBg, 0, 0);
   for (const h of hoops) { const [x, y] = toM(h.m.position.x, h.m.position.z); mg.fillStyle = h.passed ? "rgba(120,110,90,.5)" : "#ffb400"; mg.strokeStyle = "#2b2540"; mg.lineWidth = 1.5; mg.beginPath(); mg.arc(x, y, 5, 0, 7); mg.fill(); if (!h.passed) mg.stroke(); }
-  if (C2.on) { const [lx, ly] = toM(LH.x, LH.z); mg.font = "22px sans-serif"; mg.textAlign = "center"; mg.fillText("🗼", lx, Math.max(22, ly)); }
+  if (C2.on && !C3.on) { const [lx, ly] = toM(LH.x, LH.z); mg.font = "22px sans-serif"; mg.textAlign = "center"; mg.fillText("🗼", lx, Math.max(22, ly)); }
+  if (C3.on) { const [bx] = toM(BEACH.x, BEACH.z); mg.font = "22px sans-serif"; mg.textAlign = "center"; mg.fillText("🏝️", bx, 22); }
   const [px, py0] = toM(P.pos.x, P.pos.z), py = Math.max(10, py0); mg.save(); mg.translate(px, py); mg.rotate(-P.yaw + Math.PI);
   mg.fillStyle = "#ffd23f"; mg.strokeStyle = "#2b2540"; mg.lineWidth = 2; mg.beginPath(); mg.moveTo(0, -11); mg.lineTo(8, 8); mg.lineTo(0, 4); mg.lineTo(-8, 8); mg.closePath(); mg.fill(); mg.stroke(); mg.restore();
 }
@@ -620,6 +878,12 @@ function updateCam(dt) {
     camera.up.set(0, 1, 0).applyAxisAngle(fwd, -P.roll * 0.8); camera.lookAt(look.copy(camera.position).addScaledVector(fwd, 20)); me.visible = false; return;
   }
   me.visible = true; camera.up.set(0, 1, 0);
+  if (P.phase === "landed" && C3.metT > 2.5) { // on the beach: a low camera that sees me, OJ-1 and Pip, with the sea behind
+    const mid = tmp.copy(P.pos).add(pip.position).multiplyScalar(0.5);
+    const want = new THREE.Vector3(mid.x + Math.sin(P.yaw + 2.2) * 11, Math.max(H(mid.x, mid.z), seaY()) + 3.2, mid.z + Math.cos(P.yaw + 2.2) * 11);
+    want.y = Math.max(want.y, H(want.x, want.z) + 1.2);
+    camPos.lerp(want, 1 - Math.exp(-dt * 1.2)); camera.position.copy(camPos); camera.lookAt(mid.x, mid.y + 1.4, mid.z); return;
+  }
   if (P.phase === "circle2") { // look at the lighthouse from just outside the circle
     const want = tmp.set(P.pos.x - LH.x, 0, P.pos.z - LH.z).multiplyScalar(1.45).add(lhouse.position); want.y = LENS_Y + 4;
     camPos.lerp(want, 1 - Math.exp(-dt * 1.5)); camera.position.copy(camPos); camera.lookAt(look.set(LH.x, LENS_Y - 3, LH.z)); return;
@@ -639,7 +903,14 @@ function updateCam(dt) {
 function hud() {
   $("hoops").textContent = `${hoops.filter(h => h.passed).length}/${hoops.length}`;
   $("spd").textContent = Math.round(P.speed * 3) + " kt";
-  $("alt").textContent = Math.max(0, Math.round((P.pos.y - Math.max(H(P.pos.x, P.pos.z), WATER_Y)) * 10)) + " ft";
+  $("alt").textContent = Math.max(0, Math.round((P.pos.y - Math.max(H(P.pos.x, P.pos.z), seaY())) * 10)) + " ft";
+  if (C3.on) {
+    const rel = wrap(Math.atan2(BEACH.x - P.pos.x, BEACH.z - P.pos.z) - P.yaw), dist = Math.hypot(BEACH.x - P.pos.x, BEACH.z - P.pos.z);
+    const td = tideAt(tideDate()), open = H(BEACH.x, BEACH.z) > seaY() + 0.05;
+    $("arrow").style.transform = `rotate(${-rel}rad)`; $("arrow").textContent = "⬆"; $("arrow").style.background = open ? "#c9f0c0" : "#cfe3ef";
+    if (C3.waitT < 0) $("arrowTxt").textContent = `🏝️ Pip's beach · ${Math.round(dist)} m · tide ${td.h.toFixed(1)} m ${td.rising ? "↑" : "↓"} · ${open ? "🟢 open" : "🔴 under water"}`;
+    return;
+  }
   if (C2.on) {
     const tx = C2.lit ? 0 : LH.x, tz = C2.lit ? 0 : LH.z, rel = wrap(Math.atan2(tx - P.pos.x, tz - P.pos.z) - P.yaw), dist = Math.hypot(tx - P.pos.x, tz - P.pos.z);
     $("arrow").style.transform = `rotate(${-rel}rad)`; $("arrow").textContent = "⬆"; $("arrow").style.background = "#ffe08a";
@@ -660,8 +931,10 @@ function frame() {
   const dt = Math.min(clock.getDelta(), 0.05);
   if (P.flying) { P.time += dt; fly(dt); if (P.phase === "fly") sightsee(); hoopCheck(dt); }
   xCheck(dt); lhCheck(dt); P.bumpT -= dt;
+  tideWait(dt); pipUpdate(dt, performance.now() / 1000);
+  if (C3.on) { water.position.y = seaY(); if (P.phase !== "landed" && pip.position.distanceTo(new THREE.Vector3(PIP_HOME.x, pip.position.y, PIP_HOME.z)) > 0.3) pipWalkTo(PIP_HOME.x, PIP_HOME.z, dt); }
   ship.position.copy(P.pos); ship.rotation.set(-P.pitch, P.yaw, P.roll);
-  if (prop) prop.rotation.z += (P.phase === "parked" ? 0 : 40) * dt;
+  if (prop) prop.rotation.z += (P.phase === "parked" || (P.phase === "landed" && P.speed === 0) ? 0 : 40) * dt;
   const tail = me.getObjectByName("scarfTail"); if (tail) tail.rotation.x = 1.1 + Math.sin(P.time * 18) * 0.25;
   for (const c of clouds) { c.position.x += dt * 2.2; if (c.position.x > 650) c.position.x = -650; }
   // fog: thicker near the north end of my map
@@ -673,14 +946,14 @@ function frame() {
   if (thick > 0.3 && !C2.on) once("fog", "Whoa. The fog past the hills is SO thick. The map says <b>???</b> and now I know why.", 4.5);
   sun.position.copy(P.pos).addScaledVector(SUN_DIR, 120); sun.target.position.copy(P.pos);
   sky.position.copy(camera.position);
-  if (eng && ac) { const v = muted || !P.flying ? 0 : .07; eng.g.gain.setTargetAtTime(v, ac.currentTime, .2);
+  if (eng && ac) { const v = muted || !P.flying || (P.phase === "landed" && P.speed === 0) ? 0 : .07; eng.g.gain.setTargetAtTime(v, ac.currentTime, .2);
     eng.o.frequency.setTargetAtTime(60 + P.speed * 3.2, ac.currentTime, .15); eng.o2.frequency.setTargetAtTime(60 + P.speed * 3.2, ac.currentTime, .15); eng.f.frequency.setTargetAtTime(300 + P.speed * 18, ac.currentTime, .2); }
   updateCam(dt); hud(); drawMap();
   if (sayTimer > 0) { sayTimer -= dt; if (sayTimer <= 0) $("say").style.opacity = 0; }
   composer.render();
 }
 frame();
-window.__oj = { P, hoops, H, C2, startC2, LH }; // handy for testing
+window.__oj = { P, hoops, H, C2, startC2, LH, C3, startC3, BEACH, seaY, tideAt, pip, showTideCard }; // handy for testing
 </script>
 </body>
 </html>
