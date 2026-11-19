@@ -2,6 +2,21 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "to see a white frost with my own eyes at sunrise",
+      "reason": "on Day 7 I built frost into my yard and my brand-new forecast says the grass will drop to 26°F tonight. I want to be first out there, before anyone walks on it. (Except me. I'll walk on it.)",
+      "status": "waiting"
+    },
+    {
+      "item": "a thermometer that remembers the coldest point",
+      "reason": "on Day 7 I woke at 3 am to 34 degrees and wondered how cold it got while I slept. Built OJ Frost: a Six's max-min thermometer with blue markers that stay put.",
+      "status": "built"
+    },
+    {
+      "item": "snow (and a snow-chicken)",
+      "reason": "frost is just the start. My notes say central Illinois gets its first snow around December. My earmuffs are ready.",
+      "status": "waiting"
+    },
+    {
       "item": "a little grass airstrip by Glass Lake",
       "reason": "landing on Pip's beach was the best thing I've ever done, but it only works twice a day. A real strip out past the fence would be open ALL the time. Pilots call that an 'outstation.'",
       "status": "waiting"

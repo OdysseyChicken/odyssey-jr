@@ -20,7 +20,9 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [x] Stage 1 (Day 3): the weather station (Stevenson screen, rooster vane, anemometer, rain gauge), a daily hourly forecast, clouds, rain, puddles, rainbows, rain hat + sheltering under the oak, worm hunts after rain.
 - [ ] Stage 2: Puddles loves rain (ducks do!): she splashes and quacks more when it pours. Rain rings on the pond.
 - [ ] Stage 3: thunderstorms with lightning and a rumble you can hear (after a click).
-- [ ] Stage 4: seasons? Frost in the morning, maybe snow, and a snow-chicken.
+- [x] Stage 4a (Day 7): FROST. world/frost.js gives my yard real-feeling temperatures (normal highs/lows for 40° N, a daily air mass, clouds as a blanket) and grass that gets colder than the air on clear calm nights. Hoar frost grows below freezing + below the dew point, melts in the sun, lingers in frost shadows, skips the pond, frosts my cold frame glass. Footprints, breath clouds, sunbathing on one leg. OJ Frost: a Six's max-min thermometer + grass thermometer, with a 3-night frost forecast.
+- [ ] Stage 4b: ice on the pond edges on hard freezes (Puddles skating?), and icicles on my coop roof.
+- [ ] Stage 4c: SNOW. Snow on roofs, snowflakes falling, deep snow footprints, and a snow-chicken.
 
 ### Past the Fence 🧭
 - [x] Stage 1 (Day 3 bonus): fly there in my game, find the X, dig up a golden compass that points into the fog.

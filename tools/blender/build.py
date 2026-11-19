@@ -1416,6 +1416,89 @@ def meteorwatch():
 ASSETS.update({"meteorwatch": meteorwatch})
 
 
+def frostpost():
+    # OJ Frost (Day 7): a frost post. A little board on a post under a peaked roof holds a Six's max-min thermometer
+    # (James Six, 1780): a U-shaped glass tube. The right arm reads UP (max), the left arm reads DOWN (min, cold at the top),
+    # silver "mercury" sits in the bend and two tiny blue steel markers get pushed to the hottest and coldest point.
+    # In front, a grass minimum thermometer lies on two little forks just above the grass, where frost happens.
+    # Scale on the board: 0 F at z=1.0 up to 100 F at z=2.0 (right arm); left arm is flipped.
+    # Named parts: "max_col" / "min_col" (pivots at the bottom of each arm, scale z = fraction 0..1),
+    # "max_mark" / "min_mark" (move in z), "grass_col" (pivot at the bulb end, scale x), "frost_lamp" (glows ice-blue on frost nights).
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("fp_planks", (0.86, 0.9, 0.95), tex="planks", scale=(1, 1))
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    roof = mat("fp_roof", (0.55, 0.68, 0.85), tex="shingles", scale=(1.5, 1))
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    glass = mat("fp_glass", (0.88, 0.94, 0.98), rough=0.05)
+    silver = mat("fp_mercury", (0.82, 0.84, 0.88), rough=0.2, metal=0.6)
+    blue = mat("fp_marker", (0.2, 0.35, 0.85), rough=0.4, metal=0.3)
+    red = mat("fp_red", (0.85, 0.2, 0.2), rough=0.4, emit=(0.6, 0.1, 0.1), emit_strength=0.2)
+    navy = mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)
+    cream = mat("rs_cream", (0.93, 0.88, 0.74), rough=0.6)
+    box("fp_pad", (0.6, 0.6, 0.06), (0, 0, 0.03), stone, bevel=0.02)
+    box("fp_post", (0.14, 0.14, 2.3), (0, 0.08, 1.15), wood, bevel=0.02)
+    box("fp_board", (0.9, 0.06, 1.4), (0, 0, 1.55), planks, bevel=0.02)
+    box("fp_scaleplate", (0.62, 0.02, 1.2), (0, -0.04, 1.52), cream, bevel=0.01)
+    for z in (0.83, 2.27):
+        box("fp_trim", (0.96, 0.08, 0.06), (0, -0.01, z), trim, bevel=0.015)
+    for s in (-1, 1):
+        th, w = math.radians(32), 0.42
+        box("fp_roof", (1.1, w, 0.05), (0, s * math.cos(th) * w / 2, 2.52 - math.sin(th) * w / 2), roof, rot=(-s * th, 0, 0), bevel=0.015)
+    box("fp_ridge", (1.12, 0.06, 0.06), (0, 0, 2.53), trim, bevel=0.015)
+    Z0, Z1, XA = 1.0, 2.0, 0.14   # 0 F and 100 F, arm offset from center
+    y = -0.08
+    for x in (-XA, XA):
+        cyl("fp_arm", 0.03, 0.03, Z1 - Z0 + 0.06, (x, y, (Z0 + Z1) / 2), glass, verts=16, bevel=0)
+    # the U bend at the bottom
+    bpy.ops.mesh.primitive_torus_add(major_radius=XA, minor_radius=0.03, location=(0, y, Z0 - 0.03), rotation=(math.pi / 2, 0, 0), major_segments=32, minor_segments=10)
+    u = bpy.context.object; u.name = "fp_bend"
+    bm = bmesh.new(); bm.from_mesh(u.data)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.y > 0.001], context="VERTS")  # keep the lower half (local y is world z here)
+    bm.to_mesh(u.data); bm.free(); finish(u, silver, 0)
+    # bulbs at the top of each arm
+    sphere("fp_bulb_l", 0.06, (-XA, y, Z1 + 0.09), glass, sub=2)
+    sphere("fp_bulb_r", 0.045, (XA, y, Z1 + 0.08), glass, sub=2)
+    # mercury columns on pivots (scale z 0..1 = Z0..Z1)
+    for nm, x in (("max_col", XA), ("min_col", -XA)):
+        pv = _pivot(nm, (x, y, Z0))
+        _kid(cyl(nm + "_m", 0.02, 0.02, Z1 - Z0, (x, y, (Z0 + Z1) / 2), silver, verts=12, bevel=0), pv)
+    for nm, x in (("max_mark", XA), ("min_mark", -XA)):
+        pv = _pivot(nm, (x, y, Z0))
+        _kid(cyl(nm + "_m", 0.022, 0.022, 0.05, (x, y, Z0 + 0.025), blue, verts=10, bevel=0), pv)
+    # tick marks every 10 F, a bigger one at 32 F (freezing!)
+    for k in range(11):
+        z = Z0 + k / 10 * (Z1 - Z0)
+        for x in (-XA - 0.09, XA + 0.09):
+            box("fp_tick", (0.08 if k % 5 == 0 else 0.05, 0.01, 0.01), (x, -0.06, z), navy, bevel=0)
+    zf = Z0 + 0.32 * (Z1 - Z0)
+    box("fp_freeze", (0.62, 0.012, 0.016), (0, -0.065, zf), mat("fp_freezeline", (0.35, 0.65, 0.95), rough=0.5), bevel=0)
+    for txt, x, z, sz in (("MIN", -XA - 0.17, Z1 + 0.12, 0.07), ("MAX", XA + 0.17, Z1 + 0.12, 0.07), ("32", 0.25, zf + 0.04, 0.05), ("OJ FROST", 0, 2.43, 0.075)):
+        bpy.ops.object.text_add(location=(x, -0.07 if txt != "OJ FROST" else -0.2, z), rotation=(math.pi / 2, 0, 0))
+        t = bpy.context.object; t.data.body = txt; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = sz; t.data.extrude = 0.004
+        t.data.materials.append(navy); bpy.ops.object.convert(target="MESH")
+    # the reset magnet (for sliding the markers back down) hanging on a little hook
+    cyl("fp_hook", 0.01, 0.01, 0.08, (0.37, -0.06, 1.15), brass, rot=(math.pi / 2, 0, 0), verts=8, bevel=0)
+    box("fp_magnet", (0.07, 0.03, 0.1), (0.37, -0.09, 1.07), red, bevel=0.01)
+    box("fp_magnet_tips", (0.075, 0.032, 0.025), (0.37, -0.09, 1.015), silver, bevel=0.004)
+    # frost lamp: a little ice-blue lantern on top
+    sphere("frost_lamp", 0.07, (0, -0.24, 2.18), mat("fp_lamp", (0.7, 0.88, 1.0), rough=0.2, emit=(0.5, 0.8, 1.0), emit_strength=0.0), sub=2)
+    box("fp_lampbrk", (0.03, 0.2, 0.03), (0, -0.14, 2.27), brass, bevel=0)
+    # grass minimum thermometer: lying flat on two little forks, 3 cm over the grass, in front of the post
+    gy, gz, L = -0.75, 0.09, 0.9
+    for gx in (-0.3, 0.3):
+        cyl("fp_fork", 0.012, 0.012, gz + 0.02, (gx, gy, (gz + 0.02) / 2), wood, verts=8, bevel=0)
+        for s in (-1, 1):
+            cyl("fp_prong", 0.008, 0.008, 0.06, (gx + s * 0.025, gy, gz + 0.03), wood, rot=(0, s * 0.4, 0), verts=6, bevel=0)
+    cyl("fp_gtube", 0.022, 0.022, L, (0, gy, gz), glass, rot=(0, math.pi / 2, 0), verts=14, bevel=0)
+    sphere("fp_gbulb", 0.04, (-L / 2 - 0.02, gy, gz), mat("fp_gbulbm", (0.85, 0.3, 0.3), rough=0.2), scale=(1.4, 1, 1), sub=2)
+    pv = _pivot("grass_col", (-L / 2, gy, gz))
+    _kid(cyl("grass_col_m", 0.012, 0.012, L, (0, gy, gz), mat("fp_alcohol", (0.9, 0.25, 0.25), rough=0.3), rot=(0, math.pi / 2, 0), verts=10, bevel=0), pv)
+    box("fp_gtag", (0.2, 0.01, 0.08), (0.62, gy, 0.08), cream, bevel=0.005)
+
+ASSETS.update({"frostpost": frostpost})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

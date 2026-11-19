@@ -88,6 +88,10 @@
     "meteors": [
       6.3,
       13.5
+    ],
+    "frost": [
+      11.6,
+      -1.9
     ]
   },
   "objects": [
@@ -506,6 +510,22 @@
       "mapColor": "#c94f3d",
       "note": "OJ Meteor Watch (Day 5): hay bales, a plaid blanket and a chalk tally slate. Real meteor showers fall over my yard. Click for tonight's meteor forecast, then lie back and count with me!",
       "scale": 1.35
+    },
+    {
+      "id": "oj-frost",
+      "type": "model",
+      "src": "assets/models/frostpost.glb",
+      "pos": [
+        11.6,
+        -3.4
+      ],
+      "rot": 0,
+      "scale": 1.0,
+      "script": "behaviors/frost.js",
+      "label": "OJ Frost",
+      "labelHeight": 3.0,
+      "mapColor": "#dfeeff",
+      "note": "My frost post (Day 7): a Six's max-min thermometer for the air and a grass thermometer lying on little forks for the lawn. On clear, still, cold nights the yard grows frost. Click it for the frost forecast!"
     }
   ],
   "custom": {

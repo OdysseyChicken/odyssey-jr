@@ -7,6 +7,7 @@
 // - Radishes, spinach and mache are under the cold frame. On sunny late mornings and afternoons I prop the lid open
 //   so they don't cook (a cold frame can get way hotter than the air outside), and close it before night.
 // - Click the bed to see every row, and roughly when it'll be ready (using the forecast).
+import { frostAt } from "../world/frost.js";
 const PLANTED = "2026-11-15";
 const CROPS = [
   // x range and z (three.js local coords, +z is the front of the bed), frame = under the glass
@@ -149,6 +150,9 @@ export default function setup({ THREE, obj, say, sim, weatherFor, weatherAt, ope
       // morning fog on the inside of the glass (warm damp air meets cold glass)
       const h = now.getHours() + now.getMinutes() / 60;
       glassMat.opacity = 0.28 + Math.max(0, Math.min(1, (10 - h) / 3)) * 0.35 * (1 - open);
+      // Day 7: on frosty mornings the OUTSIDE of the glass frosts over too (white frost ferns); the greens stay snug inside
+      const fr = frostAt(now).cover * (1 - open);
+      glassMat.opacity = Math.min(0.9, glassMat.opacity + fr * 0.45); glassMat.color.setRGB(0.87 + fr * 0.13, 0.95 + fr * 0.05, 0.97 + fr * 0.03, "srgb");
       if (sim?.act === "garden" && wasOpen !== null && want !== wasOpen) say(want ? "Propping the lid up so my greens don't cook!" : "Lid down. Tucking you in, greens.", 4);
       wasOpen = want;
       if (sim?.act === "garden" && !saidSprout && status.some(s => s.up)) { saidSprout = true; say("THEY'RE UP! Tiny green! Bawk!!", 5); }

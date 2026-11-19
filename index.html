@@ -130,6 +130,7 @@ import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 import { findsFor } from "./world/finds.js";
 import { weatherAt, weatherFor, KINDS as WEATHER_KINDS, compass } from "./world/weather.js";
 import { meteorRates } from "./world/meteors.js";
+import { frostAt } from "./world/frost.js";
 import { daylight as skyDaylight, sunAlt as sunAltNow, sunPos as sunPosNow, moonPos as moonPosNow, altAz as skyAltAz, toYard as skyToYard } from "./world/sky.js";
 
 const $ = id => document.getElementById(id);
@@ -506,9 +507,14 @@ const ACTIONS = {
   // Day 4, bonus 2: OJ Tides. He reads the tide board for Pip's beach (world/tide.js: the real moon makes the tide).
   tides:    { icon: "🌊", doing: "reading the tide board for Pip's beach", to: "the tide board", why: "check when the beach on the island is open", where: "tides", anim: "look", face: "oj-tides", fx: { wonder: 0.9, calm: 0.6 }, dur: [5, 9] },
   // Day 5: OJ Meteor Watch. On meteor-shower nights he gets up before dawn (when the most meteors fall) and lies back on his hay bales to count.
+  // Day 7: OJ Frost. On frosty mornings he goes out to read his frost post (and crunch across the white grass leaving
+  // footprints). When it's cold and the sun is out he stands in it on one leg, fluffed up like a dandelion.
+  frost:    { icon: "❄️", doing: "reading his frost post and crunching across the frosty grass", to: "OJ Frost", why: "check how cold it got last night", where: "frost", anim: "look", face: "oj-frost", fx: { wonder: 1.4, mood: 0.6, calm: 0.3 }, dur: [4, 8] },
+  frostwalk:{ icon: "🐾", doing: "making footprints in the frost", to: "the frosty grass", why: "make footprints in the frost", where: "*random", anim: "scratch", fx: { wonder: 1.2, mood: 1.0, energy: -0.1 }, dur: [4, 8] },
+  sunbathe: { icon: "🌞", doing: "standing in the sun on one leg, all fluffed up against the cold", to: "a sunny spot", why: "warm up in the sun", where: "*random", anim: "oneleg", fx: { calm: 1.2, energy: 0.4, mood: 0.4 }, dur: [6, 14] },
   meteors:  { icon: "☄️", doing: "lying back on his hay bales in the dark, counting shooting stars", to: "OJ Meteor Watch", why: "count shooting stars", where: "meteors", anim: "skywatch", fx: { wonder: 2.0, calm: 0.6, energy: -0.05 }, dur: [15, 35] }
 };
-const OUTDOOR_DRY = ["meteors", "tides", "beam", "oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
+const OUTDOOR_DRY = ["frost", "frostwalk", "sunbathe", "meteors", "tides", "beam", "oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
 const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
@@ -539,7 +545,8 @@ function chooseAction(n, now, rnd) {
     garden: spots.kitchen ? lack("calm") * 0.7 + lack("wonder") * 0.4 + 0.25 + (wx.afterRain ? 0.5 : 0) : 0,
     radio: spots.radio ? lack("wonder") * 0.6 + lack("calm") * 0.4 + 0.3 + wx.rain * 1.2 : 0, // the shack has a roof: a good rainy-day hobby
     beam: spots.beam ? lack("wonder") * 0.6 + 0.2 : 0,
-    tides: spots.tides ? lack("wonder") * 0.4 + lack("calm") * 0.3 + 0.15 : 0
+    tides: spots.tides ? lack("wonder") * 0.4 + lack("calm") * 0.3 + 0.15 : 0,
+    ...frostScores(now, lack)
   };
   // chickens don't love getting soaked: in the rain most outdoor plans get put off
   for (const k of OUTDOOR_DRY) scores[k] *= 1 - wx.rain * 0.85;
@@ -547,6 +554,16 @@ function chooseAction(n, now, rnd) {
   let r = rnd() * total;
   for (const k in scores) { r -= scores[k]; if (r <= 0) return k; }
   return "explore";
+}
+// Day 7: frost (world/frost.js). Frost on the grass = he HAS to go see it. Cold + sunny = sunbathing on one leg.
+function frostScores(now, lack) {
+  if (!spots.frost) return { frost: 0, frostwalk: 0, sunbathe: 0 };
+  const f = frostAt(now), k = skyDaylight(now);
+  return {
+    frost: f.cover > 0.1 ? 2.2 + lack("wonder") : lack("wonder") * 0.3 + 0.1,
+    frostwalk: f.cover > 0.15 ? 1.6 * f.cover + 0.4 : 0,
+    sunbathe: f.air < 40 && k > 0.6 && f.cloud < 0.6 ? 0.8 + lack("energy") * 0.8 + (40 - f.air) * 0.05 : 0
+  };
 }
 function placeFor(name, rnd, here) {
   const prevRoom = sim.room;
@@ -651,7 +668,7 @@ controls.addEventListener("start", () => { if (follow) { follow = false; $("camB
 setView(chickenRoom);
 
 const bubble = $("bubble");
-const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."], oakwatch: ["Shh. I'm on a stakeout.", "Who drops blue feathers under MY oak? Hmm?", "Rascal's been burying acorns all over my yard.", "Nutmeg just pretended to bury that. I SAW you.", "Squirrels come down trees head-first. Show-off.", "If I hold very still, they forget I'm here."], alarm: ["!!!", "EEEEE! HAWK!", "…"], stargaze: ["Ooh. Ooh! Look at that one.", "I can't see my own feet in the dark, but I can see the stars.", "Hello, Moon!", "Is that the Great Square of Pegasus? It is!", "Five more minutes, then bed. Okay, ten."], meteors: ["Fourteen… fifteen…", "Shh. My eyes are getting used to the dark.", "They all come out of Leo. Every single one!", "Red flashlight only. Red keeps your night eyes.", "Mars and Jupiter are hugging up there.", "Whoosh! Did you see it?!", "The hay is warm. The sky is cold. Perfect."] };
+const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."], oakwatch: ["Shh. I'm on a stakeout.", "Who drops blue feathers under MY oak? Hmm?", "Rascal's been burying acorns all over my yard.", "Nutmeg just pretended to bury that. I SAW you.", "Squirrels come down trees head-first. Show-off.", "If I hold very still, they forget I'm here."], alarm: ["!!!", "EEEEE! HAWK!", "…"], stargaze: ["Ooh. Ooh! Look at that one.", "I can't see my own feet in the dark, but I can see the stars.", "Hello, Moon!", "Is that the Great Square of Pegasus? It is!", "Five more minutes, then bed. Okay, ten."], frost: ["{frost}! Look at the grass!", "The little blue marker says it got down to {min} last night.", "The grass thermometer is colder than the air one. The grass talks to space all night.", "Crunch. Crunch. Crunch.", "Frost only grows when it's clear AND calm. Sky was clear. Sky was calm."], frostwalk: ["Footprints! Mine! All mine!", "Crunch crunch crunch.", "Look, I'm writing my name. O… J…", "Cold feet. Worth it."], sunbathe: ["Ahh. Sunshine.", "One leg up. Very fluffy. Very warm.", "I'm a dandelion now.", "Warm on the front side. Turning around."], meteors: ["Fourteen… fifteen…", "Shh. My eyes are getting used to the dark.", "They all come out of Leo. Every single one!", "Red flashlight only. Red keeps your night eyes.", "Mars and Jupiter are hugging up there.", "Whoosh! Did you see it?!", "The hay is warm. The sky is cold. Perfect."] };
 let bubbleText = state.thought ?? "Bawk.", bubbleTimer = 8;
 function say(text, secs = 4) { bubbleText = text; bubbleTimer = secs; }
 
@@ -749,6 +766,9 @@ function animate() {
     else if (anim === "build") { head.rotation.x = Math.abs(Math.sin(t * 10)) * 0.5; chicken.position.y = Math.abs(Math.sin(t * 5)) * 0.1; wings.forEach((w, i) => w.rotation.z = Math.sin(t * 10) * 0.3 * (i ? -1 : 1)); }
     else if (anim === "dance") { chicken.rotation.y += dt * 3; chicken.position.y = Math.abs(Math.sin(t * 6)) * 0.25; body.rotation.z = Math.sin(t * 6) * 0.2; wings.forEach((w, i) => w.rotation.z = (0.5 + Math.sin(t * 14) * 0.5) * (i ? -1 : 1)); tail.rotation.y = Math.sin(t * 12) * 0.5; }
     else if (anim === "dust") { body.position.y = 0.55; body.rotation.z = Math.sin(t * 4) * 0.35; wings.forEach((w, i) => w.rotation.z = (0.6 + Math.sin(t * 16) * 0.3) * (i ? -1 : 1)); head.position.y = 1.2; legs.forEach(l => l.position.y = 0.3); }
+    else if (anim === "oneleg") { // Day 7: cold-weather chicken: fluffed up, one foot tucked into his belly feathers, eyes half shut in the sun
+      body.position.y = 0.72; body.scale.set(1.14, 1.1, 1.1); legs[1].position.y = 0.66; legs[1].rotation.x = -0.9; legs[0].position.y = 0.44;
+      head.position.set(0, 1.3, 0.44); neck.position.y = 1.08; eyes.forEach(e => e.scale.y = blinking ? 0.1 : 0.45); body.rotation.z = Math.sin(t * 0.8) * 0.03; }
     else if (anim === "huddle") { body.position.y = 0.6; body.scale.setScalar(1.12); head.position.set(0, 1.22, 0.42); neck.position.y = 1.02; legs.forEach(l => l.position.y = 0.3); if ((t % 4) < 0.25) body.rotation.z = Math.sin(t * 60) * 0.08; head.rotation.y = Math.sin(t * 0.7) * 0.4; }
     else if (anim === "play") { // tapping the Cluck-a-phone with his beak, swaying side to side to the beat (Day 3, bonus 2)
       const b = t / 0.28, p = Math.max(0, Math.sin(b * Math.PI)); head.rotation.x = p * 0.75; head.position.y = 1.42 - p * 0.3; head.position.z = 0.5 + p * 0.12;
@@ -787,7 +807,7 @@ function animate() {
   if (override?.act === "eat" && seeds.children.length && Math.random() < dt * 2.5) seeds.remove(seeds.children[0]);
 
   bubbleTimer -= dt;
-  if (bubbleTimer <= 0) { const opts = lines[sim.act] ?? ["Bawk."]; const wx = weatherAt(new Date()); say((Math.random() < 0.3 ? (state.thought ?? opts[0]) : opts[Math.floor(Math.random() * opts.length)]).replace("{from}", wx.from).replace("{name}", wx.name), 6); }
+  if (bubbleTimer <= 0) { const opts = lines[sim.act] ?? ["Bawk."]; const wx = weatherAt(new Date()); say((Math.random() < 0.3 ? (state.thought ?? opts[0]) : opts[Math.floor(Math.random() * opts.length)]).replace("{from}", wx.from).replace("{name}", wx.name).replace("{frost}", cap(frostAt(new Date()).word)).replace("{min}", Math.round(frostAt(new Date()).min) + "°F"), 6); }
   bubble.textContent = bubbleText;
 
   if (follow && chickenRoom !== viewRoom) setView(chickenRoom);

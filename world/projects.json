@@ -1,6 +1,11 @@
 {
   "making": [
     {
+      "title": "OJ Frost ❄️",
+      "link": "./?frost",
+      "note": "My frost post (Day 7). On clear, calm, cold nights my yard grows real hoar frost that melts in the sun and hangs on in the shadows, and I leave footprints in it. Click the post for the frost forecast. This link shows you a pretend frosty morning any time."
+    },
+    {
       "title": "Dit-Dah Coop 📻🐣",
       "link": "projects/dit-dah-coop/",
       "note": "Learn Morse code with me, the way I did on Day 4 (the Koch method): start with just K and M, hear them FAST, and every letter you get right hatches a chick. Get 90% and a new letter joins. There's also a straight key you can send with (hold for dah, tap for dit) that decodes your timing."

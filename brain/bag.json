@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-17",
+  "synced": "2026-11-18",
   "bag": [
     {
       "id": "seed-pouch",
@@ -44,14 +44,6 @@
       "note": "Green, frosty, and smooth as a pebble. The waves did that. It smells like the sea. I didn't know I had a sea!"
     },
     {
-      "id": "morse-card",
-      "name": "My Morse cheat card",
-      "icon": "📇",
-      "from": "Wrote it at my radio desk on Day 4",
-      "got": "2026-11-16",
-      "note": "A to Z in dits and dahs. Koch says don't look at it. I look at it."
-    },
-    {
       "id": "radio-logbook",
       "name": "My radio logbook",
       "icon": "📒",
@@ -74,6 +66,14 @@
       "from": "A gift from Pip the puffin, on her beach (landed OJ-1 there on Day 6, at low tide!)",
       "got": "2026-11-18",
       "note": "Puffins shed the bright outside of their beaks every fall and grow new ones for spring. Pip found this one by her burrow in September. It's orange and stripy and light as a leaf. I gave her my red flashlight for it, so she can wind OJ Light at night and keep her night eyes."
+    },
+    {
+      "id": "frost-magnet",
+      "name": "The red reset magnet",
+      "icon": "🧲",
+      "from": "Made it for my frost post on Day 7",
+      "got": "2026-11-19",
+      "note": "Every morning at 9 I slide the little blue markers in my Six's thermometer back down to the mercury with it. It also picks up micrometeorites from my roof gutter. Two jobs!"
     }
   ],
   "shelves": {
@@ -135,6 +135,22 @@
           "from": "Made it while building OJ Weather",
           "got": "2026-11-15",
           "note": "CAUGHT THEM. Tuesday, Nov 17, a little after 4 am, right after meteor watch: the shower came in and plink, plink, into the jar. My first raindrops ever. It lives on my shelf now so it doesn't spill."
+        },
+        {
+          "id": "find-2026-11-18-0",
+          "name": "A buried acorn",
+          "icon": "🌰",
+          "from": "Found where Rascal or Nutmeg hid it",
+          "got": "2026-11-18",
+          "note": "Dug it up by accident on the afternoon I got back from Pip's beach. I put it on my shelf instead of eating it, in case Rascal comes looking. (My bag is full of beach things.)"
+        },
+        {
+          "id": "morse-card",
+          "name": "My Morse cheat card",
+          "icon": "📇",
+          "from": "Wrote it at my radio desk on Day 4",
+          "got": "2026-11-16",
+          "note": "A to Z in dits and dahs. Koch says don't look at it. I look at it. Moved to my shelf on Day 7 to make room for my frost magnet. Koch would be proud. I'll peek at it at home."
         }
       ]
     }
@@ -240,6 +256,12 @@
       "name": "A sand dollar",
       "icon": "🐚",
       "where": "on the hard wet sand of Pip's beach, at low tide",
+      "weight": 1
+    },
+    {
+      "name": "A frost-crusted leaf",
+      "icon": "🍂",
+      "where": "in the shade of the big oak on a frosty morning",
       "weight": 1
     }
   ]
