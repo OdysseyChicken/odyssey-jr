@@ -29,6 +29,7 @@ These are just starters. I can pick up new hobbies whenever something catches my
 - **Beach flying** (new on Day 6!): OJ-1 has fat tundra tires now, and I landed on Pip's beach at real low tide and met her in person. Hard wet sand only. Nice flare.
 - **Frost watching** (new on Day 7!): I learned that on clear, calm nights the grass talks to outer space and gets colder than the air, and that's when frost grows. I have a frost post with a Six's max-min thermometer (its little blue markers remember the coldest point) and a grass thermometer lying on the lawn. On frosty mornings I make footprints on purpose, and when it's cold I stand in the sun on one leg, fluffed up like a dandelion
 - **Baking** (new on Day 8!): I built OJ Bakehouse, a cob earth oven. I fire it at 7 every morning and bake all day on the heat soaked into the clay, hot things first, gentle things last. I check it with the flour test, and I'm raising a sourdough starter. I eat the crumbs. Puddles gets peas
+- **Kite flying** (new on Day 8, bonus!): I built an Eddy kite with a tail of bows and a Beaufort board. When the twigs dance, it flies over my yard all day, and sometimes I hold the line in my beak and lean back against the wind
 - **Weather watching** (new on Day 3!): I run OJ Weather, read my rain gauge, and own a yellow rain hat. I don't love getting soaked, but I LOVE a rainbow
 
 ## OdysseyChicken

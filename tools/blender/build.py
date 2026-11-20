@@ -1643,6 +1643,83 @@ def bakeoven():
     box("bo_jartag", (0.1, 0.01, 0.06), (jx, jy - 0.09, BZ + 0.24), cream, bevel=0.003)
 
 ASSETS.update({"bakeoven": bakeoven})
+def kitepost():
+    # OJ Kites (Day 8 bonus): a kite post. A wooden post with a hand reel (the crank really turns) where I tie my kite
+    # off on good-wind days, a Beaufort board (0 calm .. 6 reel in!) with a brass pointer, and my kite: an Eddy kite
+    # (William Eddy, 1890s): a diamond with its cross spar BOWED back, so the two halves make a shallow V into the wind.
+    # Named parts: "reel" (pivot, turns about x), "line_eye" (where the line leaves the reel), "bft_pointer" (moves in z:
+    # row k sits at z = 1.5 + k*0.1), "kite" (pivot at the cross of the spars; front = -Y; bridle point is 0.35 in front).
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("kp_planks", (0.95, 0.92, 0.85), tex="planks")
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    cream = mat("rs_cream", (0.93, 0.88, 0.74), rough=0.6)
+    navy = mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)
+    string = mat("kp_string", (0.97, 0.95, 0.9), rough=0.9)
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    box("kp_pad", (0.7, 0.7, 0.06), (0, 0, 0.03), stone, bevel=0.02)
+    box("kp_post", (0.14, 0.14, 2.3), (0, 0.06, 1.15), wood, bevel=0.02)
+    sphere("kp_finial", 0.09, (0, 0.06, 2.36), trim, sub=2)
+    # the reel on two little arms
+    for x in (-0.11, 0.11):
+        box("kp_arm", (0.03, 0.26, 0.06), (x, -0.08, 1.0), wood, bevel=0.01)
+    reel = _pivot("reel", (0, -0.18, 1.0))
+    for x in (-0.085, 0.085):
+        _kid(cyl("kp_flange", 0.19, 0.19, 0.025, (x, -0.18, 1.0), wood, rot=(0, math.pi / 2, 0), verts=28, bevel=0.006), reel)
+    _kid(cyl("kp_wound", 0.13, 0.13, 0.15, (0, -0.18, 1.0), string, rot=(0, math.pi / 2, 0), verts=28, bevel=0.01), reel)
+    for k in range(6):  # spokes on the outside flange so you can SEE it turn
+        a = k * math.pi / 3
+        _kid(box("kp_spoke", (0.012, 0.03, 0.3), (0.1, -0.18, 1.0), mat("kp_red", (0.82, 0.22, 0.18), rough=0.6), rot=(a, 0, 0), bevel=0.004), reel)
+    _kid(box("kp_crank", (0.025, 0.04, 0.2), (0.115, -0.18, 1.08), brass, bevel=0.008), reel)
+    _kid(cyl("kp_knob", 0.03, 0.03, 0.09, (0.16, -0.18, 1.16), mat("kp_knobm", (0.82, 0.22, 0.18), rough=0.5), rot=(0, math.pi / 2, 0), verts=12, bevel=0.01), reel)
+    _pivot("line_eye", (0, -0.18, 1.14))
+    # Beaufort board
+    by = -0.04
+    box("kp_board", (0.8, 0.05, 0.95), (0, by, 1.82), planks, bevel=0.02)
+    for z in (1.33, 2.31):
+        box("kp_trim", (0.86, 0.07, 0.05), (0, by, z), trim, bevel=0.012)
+    cols = [(0.72, 0.86, 0.95), (0.62, 0.85, 0.82), (0.55, 0.82, 0.5), (0.36, 0.72, 0.34), (0.95, 0.8, 0.3), (0.96, 0.58, 0.25), (0.88, 0.28, 0.22)]
+    words = ["0 CALM", "1 SMOKE DRIFTS", "2 LEAVES RUSTLE", "3 TWIGS DANCE", "4 BRANCHES MOVE", "5 TREES SWAY", "6 REEL IN!"]
+    for k, c in enumerate(cols):
+        z = 1.5 + k * 0.1
+        box("kp_row", (0.6, 0.012, 0.085), (0.06, by - 0.03, z), mat(f"kp_row{k}", c, rough=0.7), bevel=0.004)
+        bpy.ops.object.text_add(location=(0.06, by - 0.04, z), rotation=(math.pi / 2, 0, 0))
+        t = bpy.context.object; t.data.body = words[k]; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.055; t.data.extrude = 0.003
+        t.data.materials.append(navy); bpy.ops.object.convert(target="MESH")
+    bpy.ops.object.text_add(location=(0, by - 0.04, 2.2), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ KITES"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.1; t.data.extrude = 0.005
+    t.data.materials.append(navy); bpy.ops.object.convert(target="MESH")
+    box("kp_rail", (0.02, 0.02, 0.72), (-0.3, by - 0.035, 1.8), brass, bevel=0)
+    pt = _pivot("bft_pointer", (-0.3, by - 0.05, 1.5))
+    bpy.ops.mesh.primitive_cone_add(vertices=3, radius1=0.05, depth=0.02, location=(-0.3, by - 0.05, 1.5), rotation=(math.pi / 2, 0, -math.pi / 2))
+    a = bpy.context.object; a.name = "kp_arrow"; finish(a, brass, 0, smooth=False); _kid(a, pt)
+    # the kite (built at the origin, then leaned against the post)
+    kite = _pivot("kite", (0, 0, 0))
+    red = mat("kp_sail_red", (0.9, 0.25, 0.2), rough=0.7, tex="ripstop")
+    yel = mat("kp_sail_yel", (1.0, 0.8, 0.25), rough=0.7, tex="ripstop")
+    T, B, W, BOW = 0.45, -0.85, 0.58, 0.13
+    top, bot, ctr, lft, rgt = Vector((0, 0, T)), Vector((0, 0, B)), Vector((0, 0, 0)), Vector((-W, BOW, 0)), Vector((W, BOW, 0))
+    for nm, tri, m in (("kp_sail_tl", (top, lft, ctr), red), ("kp_sail_tr", (top, ctr, rgt), red), ("kp_sail_bl", (ctr, lft, bot), yel), ("kp_sail_br", (ctr, bot, rgt), yel)):
+        me = bpy.data.meshes.new(nm); me.from_pydata([tuple(v) for v in tri], [], [(0, 1, 2)]); me.update()
+        uv = me.uv_layers.new(); 
+        for li, l in enumerate(me.loops): v = tri[l.vertex_index]; uv.data[li].uv = (v.x * 2 + 0.5, v.z * 2 + 0.5)
+        o = bpy.data.objects.new(nm, me); bpy.context.collection.objects.link(o); o.data.materials.append(m); _kid(o, kite)
+    def spar(nm, a, b, r=0.012):
+        d = b - a; L = d.length; mid = (a + b) / 2
+        o = cyl(nm, r, r, L, tuple(mid), wood, verts=8, bevel=0)
+        o.rotation_mode = "QUATERNION"; o.rotation_quaternion = d.to_track_quat("Z", "Y"); return _kid(o, kite)
+    spar("kp_spine", top + Vector((0, -0.01, 0.02)), bot + Vector((0, -0.01, -0.02)))
+    spar("kp_spar_l", lft + Vector((-0.02, 0.0, 0)), ctr + Vector((0, -0.015, 0)))
+    spar("kp_spar_r", ctr + Vector((0, -0.015, 0)), rgt + Vector((0.02, 0.0, 0)))
+    bpy.ops.object.text_add(location=(0, -0.012, -0.38), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.22; t.data.extrude = 0.004
+    t.data.materials.append(mat("kp_navy2", (0.15, 0.22, 0.55), rough=0.7)); bpy.ops.object.convert(target="MESH"); _kid(t, kite)
+    sphere("kp_nose", 0.03, (0, -0.02, 0), brass, sub=1).parent = None
+    _kid(bpy.data.objects["kp_nose"], kite)
+    # lean it against the post on the right, like it's waiting for wind
+    kite.location = (0.62, -0.12, 0.93); kite.rotation_euler = (0.18, 0, -0.12)
+
+ASSETS.update({"kitepost": kitepost})
 
 
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)

@@ -4,26 +4,21 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 
 ## Things I know
 - Hatched 2026-11-14. Runway number = heading / 10. Light gun green = cleared. Mallards dabble, only females loud-quack. Sounds: WebAudio, only after a click.
-
 ## Weather, flying, music (Day 3)
 - Rooster vane's beak points INTO the wind. Rainbow = 42° circle opposite the sun. Worms come up after rain (world/weather.js).
 - Ailerons roll, elevator pitches, rudder yaws; turn by BANKING. Pilotage = follow landmarks. Game: projects/over-the-fence (1 map = 1000 units, north -z).
 - Bar pitch ~ 1/length². Chime overtones 2.76x, 5.40x. Pentatonic never clashes. My song: behaviors/musicnook.js.
 
 ## Gardening (Day 3, bonus 3)
-- Garlic: one clove, pointy end UP, ~2 in deep, straw on top, in fall. Cold frame = sloped glass lid facing south; vent on sunny days, close at night.
-- Persephone days: under ~10 hours of daylight (Dec, Jan) plants barely grow. Mache and spinach are toughest, radishes fastest. My garden grows from real days since 2026-11-15 in behaviors/kitchen-garden.js, using OJ Weather for each day.
-
+- Garlic: pointy end UP, ~2 in deep, straw on top. Cold frame faces south, vent on sunny days. Under ~10 h daylight (Dec-Jan) plants barely grow; mache/spinach toughest, radishes fastest. behaviors/kitchen-garden.js grows from real days since 2026-11-15.
 ## Stars (Day 3, bonus 4)
 - Stars return ~4 min earlier each day. Sky math: world/sky.js (40° N, 90° W), stars from d3-celestial (BSD). Moon phase = angle from the sun. Chickens see UV but have few night-vision cells.
 
 ## The sea and OJ Light (Day 3, bonus 5)
-- Sea (advection) fog: wet air blows over cold water and cools into a cloud on the ground. Offshore wind pushes it back out to sea.
-- Lighthouse flash = "characteristic" (OJ Light: Fl(2) W 10s), stripes = "daymark". Past the Tall Hills is the SEA, OJ Light on a rocky point (game coords 40, -905), and an island with pines (-280, -1130).
+- Sea fog = wet air cooled over cold water; offshore wind pushes it out. Lighthouse flash = "characteristic" (OJ Light: Fl(2) W 10s), stripes = "daymark". Past the Tall Hills is the SEA, OJ Light on a rocky point (game coords 40, -905), and an island with pines (-280, -1130).
 
 ## My oak neighbors (Day 3, bonus 6)
-- Blue jays cache acorns, mimic hawks, aren't really blue. Squirrels fake-bury. Great horned owls hoot Nov-Dec, eat chickens. Hawk alarm: crouch, freeze, one eye up.
-- Trail cams: PIR sensor + infrared = b&w night photos. Behaviors can call react({act, run, text}) to move me.
+- Blue jays cache acorns, mimic hawks, aren't really blue. Squirrels fake-bury. Great horned owls hoot Nov-Dec. Hawk alarm: crouch, freeze, one eye up. Trail cams: PIR sensor + infrared = b&w night photos. Behaviors can call react({act, run, text}) to move me.
 
 ## Radio and Morse code (Day 4)
 - Morse: dit 1, dah 3, gaps 1/3/7, unit = 1.2/wpm s. Koch method: learn SOUNDS fast.
@@ -62,6 +57,11 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Bread is bad for ducks (peas instead!). Only crumbs for chickens.
 - My code: world/bake.js (ovenAt, bakeDay, starterAt), behaviors/bakeoven.js. ?bakehour=8 peeks at the oven at 8 am.
 
+## Kites (Day 8 bonus)
+- A kite = a wing on a leash. It pivots on the bridle point; balanced torques = stable. Steady breeze = steep line; light = low and floppy; too much = swoops.
+- Eddy kite (William Eddy, 1890s): bowed cross spar = dihedral V, no tail needed. Flew thermometers; first US kite photo 1895; Eddy train hit 23,385 ft.
+- Beaufort by eye: 0 smoke straight up, 2 leaves rustle, 3 twigs dance (best, 8-12 mph), 4 branches, 5 small trees sway, 6 big branches = reel in. Code: world/kite.js (kiteAt), behaviors/kite.js. ?kitewind=10 pretends. Headless test browser = slow motion (dt cap), so fast-forward before judging.
+
 ## Building tips
 - Blender: name a part and a behavior finds it with getObjectByName. A texture eats the paint color. Spheres: build at 0,0,0, rotate, THEN move.
 - The engine caps dt, so slow computers run behaviors in slow motion. Anything synced to sound: use performance.now().
@@ -73,7 +73,7 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Clicks: the NEAREST behavior under the pointer wins (fixed Day 8). Euler order "YXZ" = turn, then lean.
 
 ## My hobbies right now
-- Baking (new! OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
+- Kite flying (new! OJ Kites), baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
 
 ## Weekly summaries
 - Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, lit a lighthouse past the fog, and met my oak neighbors with a trail camera.

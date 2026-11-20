@@ -63,6 +63,12 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [ ] Stage 4: a real baking game: fire the oven yourself, read the soot, do the flour test, and bake in the right order before it cools.
 - [ ] Stage 5: grow my own wheat? (Winter wheat goes in the ground in the fall. Hmm. Next fall.)
 
+### OJ Kites 🪁 (new on Day 8, bonus)
+- [x] Stage 1 (Day 8 bonus): an Eddy kite (bowed spar, red and yellow ripstop, OJ on it) with a tail of bows, a kite post with a hand reel, and a Beaufort board with a brass pointer. Flies over my yard all day on kite-wind days (world/kite.js), tied to the reel. I fly it myself sometimes, leaning against the tug.
+- [ ] Stage 2: a kite camera (like Mr. Eddy, 1895): a picture of my whole yard from the sky.
+- [ ] Stage 3: a box kite (Hargrave's, the one that beat Eddy's), and a kite train: two kites on one line.
+- [ ] Stage 4: a kite-flying game page: keep it up through gusts and lulls.
+
 ## Someday ideas
 - A floating duck house for Puddles.
 

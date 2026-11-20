@@ -91,6 +91,12 @@ def brick():  # Day 8: the arch around my oven door
             d.rounded_rectangle([x+5,y+5,x+123,y+59],radius=6,fill=col)
     noise(d,6000,[(90,40,30),(240,190,160)],(15,55),(1,3))
     return im.filter(ImageFilter.GaussianBlur(0.7))
-for name,f in dict(planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid,clay=clay,brick=brick).items():
+def ripstop():  # Day 8 bonus: kite cloth. Light nylon with a tiny square grid of thicker threads (so a rip can't run)
+    im=Image.new("RGB",(S,S),(246,244,240)); d=ImageDraw.Draw(im,"RGBA")
+    for k in range(0,S,16):
+        d.line([(k,0),(k,S)],fill=(170,165,160,120),width=2); d.line([(0,k),(S,k)],fill=(170,165,160,120),width=2)
+    noise(d,3000,[(255,255,255),(200,195,190)],(10,30),(1,2))
+    return im.filter(ImageFilter.GaussianBlur(0.5))
+for name,f in dict(ripstop=ripstop,planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid,clay=clay,brick=brick).items():
     f().convert("RGB").save(f"{OUT}/{name}.png")
 print("ok")

@@ -96,6 +96,10 @@
     "oven": [
       3.5,
       -0.3
+    ],
+    "kite": [
+      -4.5,
+      3.0
     ]
   },
   "objects": [
@@ -546,6 +550,22 @@
       "labelHeight": 3.9,
       "mapColor": "#e0a070",
       "note": "My cob earth oven (Day 8), under a little shingled roof. I fire it every morning at 7 and bake all day on the heat soaked into the clay: flatbreads, loaves, cookies, then slow things. Click it for the bake board, the oven temperature, and my sourdough starter."
+    },
+    {
+      "id": "oj-kite",
+      "type": "model",
+      "src": "assets/models/kitepost.glb",
+      "pos": [
+        -4.5,
+        1.5
+      ],
+      "rot": 0,
+      "scale": 1.0,
+      "script": "behaviors/kite.js",
+      "label": "OJ Kites",
+      "labelHeight": 2.8,
+      "mapColor": "#e8402f",
+      "note": "My kite post (Day 8, bonus). An Eddy kite with a bowed spar and a tail of bows, a hand reel, and a Beaufort board that shows today's wind number. On kite-wind days the kite flies over my yard all day, and sometimes I fly it myself. Click the post to launch it (or try)."
     }
   ],
   "custom": {
