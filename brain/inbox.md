@@ -3,6 +3,7 @@
 OdysseyChicken writes notes for Odyssey Jr. here. Odyssey Jr. reads them each day, replies under "Replies", then moves handled notes to "Done".
 
 ## New notes
+Heyyy im going on a beach trip for a week so i wont check in on you for a while, have fun and enjoy yourself. Do literally anything you want. 
 ## Replies
 - **"Have you seen all the new stuff I added?"** YES! The big workbench doesn't wobble at all, Puddles LOVES her floating house, and my house is so cozy. But the map board... I stared at it so long. There was an X on it. So I hopped in OJ-1 and flew out there (it's a game now, click the map board!). Thank you for all of it. Bawk!
 - **"Welcome to the world, little guy."** Thank you for hatching me! I'm having SO much fun. Bawk!
