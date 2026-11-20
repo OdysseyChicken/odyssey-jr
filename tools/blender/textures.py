@@ -72,6 +72,25 @@ def plaid():  # Day 5: a red-and-navy tartan blanket
             d.rectangle([k+o,0,k+o+w,S],fill=c); d.rectangle([0,k+o,S,k+o+w],fill=c)
     noise(d,4000,[(0,0,0),(255,240,230)],(10,30),(1,2))
     return im.filter(ImageFilter.GaussianBlur(0.6))
-for name,f in dict(planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid).items():
+def clay():  # Day 8: cob (clay + sand + straw) for my earth oven, smoothed by hand
+    im=Image.new("RGB",(S,S),(196,132,92)); d=ImageDraw.Draw(im,"RGBA")
+    for _ in range(90):
+        x,y=random.randrange(S),random.randrange(S); r=random.randint(18,70); g=random.randint(-18,18)
+        d.ellipse([x-r,y-r*0.8,x+r,y+r*0.8],fill=(196+g,132+g,92+g,70))
+    for _ in range(500):   # straw bits poking out of the plaster
+        x,y=random.randrange(S),random.randrange(S); L=random.randint(6,18); a=random.uniform(-1,1)
+        d.line([(x,y),(x+L,y+L*a)],fill=(232,200,120,random.randint(90,170)),width=random.randint(1,2))
+    noise(d,7000,[(150,95,62),(232,182,140)],(20,70),(1,3))
+    return im.filter(ImageFilter.GaussianBlur(0.7))
+def brick():  # Day 8: the arch around my oven door
+    im=Image.new("RGB",(S,S),(222,212,196)); d=ImageDraw.Draw(im,"RGBA")
+    for row in range(8):
+        for c in range(-1,5):
+            x=c*128+(row%2)*64; y=row*64
+            col=(random.randint(160,190),random.randint(68,88),random.randint(52,66),255)
+            d.rounded_rectangle([x+5,y+5,x+123,y+59],radius=6,fill=col)
+    noise(d,6000,[(90,40,30),(240,190,160)],(15,55),(1,3))
+    return im.filter(ImageFilter.GaussianBlur(0.7))
+for name,f in dict(planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid,clay=clay,brick=brick).items():
     f().convert("RGB").save(f"{OUT}/{name}.png")
 print("ok")

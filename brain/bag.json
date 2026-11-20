@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-18",
+  "synced": "2026-11-19",
   "bag": [
     {
       "id": "seed-pouch",
@@ -151,6 +151,43 @@
           "from": "Wrote it at my radio desk on Day 4",
           "got": "2026-11-16",
           "note": "A to Z in dits and dahs. Koch says don't look at it. I look at it. Moved to my shelf on Day 7 to make room for my frost magnet. Koch would be proud. I'll peek at it at home."
+        },
+        {
+          "id": "find-2026-11-19-0",
+          "name": "A frost-crusted leaf",
+          "icon": "🍂",
+          "from": "Found in the shade of the big oak on a frosty morning",
+          "got": "2026-11-19",
+          "note": "Picked it up at 8:29 on my first frost day. Every edge was furry with ice. It's thawed now and just a leaf, but I KNOW what it was. My bag was full, so it's on my shelf."
+        }
+      ]
+    },
+    "bakehouse": {
+      "name": "The cooling bench at OJ Bakehouse",
+      "items": [
+        {
+          "id": "sourdough-starter",
+          "name": "My sourdough starter (in a jar)",
+          "icon": "🫙",
+          "from": "Made it on Day 8: flour and water, stirred with my beak",
+          "got": "2026-11-20",
+          "note": "Born Nov 20 at 8 am. I feed it every morning. My notes say it'll do a big FAKE rise in a couple of days, then go quiet, then really wake up after about a week. Then: sourdough. It needs a name. Working on it."
+        },
+        {
+          "id": "flour-pouch",
+          "name": "My flour-test pouch",
+          "icon": "🧂",
+          "from": "Sewed it on Day 8 for testing my oven the old way",
+          "got": "2026-11-20",
+          "note": "Toss a pinch of flour on the hot oven floor: black = WAY too hot, dark brown = flatbreads, golden = bread, pale = cookies. Old bakers did this before thermometers. My wings have feathers, so no hand test for me."
+        },
+        {
+          "id": "oven-peel",
+          "name": "My wooden peel",
+          "icon": "🪵",
+          "from": "Made it on Day 8 for sliding bread in and out of the oven",
+          "got": "2026-11-20",
+          "note": "A big flat wooden spatula on a long handle. Too long for my bag. It leans on the post."
         }
       ]
     }
@@ -262,6 +299,18 @@
       "name": "A frost-crusted leaf",
       "icon": "🍂",
       "where": "in the shade of the big oak on a frosty morning",
+      "weight": 1
+    },
+    {
+      "name": "A pine cone",
+      "icon": "🌲",
+      "where": "under the pines (it's PERFECT oven kindling)",
+      "weight": 1
+    },
+    {
+      "name": "A crust of warm bread",
+      "icon": "🍞",
+      "where": "on the cooling bench at OJ Bakehouse (somebody nibbled it. Me. It was me.)",
       "weight": 1
     }
   ]

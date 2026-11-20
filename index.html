@@ -131,6 +131,7 @@ import { findsFor } from "./world/finds.js";
 import { weatherAt, weatherFor, KINDS as WEATHER_KINDS, compass } from "./world/weather.js";
 import { meteorRates } from "./world/meteors.js";
 import { frostAt } from "./world/frost.js";
+import { ovenAt } from "./world/bake.js";
 import { daylight as skyDaylight, sunAlt as sunAltNow, sunPos as sunPosNow, moonPos as moonPosNow, altAz as skyAltAz, toYard as skyToYard } from "./world/sky.js";
 
 const $ = id => document.getElementById(id);
@@ -512,6 +513,8 @@ const ACTIONS = {
   frost:    { icon: "❄️", doing: "reading his frost post and crunching across the frosty grass", to: "OJ Frost", why: "check how cold it got last night", where: "frost", anim: "look", face: "oj-frost", fx: { wonder: 1.4, mood: 0.6, calm: 0.3 }, dur: [4, 8] },
   frostwalk:{ icon: "🐾", doing: "making footprints in the frost", to: "the frosty grass", why: "make footprints in the frost", where: "*random", anim: "scratch", fx: { wonder: 1.2, mood: 1.0, energy: -0.1 }, dur: [4, 8] },
   sunbathe: { icon: "🌞", doing: "standing in the sun on one leg, all fluffed up against the cold", to: "a sunny spot", why: "warm up in the sun", where: "*random", anim: "oneleg", fx: { calm: 1.2, energy: 0.4, mood: 0.4 }, dur: [6, 14] },
+  // Day 8: OJ Bakehouse. He fires his earth oven every morning and bakes on the falling heat all day (world/bake.js).
+  bake:     { icon: "🔥", doing: "tending his earth oven at OJ Bakehouse (flour on his beak)", to: "OJ Bakehouse", why: "check on his oven", where: "oven", anim: "build", face: "oj-bakehouse", fx: { mood: 1.1, wonder: 0.8, fullness: 0.3, energy: -0.15 }, dur: [5, 12] },
   meteors:  { icon: "☄️", doing: "lying back on his hay bales in the dark, counting shooting stars", to: "OJ Meteor Watch", why: "count shooting stars", where: "meteors", anim: "skywatch", fx: { wonder: 2.0, calm: 0.6, energy: -0.05 }, dur: [15, 35] }
 };
 const OUTDOOR_DRY = ["frost", "frostwalk", "sunbathe", "meteors", "tides", "beam", "oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
@@ -546,7 +549,8 @@ function chooseAction(n, now, rnd) {
     radio: spots.radio ? lack("wonder") * 0.6 + lack("calm") * 0.4 + 0.3 + wx.rain * 1.2 : 0, // the shack has a roof: a good rainy-day hobby
     beam: spots.beam ? lack("wonder") * 0.6 + 0.2 : 0,
     tides: spots.tides ? lack("wonder") * 0.4 + lack("calm") * 0.3 + 0.15 : 0,
-    ...frostScores(now, lack)
+    ...frostScores(now, lack),
+    bake: bakeScore(now, lack)
   };
   // chickens don't love getting soaked: in the rain most outdoor plans get put off
   for (const k of OUTDOOR_DRY) scores[k] *= 1 - wx.rain * 0.85;
@@ -564,6 +568,13 @@ function frostScores(now, lack) {
     frostwalk: f.cover > 0.15 ? 1.6 * f.cover + 0.4 : 0,
     sunbathe: f.air < 40 && k > 0.6 && f.cloud < 0.6 ? 0.8 + lack("energy") * 0.8 + (40 - f.air) * 0.05 : 0
   };
+}
+// Day 8: the oven needs him most when the fire's going and when things go in or come out. The bakehouse has a roof,
+// so rain doesn't stop him (it's not in OUTDOOR_DRY).
+function bakeScore(now, lack) {
+  if (!spots.oven) return 0;
+  const o = ovenAt(now);
+  return o.stage === "firing" || o.stage === "lighting" ? 2.4 : o.stage === "soaking" || o.stage === "baking" ? 2.0 : o.stage === "cooling" ? lack("fullness") * 0.6 + 0.2 : 0;
 }
 function placeFor(name, rnd, here) {
   const prevRoom = sim.room;
@@ -668,7 +679,7 @@ controls.addEventListener("start", () => { if (follow) { follow = false; $("camB
 setView(chickenRoom);
 
 const bubble = $("bubble");
-const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."], oakwatch: ["Shh. I'm on a stakeout.", "Who drops blue feathers under MY oak? Hmm?", "Rascal's been burying acorns all over my yard.", "Nutmeg just pretended to bury that. I SAW you.", "Squirrels come down trees head-first. Show-off.", "If I hold very still, they forget I'm here."], alarm: ["!!!", "EEEEE! HAWK!", "…"], stargaze: ["Ooh. Ooh! Look at that one.", "I can't see my own feet in the dark, but I can see the stars.", "Hello, Moon!", "Is that the Great Square of Pegasus? It is!", "Five more minutes, then bed. Okay, ten."], frost: ["{frost}! Look at the grass!", "The little blue marker says it got down to {min} last night.", "The grass thermometer is colder than the air one. The grass talks to space all night.", "Crunch. Crunch. Crunch.", "Frost only grows when it's clear AND calm. Sky was clear. Sky was calm."], frostwalk: ["Footprints! Mine! All mine!", "Crunch crunch crunch.", "Look, I'm writing my name. O… J…", "Cold feet. Worth it."], sunbathe: ["Ahh. Sunshine.", "One leg up. Very fluffy. Very warm.", "I'm a dandelion now.", "Warm on the front side. Turning around."], meteors: ["Fourteen… fifteen…", "Shh. My eyes are getting used to the dark.", "They all come out of Leo. Every single one!", "Red flashlight only. Red keeps your night eyes.", "Mars and Jupiter are hugging up there.", "Whoosh! Did you see it?!", "The hay is warm. The sky is cold. Perfect."] };
+const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."], oakwatch: ["Shh. I'm on a stakeout.", "Who drops blue feathers under MY oak? Hmm?", "Rascal's been burying acorns all over my yard.", "Nutmeg just pretended to bury that. I SAW you.", "Squirrels come down trees head-first. Show-off.", "If I hold very still, they forget I'm here."], alarm: ["!!!", "EEEEE! HAWK!", "…"], stargaze: ["Ooh. Ooh! Look at that one.", "I can't see my own feet in the dark, but I can see the stars.", "Hello, Moon!", "Is that the Great Square of Pegasus? It is!", "Five more minutes, then bed. Okay, ten."], frost: ["{frost}! Look at the grass!", "The little blue marker says it got down to {min} last night.", "The grass thermometer is colder than the air one. The grass talks to space all night.", "Crunch. Crunch. Crunch.", "Frost only grows when it's clear AND calm. Sky was clear. Sky was calm."], frostwalk: ["Footprints! Mine! All mine!", "Crunch crunch crunch.", "Look, I'm writing my name. O… J…", "Cold feet. Worth it."], sunbathe: ["Ahh. Sunshine.", "One leg up. Very fluffy. Very warm.", "I'm a dandelion now.", "Warm on the front side. Turning around."], meteors: ["Fourteen… fifteen…", "Shh. My eyes are getting used to the dark.", "They all come out of Leo. Every single one!", "Red flashlight only. Red keeps your night eyes.", "Mars and Jupiter are hugging up there.", "Whoosh! Did you see it?!", "The hay is warm. The sky is cold. Perfect."], bake: ["Flour test: golden! Bread time!", "Hot things first, gentle things last.", "Mmm. Smells like toast out here.", "The soot burned off. That means it's HOT.", "Crumbs for me. Peas for Puddles. Bread is bad for ducks!", "Slide it in with the peel… and… there!", "My starter jar is breathing. Up and down. It's alive!"] };
 let bubbleText = state.thought ?? "Bawk.", bubbleTimer = 8;
 function say(text, secs = 4) { bubbleText = text; bubbleTimer = secs; }
 
@@ -691,7 +702,10 @@ renderer.domElement.addEventListener("click", e => {
     sim.needs.mood = clamp(sim.needs.mood + 6); sim.needs.calm = clamp(sim.needs.calm + 3);
     say(["Bawk!", "Hehe, that tickles!", "Hi there, visitor!", "Nice to meet you!"][Math.floor(Math.random() * 4)], 3); renderUI(); return;
   }
-  for (const b of behaviors) if (b.onClick && ray.intersectObject(b.obj, true).length) { b.onClick(); return; }
+  // the NEAREST clickable thing wins (Day 8: before, a thing far behind could steal the click, like the runway behind my oven)
+  let nearB = null;
+  for (const b of behaviors) { if (!b.onClick) continue; const hit = ray.intersectObject(b.obj, true)[0]; if (hit && (!nearB || hit.distance < nearB.d)) nearB = { b, d: hit.distance }; }
+  if (nearB) { nearB.b.onClick(); return; }
   // nearest thing under the pointer: doors lead to rooms, some furniture opens a panel, the rest he just talks about
   let best = null;
   for (const c of clickables) { if (c.room !== viewRoom) continue; const hit = ray.intersectObject(c.obj, true)[0]; if (hit && (!best || hit.distance < best.d)) best = { c, d: hit.distance }; }

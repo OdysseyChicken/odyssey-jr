@@ -1,6 +1,6 @@
 {
   "_about": "Odyssey Jr.'s closet: every outfit he has made. 'wearing' is the id of the one he has on. Each outfit has head, neck and body lists of parts (shape: box, roundbox, sphere, cylinder, cone, torus, capsule; size; pos [x,y,z]; color; optional rot). 'head' parts sit on top of his head, 'neck' around his neck, 'body' on the middle of his body. Add a new outfit here to add it to the closet.",
-  "wearing": "frost-morning",
+  "wearing": "baker",
   "outfits": [
     {
       "id": "aviator",
@@ -1131,6 +1131,209 @@
         }
       ],
       "body": []
+    },
+    {
+      "id": "baker",
+      "name": "Baker",
+      "icon": "👨‍🍳",
+      "made": "2026-11-20",
+      "note": "For oven days: a tall puffy white baker's hat, a red kerchief and a little white apron with a red pocket (for my flour pinch). There's always flour on it. Always.",
+      "head": [
+        {
+          "shape": "cylinder",
+          "size": [
+            0.2,
+            0.19,
+            0.2
+          ],
+          "pos": [
+            0,
+            0.12,
+            -0.02
+          ],
+          "color": "#ffffff",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.25
+          ],
+          "pos": [
+            0,
+            0.3,
+            -0.02
+          ],
+          "scale": [
+            1.05,
+            0.62,
+            1.05
+          ],
+          "color": "#ffffff",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.11
+          ],
+          "pos": [
+            0.13,
+            0.33,
+            0.06
+          ],
+          "color": "#ffffff",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.11
+          ],
+          "pos": [
+            -0.12,
+            0.34,
+            -0.08
+          ],
+          "color": "#ffffff",
+          "texture": "fabric"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.2,
+            0.025
+          ],
+          "pos": [
+            0,
+            0.04,
+            -0.02
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#e9e2cf",
+          "texture": "fabric"
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.3,
+            0.07
+          ],
+          "pos": [
+            0,
+            0.0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#c8372d",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.12,
+            0.16
+          ],
+          "pos": [
+            0,
+            -0.1,
+            0.3
+          ],
+          "rot": [
+            3.1416,
+            0,
+            0
+          ],
+          "color": "#c8372d",
+          "texture": "fabric"
+        },
+        {
+          "shape": "roundbox",
+          "size": [
+            0.36,
+            0.4,
+            0.05,
+            0.04
+          ],
+          "pos": [
+            0,
+            -0.36,
+            0.31
+          ],
+          "rot": [
+            -0.28,
+            0,
+            0
+          ],
+          "color": "#fbfaf5",
+          "texture": "fabric"
+        },
+        {
+          "shape": "roundbox",
+          "size": [
+            0.15,
+            0.09,
+            0.055,
+            0.02
+          ],
+          "pos": [
+            0,
+            -0.45,
+            0.335
+          ],
+          "rot": [
+            -0.28,
+            0,
+            0
+          ],
+          "color": "#c8372d",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.035
+          ],
+          "pos": [
+            0.1,
+            -0.26,
+            0.365
+          ],
+          "scale": [
+            1.6,
+            1,
+            0.4
+          ],
+          "color": "#ffffff"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.025
+          ],
+          "pos": [
+            -0.09,
+            -0.31,
+            0.36
+          ],
+          "scale": [
+            1.4,
+            1,
+            0.4
+          ],
+          "color": "#ffffff"
+        }
+      ]
     }
   ]
 }

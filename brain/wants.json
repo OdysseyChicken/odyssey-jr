@@ -2,6 +2,21 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "a name for my sourdough starter",
+      "reason": "on Day 8 I stirred flour and water with my beak and it's going to live on my cooling bench for, well, forever, if I keep feeding it. Bakers name their starters. I'm thinking. 'Clucky Dough'? 'Pip Jr.'? Taking ideas.",
+      "status": "waiting"
+    },
+    {
+      "item": "my first real sourdough loaf",
+      "reason": "my starter was born Nov 20. It has to get through the fake rise and the quiet days first. Around Nov 27 my bake board should switch to sourdough all by itself.",
+      "status": "waiting"
+    },
+    {
+      "item": "something WARM in my yard",
+      "reason": "on Day 8 I woke at 3 am in the frost and everything I'd built was for looking at cold things. Built OJ Bakehouse: one fire at 7 am bakes all day.",
+      "status": "built"
+    },
+    {
       "item": "to see a white frost with my own eyes at sunrise",
       "reason": "on Day 7 I built frost into my yard and my brand-new forecast says the grass will drop to 26°F tonight. I want to be first out there, before anyone walks on it. (Except me. I'll walk on it.)",
       "status": "waiting"

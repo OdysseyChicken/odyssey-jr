@@ -1498,6 +1498,152 @@ def frostpost():
 
 ASSETS.update({"frostpost": frostpost})
 
+def bakeoven():
+    # OJ Bakehouse (Day 8): a cob earth oven on a round stone base, under a little shingled roof on four posts.
+    # Real earth ovens are a dome of clay+sand (the "thermal mass" that soaks up the fire's heat), wrapped in a layer of
+    # clay+straw (insulation) and a smooth plaster coat. You burn a fire INSIDE it, rake it out, and bake on the hot floor.
+    # Named parts (for behaviors/bakeoven.js): "oven_mouth" (dark doorway, glows with the fire), "flames" (pivot, flicker),
+    # "soot" (black patch over the arch that burns off when the oven is really hot), "oven_door" (pivot, moves between
+    # leaning-on-the-base and in-the-doorway), "temp_needle" (pivot on the brass dial), "loaf_1..3", "cookies", "smoke_pt".
+    stone = mat("stone", WOOD, tex="stone", scale=(3, 1))
+    clay = mat("bo_clay", WOOD, tex="clay", scale=(2, 2))
+    brick = mat("bo_brick", WOOD, tex="brick", scale=(1.5, 1.5))
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("bo_planks", (0.95, 0.85, 0.75), tex="planks", scale=(1, 1))
+    roof = mat("bo_roof", (0.95, 0.75, 0.6), tex="shingles", scale=(3, 2))
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    bark = mat("bark", WOOD, tex="bark")
+    endw = mat("bo_logend", (0.86, 0.7, 0.48), rough=0.8)
+    dark = mat("bo_mouth", (0.06, 0.04, 0.03), rough=1.0, emit=(1.0, 0.45, 0.12), emit_strength=0.0)
+    flame = mat("bo_flame", (1.0, 0.62, 0.15), rough=0.5, emit=(1.0, 0.55, 0.1), emit_strength=2.0)
+    flame2 = mat("bo_flame2", (1.0, 0.88, 0.35), rough=0.5, emit=(1.0, 0.85, 0.3), emit_strength=2.0)
+    soot = mat("bo_soot", (0.12, 0.1, 0.09), rough=1.0)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    cream = mat("rs_cream", (0.93, 0.88, 0.74), rough=0.6)
+    navy = mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)
+    red = mat("bo_red", (0.8, 0.2, 0.18), rough=0.5)
+    metal = mat("bo_metal", (0.55, 0.57, 0.6), rough=0.45, metal=0.35)
+    crust = mat("bo_crust", (0.78, 0.5, 0.22), rough=0.6)
+    crumb = mat("bo_score", (0.95, 0.85, 0.62), rough=0.7)
+    # round stone base: the oven floor sits at z = 0.9 (a comfy height for a baker; a chicken hops up on the ledge)
+    FZ = 0.9
+    cyl("bo_base", 1.3, 1.25, FZ, (0, 0, FZ / 2), stone, verts=40, bevel=0.04)
+    cyl("bo_cap", 1.34, 1.34, 0.08, (0, 0, FZ - 0.02), mat("bo_capstone", (0.78, 0.74, 0.68), tex="stone", scale=(2, 1)), verts=40, bevel=0.02)
+    box("bo_ledge", (1.1, 0.5, 0.1), (0, -1.35, FZ - 0.05), mat("bo_capstone", (0.78, 0.74, 0.68), tex="stone", scale=(2, 1)), bevel=0.02)
+    # the dome (a little egg, of course)
+    d = sphere("bo_dome", 1.0, (0, 0.1, FZ), clay, scale=(1.0, 1.08, 0.92), sub=4); jitter(d, 0.012)
+    # brick entrance tunnel sticking out the front, with a round top (an arch)
+    AW, AH, AY0, AY1 = 0.46, 0.34, -0.75, -1.18      # half width, wall height, back/front of tunnel
+    L = AY0 - AY1
+    box("bo_arch_walls", (AW * 2, L, AH), (0, (AY0 + AY1) / 2, FZ + AH / 2), brick, bevel=0.03)
+    cyl("bo_arch_top", AW, AW, L, (0, (AY0 + AY1) / 2, FZ + AH), brick, rot=(math.pi / 2, 0, 0), verts=32, bevel=0.03)
+    # the doorway: dark (and it glows orange when the fire is going)
+    MW, MH = 0.27, 0.22
+    mw = box("oven_mouth_a", (MW * 2, 0.03, MH), (0, AY1 - 0.005, FZ + MH / 2 + 0.02), dark, bevel=0)
+    mt = cyl("oven_mouth_b", MW, MW, 0.03, (0, AY1 - 0.005, FZ + MH + 0.02), dark, rot=(math.pi / 2, 0, 0), verts=24, bevel=0)
+    bpy.ops.object.select_all(action="DESELECT"); mw.select_set(True); mt.select_set(True); bpy.context.view_layer.objects.active = mw
+    bpy.ops.object.join(); mw.name = "oven_mouth"
+    # keystone + dial over the arch
+    box("bo_keystone", (0.14, 0.06, 0.16), (0, AY1 - 0.01, FZ + AH + AW - 0.05), mat("bo_capstone", (0.78, 0.74, 0.68), tex="stone", scale=(2, 1)), bevel=0.02)
+    cyl("bo_dial", 0.13, 0.13, 0.04, (0, AY1 - 0.08, FZ + AH + AW + 0.2), brass, rot=(math.pi / 2, 0, 0), verts=24, bevel=0.01)
+    cyl("bo_dialface", 0.11, 0.11, 0.01, (0, AY1 - 0.105, FZ + AH + AW + 0.2), cream, rot=(math.pi / 2, 0, 0), verts=24, bevel=0)
+    cyl("bo_dialstem", 0.015, 0.015, 0.2, (0, AY1 + 0.02, FZ + AH + AW + 0.2), brass, rot=(math.pi / 2, 0, 0), verts=8, bevel=0)
+    for k in range(9):  # ticks from 7 o'clock (cold) round to 5 o'clock (900 F)
+        a = math.radians(-135 + k * 270 / 8)
+        box("bo_tick", (0.012, 0.01, 0.03), (math.sin(a) * 0.085, AY1 - 0.115, FZ + AH + AW + 0.2 + math.cos(a) * 0.085), red if k >= 6 else navy, rot=(0, a, 0), bevel=0)
+    DZ = FZ + AH + AW + 0.2
+    pv = _pivot("temp_needle", (0, AY1 - 0.12, DZ))
+    _kid(box("temp_needle_m", (0.012, 0.008, 0.09), (0, AY1 - 0.12, DZ + 0.04), red, bevel=0), pv)
+    # soot: the black smudge that rises out of the doorway onto the dome. It burns off white-clean at ~600-700 F.
+    sp_ = _pivot("soot", (0, AY1, FZ + AH))
+    s_ = sphere("soot_dome", 1.0, (0, 0.1, FZ), soot, scale=(1.012, 1.092, 0.932), sub=4)
+    bm = bmesh.new(); bm.from_mesh(s_.data)   # keep only a smudge on the front of the dome, above the arch
+    def keep(v):
+        x, y, z = v.co.x, v.co.y - 0.1, v.co.z - FZ
+        return y < -0.05 and 0.5 < z and abs(x) < 0.62 - (z - 0.5) * 0.5
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not keep(v)], context="VERTS")
+    bm.to_mesh(s_.data); bm.free(); _kid(s_, sp_)
+    # ...and on the top of the brick arch, where the smoke pours out
+    a_ = cyl("soot_arch", AW + 0.012, AW + 0.012, L + 0.02, (0, (AY0 + AY1) / 2, FZ + AH), soot, rot=(math.pi / 2, 0, 0), verts=32, bevel=0)
+    bm = bmesh.new(); bm.from_mesh(a_.data)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.y > -AW * 0.55], context="VERTS")  # local -y here is up
+    bm.to_mesh(a_.data); bm.free(); _kid(a_, sp_)
+    # flames (just peeking out of the doorway)
+    fp = _pivot("flames", (0, AY1 + 0.03, FZ + 0.02))
+    for x, h, r, m in ((-0.13, 0.22, 0.07, flame), (0.0, 0.3, 0.09, flame), (0.12, 0.2, 0.065, flame), (-0.05, 0.16, 0.05, flame2), (0.06, 0.18, 0.05, flame2)):
+        c = cyl("flame", r, 0.005, h, (x, AY1 + 0.03, FZ + 0.02 + h / 2), m, verts=10, bevel=0); _kid(c, fp)
+    # a little spot where the smoke comes out (smoke from an earth oven pours out of the top of the doorway)
+    _pivot("smoke_pt", (0, AY1 - 0.05, FZ + MH + MW + 0.05))
+    # the oven door: planks with a handle, shaped like the doorway. Built in the doorway; the behavior moves it.
+    dp = _pivot("oven_door", (0, AY1 - 0.05, FZ))
+    dw = box("door_a", (MW * 2 + 0.08, 0.06, MH + 0.02), (0, AY1 - 0.05, FZ + (MH + 0.02) / 2 + 0.02), planks, bevel=0.01); _kid(dw, dp)
+    dt = cyl("door_b", MW + 0.04, MW + 0.04, 0.06, (0, AY1 - 0.05, FZ + MH + 0.03), planks, rot=(math.pi / 2, 0, 0), verts=24, bevel=0.01); _kid(dt, dp)
+    _kid(box("door_bar", (MW * 2 + 0.1, 0.03, 0.05), (0, AY1 - 0.09, FZ + 0.16), metal, bevel=0.005), dp)
+    _kid(cyl("door_knob", 0.035, 0.035, 0.08, (0, AY1 - 0.12, FZ + 0.3), wood, rot=(math.pi / 2, 0, 0), verts=12, bevel=0.01), dp)
+    # roof on four posts, gable facing front
+    PX, PY, PH = 1.55, 1.45, 2.75
+    for x in (-PX, PX):
+        for y in (-PY, PY):
+            box("bo_post", (0.16, 0.16, PH), (x, y, PH / 2), wood, bevel=0.02)
+            cyl("bo_footing", 0.16, 0.18, 0.12, (x, y, 0.06), stone, verts=12, bevel=0.01)
+        box("bo_beam", (0.14, PY * 2 + 0.3, 0.16), (x, 0, PH - 0.05), wood, bevel=0.02)
+    th = math.radians(30); half = PX + 0.35; w = half / math.cos(th)
+    for sgn in (-1, 1):
+        box("bo_roof", (w, PY * 2 + 0.7, 0.1), (sgn * half / 2, 0, PH + 0.05 + math.tan(th) * half / 2), roof, rot=(0, sgn * th, 0), bevel=0.02)
+    RZ = PH + 0.05 + math.tan(th) * half
+    box("bo_ridge", (0.18, PY * 2 + 0.75, 0.14), (0, 0, RZ + 0.02), trim, bevel=0.04)
+    for y in (-PY - 0.05, PY + 0.05):
+        me = bpy.data.meshes.new("gable"); me.from_pydata([(-PX - 0.05, y, PH + 0.03), (PX + 0.05, y, PH + 0.03), (0, y, RZ - 0.05)], [], [(0, 1, 2)]); me.uv_layers.new()
+        o = bpy.data.objects.new("bo_gable", me); bpy.context.scene.collection.objects.link(o); finish(o, planks, smooth=False)
+        o.modifiers.new("solid", "SOLIDIFY").thickness = 0.05
+    # sign hanging under the front gable
+    box("bo_sign", (1.5, 0.05, 0.3), (0, -PY - 0.12, PH + 0.42), cream, bevel=0.02)
+    bpy.ops.object.text_add(location=(0, -PY - 0.15, PH + 0.42), rotation=(math.pi / 2, 0, 0))
+    t = bpy.context.object; t.data.body = "OJ BAKEHOUSE"; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = 0.17; t.data.extrude = 0.008
+    t.data.materials.append(mat("bo_ink", (0.55, 0.2, 0.15), rough=0.8)); bpy.ops.object.convert(target="MESH")
+    # a little wheat sheaf on the sign (three ears)
+    for k, a in enumerate((-0.35, 0, 0.35)):
+        sphere("bo_wheat", 0.05, (-0.85 + math.sin(a) * 0.08, -PY - 0.15, PH + 0.48 + math.cos(a) * 0.05), mat("bo_gold", (0.92, 0.72, 0.3), rough=0.6), scale=(0.5, 0.5, 1.4), sub=2)
+    # woodpile on the left: split logs stacked three rows high
+    random.seed(11)
+    for row in range(3):
+        n = 4 - row
+        for i in range(n):
+            x = -2.15 + random.uniform(-0.03, 0.03); y = -0.6 + (i + row * 0.5) * 0.36; z = 0.17 + row * 0.3
+            cyl("bo_log", 0.16, 0.16, 0.9, (x, y, z), bark, rot=(0, math.pi / 2, 0), verts=10, bevel=0.01)
+            for sx in (-0.451, 0.451): cyl("bo_logend", 0.14, 0.14, 0.01, (x + sx, y, z), endw, rot=(0, math.pi / 2, 0), verts=10, bevel=0)
+    # the peel (a big wooden spatula) leaning on the right front post
+    cyl("bo_peel_handle", 0.03, 0.03, 2.0, (PX - 0.18, -PY - 0.15, 1.05), wood, rot=(0.12, -0.12, 0), verts=8, bevel=0)
+    box("bo_peel_blade", (0.4, 0.03, 0.45), (PX - 0.2, -PY - 0.03, 0.22), wood, rot=(0.12, -0.12, 0), bevel=0.04)
+    # water bucket + the "scuffle" (a wet rag mop for cleaning ash off the floor)
+    cyl("bo_bucket", 0.2, 0.25, 0.4, (-1.85, -1.35, 0.2), metal, verts=20, bevel=0.01)
+    cyl("bo_water", 0.21, 0.21, 0.01, (-1.85, -1.35, 0.37), mat("bo_wat", (0.3, 0.55, 0.75), rough=0.1), verts=20, bevel=0)
+    cyl("bo_mop", 0.02, 0.02, 1.3, (-1.75, -1.3, 0.85), wood, rot=(0.0, 0.25, 0), verts=8, bevel=0)
+    # cooling bench on the right with the day's bread
+    BX, BY, BZ = 2.25, 0.0, 0.75
+    box("bo_bench", (0.75, 1.6, 0.08), (BX, BY, BZ), planks, bevel=0.02)
+    for x in (BX - 0.3, BX + 0.3):
+        for y in (BY - 0.7, BY + 0.7): box("bo_bleg", (0.08, 0.08, BZ), (x, y, BZ / 2), wood, bevel=0.01)
+    box("bo_rack", (0.6, 1.0, 0.02), (BX, BY - 0.2, BZ + 0.05), metal, bevel=0)
+    for i, y in enumerate((-0.55, -0.2, 0.15)):
+        l = sphere(f"loaf_{i + 1}", 0.22, (BX, BY + y, BZ + 0.15), crust, scale=(1.0, 0.75, 0.5), sub=3); jitter(l, 0.006)
+        sc = box(f"loaf_{i + 1}_score", (0.03, 0.2, 0.02), (BX + 0.02, BY + y, BZ + 0.255), crumb, rot=(0, 0, 0.5), bevel=0.008); _kid(sc, l)
+    tp = _pivot("cookies", (BX - 0.08, BY + 0.55, BZ + 0.05))
+    _kid(box("bo_tray", (0.42, 0.4, 0.025), (BX - 0.1, BY + 0.55, BZ + 0.055), metal, bevel=0.01), tp)
+    for i in range(6):
+        cx = BX - 0.26 + (i % 3) * 0.13; cy = BY + 0.48 + (i // 3) * 0.15
+        _kid(cyl("bo_cookie", 0.055, 0.055, 0.03, (cx, cy, BZ + 0.085), mat("bo_cookiem", (0.82, 0.6, 0.32), rough=0.7), verts=14, bevel=0.01), tp)
+    # my sourdough starter in a glass jar (fed every morning; the goo inside rises and falls: pivot "starter", scale z)
+    glass = mat("bo_glass", (0.85, 0.93, 0.97), rough=0.05)
+    jx, jy = BX + 0.22, BY + 0.62
+    sp = _pivot("starter", (jx, jy, BZ + 0.05))
+    _kid(cyl("starter_goo", 0.075, 0.075, 0.2, (jx, jy, BZ + 0.15), mat("bo_goo", (0.96, 0.92, 0.8), rough=0.6), verts=16, bevel=0), sp)
+    cyl("bo_jar", 0.085, 0.085, 0.36, (jx, jy, BZ + 0.22), glass, verts=20, bevel=0.01)
+    cyl("bo_jarcloth", 0.1, 0.1, 0.03, (jx, jy, BZ + 0.41), mat("bo_cloth", (0.85, 0.3, 0.3), tex="plaid", scale=(0.3, 0.3)), verts=20, bevel=0.01)
+    box("bo_jartag", (0.1, 0.01, 0.06), (jx, jy - 0.09, BZ + 0.24), cream, bevel=0.003)
+
+ASSETS.update({"bakeoven": bakeoven})
+
 
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)

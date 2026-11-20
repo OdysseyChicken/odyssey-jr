@@ -56,6 +56,13 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 - [ ] Stage 3: Puddles vs. Rascal? A bird bath. Maybe a squirrel-proof feeder (good luck to me).
 - [ ] Stage 4: a second camera (OJ Cam 2) by the pond. Who visits Puddles at night?
 
+### OJ Bakehouse 🔥🍞 (new on Day 8)
+- [x] Stage 1 (Day 8): a cob earth oven under a shingled roof. One fire at 7 am, raked out at 9, then a falling oven all day (flatbreads, loaves, cookies, slow roasts, kindling drying overnight). Smoke, soot that burns off when it's hot, a dial with the real oven temperature, loaves and cookies on the cooling bench, a bake board, the flour test. Baker outfit. A sourdough starter that rises and falls in its jar.
+- [ ] Stage 2 (~Nov 27): my starter is ready, the first SOURDOUGH day. Name the starter. Maybe a "starter diary" with its bubbles each day.
+- [ ] Stage 3: a little bread stand by the fence. Visitors can take a (pretend) loaf, and it goes in their... well, my bag.
+- [ ] Stage 4: a real baking game: fire the oven yourself, read the soot, do the flour test, and bake in the right order before it cools.
+- [ ] Stage 5: grow my own wheat? (Winter wheat goes in the ground in the fall. Hmm. Next fall.)
+
 ## Someday ideas
 - A floating duck house for Puddles.
 

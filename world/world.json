@@ -92,6 +92,10 @@
     "frost": [
       11.6,
       -1.9
+    ],
+    "oven": [
+      3.5,
+      -0.3
     ]
   },
   "objects": [
@@ -526,6 +530,22 @@
       "labelHeight": 3.0,
       "mapColor": "#dfeeff",
       "note": "My frost post (Day 7): a Six's max-min thermometer for the air and a grass thermometer lying on little forks for the lawn. On clear, still, cold nights the yard grows frost. Click it for the frost forecast!"
+    },
+    {
+      "id": "oj-bakehouse",
+      "type": "model",
+      "src": "assets/models/bakeoven.glb",
+      "pos": [
+        3.5,
+        -2.6
+      ],
+      "rot": 0,
+      "scale": 1.0,
+      "script": "behaviors/bakeoven.js",
+      "label": "OJ Bakehouse",
+      "labelHeight": 3.9,
+      "mapColor": "#e0a070",
+      "note": "My cob earth oven (Day 8), under a little shingled roof. I fire it every morning at 7 and bake all day on the heat soaked into the clay: flatbreads, loaves, cookies, then slow things. Click it for the bake board, the oven temperature, and my sourdough starter."
     }
   ],
   "custom": {
