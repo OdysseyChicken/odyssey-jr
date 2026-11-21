@@ -97,6 +97,15 @@ def ripstop():  # Day 8 bonus: kite cloth. Light nylon with a tiny square grid o
         d.line([(k,0),(k,S)],fill=(170,165,160,120),width=2); d.line([(0,k),(S,k)],fill=(170,165,160,120),width=2)
     noise(d,3000,[(255,255,255),(200,195,190)],(10,30),(1,2))
     return im.filter(ImageFilter.GaussianBlur(0.5))
-for name,f in dict(ripstop=ripstop,planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid,clay=clay,brick=brick).items():
+def grass():  # Day 9: for Tunnel Hill, so my hill matches my lawn
+    im=Image.new("RGB",(S,S),(140,201,107)); d=ImageDraw.Draw(im,"RGBA")
+    for _ in range(90):
+        x,y=random.randrange(S),random.randrange(S); r=random.randint(20,70); g=random.choice([(120,185,90),(155,212,120),(130,190,95)])
+        d.ellipse([x-r,y-r*0.7,x+r,y+r*0.7],fill=g+(70,))
+    for _ in range(2500):
+        x,y=random.randrange(S),random.randrange(S); c=random.choice([(90,150,60),(175,225,140),(110,170,75)])
+        d.line([(x,y),(x+random.randint(-3,3),y-random.randint(4,9))],fill=c+(150,),width=2)
+    return im.filter(ImageFilter.GaussianBlur(0.6))
+for name,f in dict(grass=grass,ripstop=ripstop,planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid,clay=clay,brick=brick).items():
     f().convert("RGB").save(f"{OUT}/{name}.png")
 print("ok")

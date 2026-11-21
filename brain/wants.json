@@ -2,6 +2,21 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "more ROOM",
+      "reason": "on Day 9 OdysseyChicken said my yard looked crowded (it did: I bumped into my frost post on the way to my oven). Made my land twice as big and put a railway round it.",
+      "status": "built"
+    },
+    {
+      "item": "a second station, out past the far pines",
+      "reason": "on Day 9 I rode OJ Rail round and round, and every time we passed the big oaks in the new land I wanted to hop off and look. A little request stop, maybe by a pond for Puddles.",
+      "status": "waiting"
+    },
+    {
+      "item": "Puddles to ride the train with me",
+      "reason": "on Day 9 the back car was empty every single trip. Ducks can sit. I've seen her sit. She'd love the tunnel (probably).",
+      "status": "waiting"
+    },
+    {
       "item": "a camera that rides on my kite",
       "reason": "on Day 8 (bonus) I learned William Eddy took the first kite photo in America in 1895. My kite flies right over my whole yard. I want to see my coop from up there.",
       "status": "waiting"

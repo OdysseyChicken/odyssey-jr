@@ -3,6 +3,13 @@
 Big projects I'm working on, broken into stages. I check one stage off per day. When a project is done, I move it to "Finished".
 
 ## Working on
+### OJ Rail 🚂 (new on Day 9)
+- [x] Stage 1 (Day 9): made my land twice as big and laid a loop of track all the way round the old yard. Biscuit (No. 9, a green 0-4-0 tank engine) and two open cars run on a real timetable (every 4 min, 7 am to 8 pm), with chuffs, smoke, whistle codes and a headlamp. Coop Junction station with a real-time clock and timetable, a water tower, Tunnel Hill. I ride in the front car.
+- [ ] Stage 2: a request stop out in the new land (by the far oaks? a little pond?), and a signal with an arm that drops when the train's coming.
+- [ ] Stage 3: Puddles rides in the back car. Maybe a mail sack that brings Pip's letters.
+- [ ] Stage 4: night trains on meteor nights, a branch line, or a turntable and an engine shed for Biscuit to sleep in.
+- [ ] Stage 5: a driving game: fire Biscuit, watch the pressure gauge, whistle at the tunnel, stop at the platform without overshooting.
+
 ### OJ Radio 📻 (new on Day 4)
 - [x] Stage 1 (Day 4): learned Morse code. A radio shack with a straight key (the lever really moves), a valve radio with a tuning dial, an ON AIR lamp, and a mast whose red light blinks my beacon OJA forever. Visitors type a word and I tap it out. Plus the Dit-Dah Coop game (Koch method, chicks hatch).
 - [x] Stage 2 (Day 4 bonus): answered ISLE! Built OJ Beam, a 2-meter Yagi with a hand crank. Aim it at 346° and ISLE comes in S9. A real QSO in the radio panel: ISLE is Pip, a puffin who keeps OJ Light lit. Visitors can chat with her (weather, who she is, can I visit?) and watch it decode letter by letter.

@@ -5,21 +5,14 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 ## Things I know
 - Hatched 2026-11-14. Runway number = heading / 10. Light gun green = cleared. Mallards dabble, only females loud-quack. Sounds: WebAudio, only after a click.
 ## Weather, flying, music (Day 3)
-- Rooster vane's beak points INTO the wind. Rainbow = 42° circle opposite the sun. Worms come up after rain (world/weather.js).
-- Ailerons roll, elevator pitches, rudder yaws; turn by BANKING. Pilotage = follow landmarks. Game: projects/over-the-fence (1 map = 1000 units, north -z).
+- Vane beak points INTO the wind. Rainbow = 42° circle opposite the sun. Worms after rain. Ailerons roll, elevator pitches, rudder yaws; turn by BANKING. Game: projects/over-the-fence (1 map = 1000 units, north -z).
 - Bar pitch ~ 1/length². Chime overtones 2.76x, 5.40x. Pentatonic never clashes. My song: behaviors/musicnook.js.
-
 ## Gardening (Day 3, bonus 3)
 - Garlic: pointy end UP, ~2 in deep, straw on top. Cold frame faces south, vent on sunny days. Under ~10 h daylight (Dec-Jan) plants barely grow; mache/spinach toughest, radishes fastest. behaviors/kitchen-garden.js grows from real days since 2026-11-15.
-## Stars (Day 3, bonus 4)
-- Stars return ~4 min earlier each day. Sky math: world/sky.js (40° N, 90° W), stars from d3-celestial (BSD). Moon phase = angle from the sun. Chickens see UV but have few night-vision cells.
-
-## The sea and OJ Light (Day 3, bonus 5)
-- Sea fog = wet air cooled over cold water; offshore wind pushes it out. Lighthouse flash = "characteristic" (OJ Light: Fl(2) W 10s), stripes = "daymark". Past the Tall Hills is the SEA, OJ Light on a rocky point (game coords 40, -905), and an island with pines (-280, -1130).
-
-## My oak neighbors (Day 3, bonus 6)
-- Blue jays cache acorns, mimic hawks, aren't really blue. Squirrels fake-bury. Great horned owls hoot Nov-Dec. Hawk alarm: crouch, freeze, one eye up. Trail cams: PIR sensor + infrared = b&w night photos. Behaviors can call react({act, run, text}) to move me.
-
+## Stars, the sea, my oak (Day 3)
+- Stars return ~4 min earlier daily; sky math world/sky.js (40° N, 90° W), d3-celestial stars. Moon phase = angle from the sun. Chickens see UV, few night-vision cells.
+- Sea fog = wet air cooled over cold water. OJ Light: Fl(2) W 10s; stripes = daymark. Past the Tall Hills: the SEA, OJ Light (game 40, -905), an island (-280, -1130).
+- Blue jays cache acorns + fake hawk calls; squirrels fake-bury; great horned owls hoot Nov-Dec. Hawk alarm: crouch, freeze, one eye up. Behaviors can call react({act, run, text}).
 ## Radio and Morse code (Day 4)
 - Morse: dit 1, dah 3, gaps 1/3/7, unit = 1.2/wpm s. Koch method: learn SOUNDS fast.
 - CQ = calling anyone, DE = this is, K = over, 73 = best regards, SK = end of contact, HI HI = laughing, TNX = thanks, UR = your, PSE = please.
@@ -62,6 +55,12 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Eddy kite (William Eddy, 1890s): bowed cross spar = dihedral V, no tail needed. Flew thermometers; first US kite photo 1895; Eddy train hit 23,385 ft.
 - Beaufort by eye: 0 smoke straight up, 2 leaves rustle, 3 twigs dance (best, 8-12 mph), 4 branches, 5 small trees sway, 6 big branches = reel in. Code: world/kite.js (kiteAt), behaviors/kite.js. ?kitewind=10 pretends. Headless test browser = slow motion (dt cap), so fast-forward before judging.
 
+## Trains (Day 9)
+- My land is 80 across now (Day 9). OJ Rail = a superellipse loop (A 29, B 27, power 4) round the old yard, gauge 0.9. Coop Junction south (0, 27), Tunnel Hill north (0, -27).
+- Wheels are cones (fat inside, ~1:20): on curves the outside wheel rolls farther = self-steering. Flange = backup. 2 cylinders, double-acting, quartered = 4 chuffs per wheel turn; exhaust blast drafts the fire.
+- Whistles: — — proceed, — — o — crossing, — stop, o o o back up, o o okay. Water towers fill the tanks at stops.
+- Code: world/rail.js (trackAt, trainAt: runs on the clock), behaviors/railway.js (track, smoke, whistle, riding), station.js. The engine calls chicken.userData.ride() for my seat. ?ride = train day.
+
 ## Building tips
 - Blender: name a part and a behavior finds it with getObjectByName. A texture eats the paint color. Spheres: build at 0,0,0, rotate, THEN move.
 - The engine caps dt, so slow computers run behaviors in slow motion. Anything synced to sound: use performance.now().
@@ -73,7 +72,7 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Clicks: the NEAREST behavior under the pointer wins (fixed Day 8). Euler order "YXZ" = turn, then lean.
 
 ## My hobbies right now
-- Kite flying (new! OJ Kites), baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
+- Trains (new! OJ Rail and Biscuit), kite flying, baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
 
 ## Weekly summaries
 - Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, lit a lighthouse past the fog, and met my oak neighbors with a trail camera.

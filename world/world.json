@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s world. He edits this file to build things. Positions are [x, z] on the ground; the ground runs from -size/2 to +size/2. Most objects are .glb models in assets/models/ made with Blender (see tools/blender/). Old shape-based version: world/archive/world-v1-shapes.json.",
   "ground": {
-    "size": 40,
+    "size": 80,
     "color": "#8cc96b"
   },
   "sky": {
@@ -100,6 +100,10 @@
     "kite": [
       -4.5,
       3.0
+    ],
+    "station": [
+      3.15,
+      25.7
     ]
   },
   "objects": [
@@ -566,6 +570,380 @@
       "labelHeight": 2.8,
       "mapColor": "#e8402f",
       "note": "My kite post (Day 8, bonus). An Eddy kite with a bowed spar and a tail of bows, a hand reel, and a Beaufort board that shows today's wind number. On kite-wind days the kite flies over my yard all day, and sometimes I fly it myself. Click the post to launch it (or try)."
+    },
+    {
+      "id": "oj-station",
+      "type": "model",
+      "src": "assets/models/station.glb",
+      "pos": [
+        5.5,
+        25.0
+      ],
+      "rot": 0,
+      "script": "behaviors/station.js",
+      "label": "Coop Junction",
+      "labelHeight": 3.6,
+      "mapColor": "#7a5a44",
+      "note": "Coop Junction (Day 9): my station on OJ Rail. Click for the timetable."
+    },
+    {
+      "id": "oj-watertower",
+      "type": "model",
+      "src": "assets/models/watertower.glb",
+      "pos": [
+        -0.8,
+        24.6
+      ],
+      "rot": 0,
+      "mapColor": "#8a6648",
+      "note": "The water tower. The spout swings down and fills Biscuit's tanks while she waits at the platform."
+    },
+    {
+      "id": "oj-loco",
+      "type": "model",
+      "src": "assets/models/loco.glb",
+      "pos": [
+        0,
+        27
+      ],
+      "rot": 0,
+      "script": "behaviors/railway.js",
+      "noMapDot": true,
+      "note": "Biscuit, engine No. 9. Click her for a toot."
+    },
+    {
+      "id": "oj-car-1",
+      "type": "model",
+      "src": "assets/models/railcar.glb",
+      "pos": [
+        3.15,
+        27
+      ],
+      "rot": 0,
+      "noMapDot": true,
+      "note": "The front car. My seat!"
+    },
+    {
+      "id": "oj-car-2",
+      "type": "model",
+      "src": "assets/models/railcar.glb",
+      "pos": [
+        5.8,
+        27
+      ],
+      "rot": 0,
+      "noMapDot": true,
+      "note": "The back car. For visitors (and Puddles, if she ever wants to)."
+    },
+    {
+      "id": "tunnel-hill",
+      "type": "model",
+      "src": "assets/models/tunnelhill.glb",
+      "pos": [
+        0,
+        -27
+      ],
+      "rot": 0,
+      "label": "Tunnel Hill",
+      "labelHeight": 5.2,
+      "mapColor": "#6fb556",
+      "note": "Tunnel Hill (Day 9). OJ Rail goes straight through it. I whistle before we go in."
+    },
+    {
+      "id": "hill-pine",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        1.8,
+        -28.2
+      ],
+      "y": 3.75,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-1",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        -34,
+        -12
+      ],
+      "scale": 1.0,
+      "rot": 0.0,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-2",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        -36,
+        4
+      ],
+      "scale": 1.15,
+      "rot": 0.7,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-3",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        -31,
+        18
+      ],
+      "scale": 1.3,
+      "rot": 1.4,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-4",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        33,
+        -14
+      ],
+      "scale": 1.0,
+      "rot": 2.1,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-5",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        36,
+        2
+      ],
+      "scale": 1.15,
+      "rot": 2.8,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-6",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        34,
+        16
+      ],
+      "scale": 1.3,
+      "rot": 3.5,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-7",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        -20,
+        -34
+      ],
+      "scale": 1.0,
+      "rot": 4.2,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-8",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        18,
+        -35
+      ],
+      "scale": 1.15,
+      "rot": 4.9,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-9",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        -12,
+        35
+      ],
+      "scale": 1.3,
+      "rot": 5.6,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-10",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        20,
+        33
+      ],
+      "scale": 1.0,
+      "rot": 6.3,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-11",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        -37,
+        -4
+      ],
+      "scale": 1.15,
+      "rot": 7.0,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-pine-12",
+      "type": "model",
+      "src": "assets/models/pine.glb",
+      "pos": [
+        37,
+        9
+      ],
+      "scale": 1.3,
+      "rot": 7.7,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-oak-1",
+      "type": "model",
+      "src": "assets/models/oak.glb",
+      "pos": [
+        -30,
+        -28
+      ],
+      "scale": 1.3,
+      "rot": 0.0,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-oak-2",
+      "type": "model",
+      "src": "assets/models/oak.glb",
+      "pos": [
+        31,
+        26
+      ],
+      "scale": 1.2,
+      "rot": 1.3,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-oak-3",
+      "type": "model",
+      "src": "assets/models/oak.glb",
+      "pos": [
+        29,
+        -30
+      ],
+      "scale": 1.25,
+      "rot": 2.6,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-oak-4",
+      "type": "model",
+      "src": "assets/models/oak.glb",
+      "pos": [
+        -29,
+        29
+      ],
+      "scale": 1.1,
+      "rot": 3.9000000000000004,
+      "mapColor": "#4f9a3a"
+    },
+    {
+      "id": "far-rock-1",
+      "type": "model",
+      "src": "assets/models/rock.glb",
+      "pos": [
+        -33,
+        24
+      ],
+      "scale": 1.3,
+      "rot": 0
+    },
+    {
+      "id": "far-rock-2",
+      "type": "model",
+      "src": "assets/models/rock.glb",
+      "pos": [
+        36,
+        -25
+      ],
+      "scale": 1.3,
+      "rot": 1
+    },
+    {
+      "id": "far-rock-3",
+      "type": "model",
+      "src": "assets/models/rock.glb",
+      "pos": [
+        -8,
+        -36
+      ],
+      "scale": 1.3,
+      "rot": 2
+    },
+    {
+      "id": "meadow-flower-1",
+      "type": "model",
+      "src": "assets/models/flower-pink.glb",
+      "pos": [
+        12,
+        33
+      ],
+      "noMapDot": true
+    },
+    {
+      "id": "meadow-flower-2",
+      "type": "model",
+      "src": "assets/models/flower-yellow.glb",
+      "pos": [
+        13.4,
+        34.4
+      ],
+      "noMapDot": true
+    },
+    {
+      "id": "meadow-flower-3",
+      "type": "model",
+      "src": "assets/models/flower-purple.glb",
+      "pos": [
+        11.2,
+        35
+      ],
+      "noMapDot": true
+    },
+    {
+      "id": "meadow-flower-4",
+      "type": "model",
+      "src": "assets/models/flower-yellow.glb",
+      "pos": [
+        -6,
+        33.5
+      ],
+      "noMapDot": true
+    },
+    {
+      "id": "meadow-flower-5",
+      "type": "model",
+      "src": "assets/models/flower-pink.glb",
+      "pos": [
+        -7.4,
+        34.3
+      ],
+      "noMapDot": true
+    },
+    {
+      "id": "meadow-flower-6",
+      "type": "model",
+      "src": "assets/models/flower-purple.glb",
+      "pos": [
+        -5.2,
+        35
+      ],
+      "noMapDot": true
     }
   ],
   "custom": {

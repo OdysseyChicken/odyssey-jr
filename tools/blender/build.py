@@ -1722,6 +1722,347 @@ def kitepost():
 ASSETS.update({"kitepost": kitepost})
 
 
+# ---------------- OJ Rail (Day 9) ----------------
+# A ride-on garden railway: gauge 0.9 (rails at x = +-0.45), rail tops at z = 0.14. Front of every vehicle = -Y.
+def _txt(body, loc, rot, size, m, extrude=0.012):
+    bpy.ops.object.text_add(location=loc, rotation=rot)
+    t = bpy.context.object; t.data.body = body; t.data.align_x = "CENTER"; t.data.align_y = "CENTER"; t.data.size = size; t.data.extrude = extrude
+    t.data.materials.append(m); bpy.ops.object.convert(target="MESH"); return t
+
+def _wheel(name, x, y, z, r, iron, red, brass, spokes=8):
+    # a pivot that spins about X, with a flanged iron wheel, red spokes and a brass hub
+    pv = _pivot(name, (x, y, z)); s = 1 if x > 0 else -1
+    _kid(cyl(name + "_tyre", r, r, 0.1, (x, y, z), iron, rot=(0, math.pi / 2, 0), verts=28, bevel=0.01), pv)
+    _kid(cyl(name + "_flange", r + 0.04, r + 0.04, 0.03, (x - s * 0.06, y, z), iron, rot=(0, math.pi / 2, 0), verts=28, bevel=0.005), pv)
+    _kid(cyl(name + "_face", r * 0.82, r * 0.82, 0.104, (x, y, z), red, rot=(0, math.pi / 2, 0), verts=24, bevel=0.0), pv)
+    for k in range(spokes):
+        a = k * math.pi * 2 / spokes
+        _kid(box(name + "_spoke", (0.03, 0.035, r * 1.6), (x + s * 0.055, y, z), iron, rot=(a, 0, 0), bevel=0.005), pv)
+    _kid(cyl(name + "_hub", r * 0.25, r * 0.25, 0.13, (x + s * 0.01, y, z), brass, rot=(0, math.pi / 2, 0), verts=14, bevel=0.01), pv)
+    return pv
+
+def loco():
+    # "Biscuit", engine No. 9: a little green tank engine. Named parts for behaviors/railway.js:
+    # wheel_1..wheel_4 (pivots, spin about X), rod_L / rod_R (side rods, the script moves them round in a circle with the
+    # crank pins), headlamp (emissive), firebox_glow (the open firehole, glows), stack_top (where the smoke comes out),
+    # whistle_pt (where the steam whistle puffs).
+    green = mat("lo_green", (0.16, 0.42, 0.3), rough=0.45)
+    green2 = mat("lo_green2", (0.12, 0.33, 0.24), rough=0.5)
+    black = mat("lo_black", (0.1, 0.1, 0.11), rough=0.55)
+    red = mat("lo_red", (0.78, 0.17, 0.14), rough=0.5)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    iron = mat("lo_iron", (0.3, 0.3, 0.32), rough=0.45, metal=0.35)
+    cream = mat("lo_cream", (0.96, 0.9, 0.74), rough=0.6)
+    wood = mat("wood", WOOD, tex="wood")
+    coal = mat("lo_coal", (0.08, 0.08, 0.09), rough=0.9)
+    lamp = mat("lo_lamp", (1, 0.93, 0.7), rough=0.3, emit=(1, 0.85, 0.5), emit_strength=2.5)
+    fire = mat("lo_fire", (1, 0.55, 0.15), rough=0.5, emit=(1, 0.5, 0.12), emit_strength=2.0)
+    glass = mat("lo_glass", (0.55, 0.7, 0.8), rough=0.15, metal=0.2)
+    WZ = 0.46  # axle height (wheel radius 0.32 + rail top 0.14)
+    # frame, footplate and red buffer beams
+    box("lo_frame", (0.66, 3.1, 0.26), (0, 0.05, 0.62), black, bevel=0.02)
+    box("lo_footplate", (1.32, 3.25, 0.07), (0, 0.05, 0.85), black, bevel=0.015)
+    box("lo_valance", (1.34, 3.27, 0.03), (0, 0.05, 0.82), red, bevel=0.0)
+    for y in (-1.66, 1.73):
+        box("lo_beam", (1.36, 0.12, 0.3), (0, y, 0.66), red, bevel=0.02)
+        for x in (-0.42, 0.42):
+            cyl("lo_buffer", 0.06, 0.06, 0.16, (x, y + (-0.12 if y < 0 else 0.12), 0.66), iron, rot=(math.pi / 2, 0, 0), verts=12, bevel=0.01)
+            cyl("lo_bufhead", 0.1, 0.1, 0.03, (x, y + (-0.2 if y < 0 else 0.2), 0.66), iron, rot=(math.pi / 2, 0, 0), verts=16, bevel=0.01)
+        box("lo_coupler", (0.12, 0.2, 0.08), (0, y + (-0.12 if y < 0 else 0.12), 0.6), iron, bevel=0.01)
+    # a little cowcatcher (chicken-catcher?) at the front
+    for k in range(5):
+        x = -0.4 + k * 0.2
+        box("lo_catcher", (0.05, 0.3, 0.05), (x, -1.84, 0.36), red, rot=(0.9, 0, 0), bevel=0.01)
+    box("lo_catcher_bar", (1.0, 0.05, 0.06), (0, -1.94, 0.26), red, bevel=0.01)
+    # wheels (0-4-0) and the cylinders that drive them
+    for i, (x, y) in enumerate([(-0.5, -0.65), (0.5, -0.65), (-0.5, 0.65), (0.5, 0.65)]):
+        _wheel(f"wheel_{i + 1}", x, y, WZ, 0.32, iron, red, brass)
+    for s, nm in ((-1, "rod_L"), (1, "rod_R")):
+        x = s * 0.62
+        cyl("lo_cyl", 0.15, 0.15, 0.55, (x - s * 0.02, -1.25, 0.62), green, rot=(math.pi / 2, 0, 0), verts=20, bevel=0.02)
+        for y in (-1.53, -0.97): cyl("lo_cylend", 0.16, 0.16, 0.04, (x - s * 0.02, y, 0.62), brass, rot=(math.pi / 2, 0, 0), verts=20, bevel=0.005)
+        pv = _pivot(nm, (x, 0, WZ))
+        _kid(box(nm + "_bar", (0.05, 1.5, 0.07), (x, 0, WZ), iron, bevel=0.012), pv)
+        for y in (-0.65, 0.65): _kid(cyl(nm + "_pin", 0.05, 0.05, 0.08, (x + s * 0.01, y, WZ), brass, rot=(0, math.pi / 2, 0), verts=10, bevel=0.005), pv)
+    # the boiler, with brass bands and a black smokebox at the front
+    BZ = 1.3
+    cyl("lo_boiler", 0.42, 0.42, 2.0, (0, -0.45, BZ), green, rot=(math.pi / 2, 0, 0), verts=36, bevel=0.0)
+    for y in (-1.05, -0.45, 0.15): cyl("lo_band", 0.43, 0.43, 0.04, (0, y, BZ), brass, rot=(math.pi / 2, 0, 0), verts=36, bevel=0.0)
+    cyl("lo_smokebox", 0.45, 0.45, 0.4, (0, -1.4, BZ), black, rot=(math.pi / 2, 0, 0), verts=36, bevel=0.02)
+    box("lo_saddle", (0.7, 0.4, 0.4), (0, -1.4, 1.0), black, bevel=0.02)
+    cyl("lo_door", 0.38, 0.36, 0.06, (0, -1.62, BZ), black, rot=(math.pi / 2, 0, 0), verts=32, bevel=0.02)
+    cyl("lo_doorring", 0.4, 0.4, 0.02, (0, -1.6, BZ), brass, rot=(math.pi / 2, 0, 0), verts=32, bevel=0.0)
+    cyl("lo_doorhandle", 0.04, 0.04, 0.08, (0, -1.67, BZ), brass, rot=(math.pi / 2, 0, 0), verts=10, bevel=0.005)
+    _txt("9", (0, -1.655, BZ + 0.2), (math.pi / 2, 0, 0), 0.16, brass, 0.01)
+    # headlamp on top of the smokebox
+    cyl("lo_lampcase", 0.12, 0.12, 0.2, (0, -1.5, BZ + 0.52), black, rot=(math.pi / 2, 0, 0), verts=18, bevel=0.01)
+    cyl("headlamp", 0.1, 0.1, 0.03, (0, -1.61, BZ + 0.52), lamp, rot=(math.pi / 2, 0, 0), verts=18, bevel=0.0)
+    # chimney (stack) with a flared brass-rimmed top, steam dome, safety valves
+    cyl("lo_stack", 0.12, 0.14, 0.5, (0, -1.25, BZ + 0.62), black, verts=20, bevel=0.01)
+    cyl("lo_stacktop", 0.21, 0.13, 0.16, (0, -1.25, BZ + 0.93), black, verts=20, bevel=0.01)
+    cyl("lo_stackrim", 0.22, 0.22, 0.03, (0, -1.25, BZ + 1.01), brass, verts=20, bevel=0.0)
+    _pivot("stack_top", (0, -1.25, BZ + 1.05))
+    cyl("lo_dome", 0.2, 0.22, 0.24, (0, -0.4, BZ + 0.48), brass, verts=24, bevel=0.02)
+    sphere("lo_domecap", 0.2, (0, -0.4, BZ + 0.6), brass, scale=(1, 1, 0.55), sub=3)
+    for x in (-0.06, 0.06): cyl("lo_valve", 0.035, 0.035, 0.18, (x, 0.25, BZ + 0.5), brass, verts=10, bevel=0.005)
+    # sand boxes on the footplate + handrails
+    for s in (-1, 1):
+        box("lo_sandbox", (0.18, 0.36, 0.26), (s * 0.52, -0.55, 1.0), green2, bevel=0.03)
+        cyl("lo_rail", 0.015, 0.015, 1.9, (s * 0.47, -0.45, BZ + 0.18), brass, rot=(math.pi / 2, 0, 0), verts=6, bevel=0.0)
+    # the cab
+    CY0, CY1, CW, CH = 0.55, 1.62, 1.28, 2.3
+    box("lo_cabfront", (CW, 0.08, CH - 0.88), (0, CY0, (CH + 0.88) / 2), green, bevel=0.02)
+    for x in (-0.33, 0.33):
+        cyl("lo_spectacle", 0.13, 0.13, 0.1, (x, CY0, 1.85), glass, rot=(math.pi / 2, 0, 0), verts=20, bevel=0.0)
+        cyl("lo_specring", 0.15, 0.15, 0.09, (x, CY0 - 0.01, 1.85), brass, rot=(math.pi / 2, 0, 0), verts=20, bevel=0.0)
+    for s in (-1, 1):
+        box("lo_cabside_low", (0.07, CY1 - CY0, 0.62), (s * CW / 2, (CY0 + CY1) / 2, 1.19), green, bevel=0.02)
+        box("lo_cabside_back", (0.07, 0.3, CH - 0.88), (s * CW / 2, CY1 - 0.15, (CH + 0.88) / 2), green, bevel=0.02)
+        box("lo_cabside_front", (0.07, 0.16, CH - 0.88), (s * CW / 2, CY0 + 0.08, (CH + 0.88) / 2), green, bevel=0.02)
+        box("lo_lining", (0.075, CY1 - CY0 - 0.1, 0.03), (s * CW / 2, (CY0 + CY1) / 2, 1.45), cream, bevel=0.0)
+        box("lo_plate", (0.08, 0.5, 0.18), (s * (CW / 2 + 0.01), (CY0 + CY1) / 2 - 0.05, 1.18), brass, bevel=0.01)
+        _txt("BISCUIT", (s * (CW / 2 + 0.06), (CY0 + CY1) / 2 - 0.05, 1.18), (math.pi / 2, 0, s * math.pi / 2), 0.1, red, 0.01)
+    box("lo_cabback", (CW, 0.07, 0.5), (0, CY1, 1.13), green, bevel=0.02)
+    box("lo_bunker", (1.0, 0.36, 0.42), (0, CY1 - 0.24, 1.1), green2, bevel=0.03)
+    for k in range(9):
+        sphere("lo_coal", 0.09, (-0.36 + (k % 5) * 0.18, CY1 - 0.26 + (k // 5) * 0.12, 1.32 + random.uniform(0, 0.04)), coal, sub=1, smooth=False)
+    # roof (a gentle curve: a wide flat cylinder slice)
+    rf = cyl("lo_roof", 1.4, 1.4, CY1 - CY0 + 0.3, (0, (CY0 + CY1) / 2, CH - 1.22), black, rot=(math.pi / 2, 0, 0), verts=64, bevel=0.0)
+    bm = bmesh.new(); bm.from_mesh(rf.data)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if (rf.matrix_world @ v.co).z < 2.3], context="VERTS"); bm.to_mesh(rf.data); bm.free()
+    sol = rf.modifiers.new("sol", "SOLIDIFY"); sol.thickness = 0.06
+    cyl("lo_roofrib", 0.02, 0.02, CW + 0.15, (0, CY1 + 0.12, CH + 0.12), cream, rot=(0, math.pi / 2, 0), verts=6, bevel=0.0)
+    # inside the cab: the backhead with the firehole (it glows) and a brass whistle on top of the cab front
+    box("lo_backhead", (0.8, 0.06, 0.8), (0, CY0 + 0.07, 1.4), black, bevel=0.02)
+    box("firebox_glow", (0.28, 0.02, 0.18), (0, CY0 + 0.11, 1.2), fire, bevel=0.0)
+    cyl("lo_gauge", 0.06, 0.06, 0.02, (0.2, CY0 + 0.11, 1.62), cream, rot=(math.pi / 2, 0, 0), verts=14, bevel=0.0)
+    cyl("lo_whistle", 0.04, 0.05, 0.22, (0.3, CY0 - 0.05, CH + 0.12), brass, verts=12, bevel=0.005)
+    _pivot("whistle_pt", (0.3, CY0 - 0.05, CH + 0.28))
+
+def railcar():
+    # an open "toast rack" car with a striped canopy, two benches facing forward. I ride in the front one.
+    # Named parts: wheel_1..wheel_4 (spin about X), seat (where I sit).
+    red = mat("rc_red", (0.78, 0.2, 0.16), tex="planks", scale=(1, 0.6))
+    cream = mat("lo_cream", (0.96, 0.9, 0.74), rough=0.6)
+    black = mat("lo_black", (0.1, 0.1, 0.11), rough=0.55)
+    iron = mat("lo_iron", (0.3, 0.3, 0.32), rough=0.45, metal=0.35)
+    wred = mat("lo_red", (0.78, 0.17, 0.14), rough=0.5)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    wood = mat("wood", WOOD, tex="wood")
+    stripe_r = mat("rc_stripe_r", (0.85, 0.22, 0.18), rough=0.8)
+    stripe_c = mat("rc_stripe_c", (0.97, 0.93, 0.82), rough=0.8)
+    L, W, FZ = 2.4, 1.24, 0.58
+    box("rc_chassis", (0.66, L - 0.1, 0.18), (0, 0, 0.5), black, bevel=0.02)
+    box("rc_floor", (W, L, 0.08), (0, 0, FZ), wood, bevel=0.015)
+    for i, (x, y) in enumerate([(-0.5, -0.72), (0.5, -0.72), (-0.5, 0.72), (0.5, 0.72)]):
+        _wheel(f"wheel_{i + 1}", x, y, 0.38, 0.24, iron, wred, brass, spokes=6)
+    for y in (-L / 2 - 0.05, L / 2 + 0.05):
+        box("rc_coupler", (0.12, 0.25, 0.08), (0, y + (-0.08 if y < 0 else 0.08), 0.52), iron, bevel=0.01)
+    # low sides and ends
+    for s in (-1, 1):
+        box("rc_side", (0.06, L, 0.42), (s * W / 2, 0, FZ + 0.25), red, bevel=0.015)
+        box("rc_sidecap", (0.1, L + 0.04, 0.05), (s * W / 2, 0, FZ + 0.48), cream, bevel=0.012)
+    for y in (-L / 2, L / 2):
+        box("rc_end", (W, 0.06, 0.42), (0, y, FZ + 0.25), red, bevel=0.015)
+        box("rc_endcap", (W + 0.04, 0.1, 0.05), (0, y, FZ + 0.48), cream, bevel=0.012)
+    # two forward-facing benches
+    for y in (-0.45, 0.55):
+        box("rc_bench", (W - 0.14, 0.4, 0.07), (0, y, FZ + 0.3), wood, bevel=0.015)
+        box("rc_benchback", (W - 0.14, 0.06, 0.36), (0, y + 0.22, FZ + 0.5), wood, bevel=0.015)
+        for x in (-0.45, 0.45): box("rc_benchleg", (0.06, 0.3, 0.26), (x, y, FZ + 0.14), black, bevel=0.01)
+    _pivot("seat", (0, -0.45, FZ + 0.0))
+    # canopy on four posts, red and cream stripes, with a little scalloped edge (tall enough for my comb AND a hat)
+    RZ = 3.0
+    for x in (-W / 2 + 0.04, W / 2 - 0.04):
+        for y in (-L / 2 + 0.06, L / 2 - 0.06):
+            cyl("rc_post", 0.035, 0.035, RZ - FZ - 0.25, (x, y, (RZ + FZ + 0.25) / 2), brass, verts=8, bevel=0.0)
+    n = 7
+    for k in range(n):
+        x = -W / 2 - 0.1 + (W + 0.2) * (k + 0.5) / n
+        box("rc_canopy", ((W + 0.2) / n, L + 0.25, 0.05), (x, 0, RZ + 0.06 - abs(x) * 0.12), stripe_r if k % 2 == 0 else stripe_c, rot=(0, math.atan(0.12) * (1 if x > 0 else -1), 0), bevel=0.0)
+    for s in (-1, 1):
+        for k in range(8):
+            y = -L / 2 - 0.1 + (L + 0.2) * (k + 0.5) / 8
+            sphere("rc_scallop", 0.09, (s * (W / 2 + 0.1), y, RZ - 0.02), stripe_r if k % 2 == 0 else stripe_c, scale=(0.3, 1, 0.6), sub=2)
+
+def station():
+    # Coop Junction: a low platform with a stone edge, a little shingled shelter with a bench and a station clock,
+    # a departure blackboard, a lamp post, flower tubs and the station sign. Front (-Y) faces the track.
+    # Named parts: clock_hour, clock_min (pivots, turn about Y), station_lamp (emissive), board (the blackboard).
+    stone = mat("stone", WOOD, tex="stone", scale=(4, 1))
+    edge = mat("st_edge", (0.92, 0.88, 0.78), tex="stone", scale=(6, 0.5))
+    planks = mat("st_planks", (0.9, 0.8, 0.68), tex="planks", scale=(4, 1))
+    wood = mat("wood", WOOD, tex="wood")
+    roof = mat("st_roof", (0.7, 0.32, 0.28), tex="shingles", scale=(3, 2))
+    cream = mat("lo_cream", (0.96, 0.9, 0.74), rough=0.6)
+    green = mat("lo_green", (0.16, 0.42, 0.3), rough=0.45)
+    red = mat("lo_red", (0.78, 0.17, 0.14), rough=0.5)
+    black = mat("lo_black", (0.1, 0.1, 0.11), rough=0.55)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    chalk = mat("st_chalkboard", (0.14, 0.2, 0.17), rough=0.9)
+    chalkw = mat("st_chalk", (0.95, 0.95, 0.9), rough=0.9)
+    lamp = mat("st_lamp", (1, 0.93, 0.7), rough=0.3, emit=(1, 0.85, 0.5), emit_strength=2.0)
+    soil = mat("dirt", WOOD, tex="dirt")
+    PL, PD, PH = 8.6, 2.2, 0.14
+    box("st_platform", (PL, PD, PH), (0, 0, PH / 2), stone, bevel=0.02)
+    box("st_edge", (PL, 0.3, 0.04), (0, -PD / 2 + 0.15, PH + 0.01), edge, bevel=0.01)
+    box("st_line", (PL, 0.06, 0.01), (0, -PD / 2 + 0.38, PH + 0.005), mat("st_yellow", (0.96, 0.8, 0.25), rough=0.7), bevel=0.0)
+    for x in (-PL / 2 - 0.4, PL / 2 + 0.4): box("st_ramp", (0.8, PD, PH), (x, 0, PH / 2 - 0.04), stone, rot=(0, 0.12 if x > 0 else -0.12, 0), bevel=0.02)
+    # the shelter, at the back of the platform on the left half
+    SX, SW, SD, SH = -1.8, 3.4, 1.7, 2.5
+    sy0, sy1 = 0.2, 0.2 + SD
+    box("st_floor", (SW + 0.2, SD + 0.2, 0.16), (SX, (sy0 + sy1) / 2 + 0.1, 0.08), planks, bevel=0.01)
+    box("st_back", (SW, 0.1, SH + 0.6), (SX, sy1, (SH + 0.6) / 2), planks, bevel=0.02)
+    for s in (-1, 1): box("st_endwall", (0.1, SD, SH + 0.15), (SX + s * SW / 2, (sy0 + sy1) / 2, (SH + 0.15) / 2), planks, bevel=0.02)
+    for s in (-1, 1): box("st_post", (0.12, 0.12, SH), (SX + s * (SW / 2 - 0.1), sy0 - 0.25, SH / 2), cream, bevel=0.02)
+    box("st_fascia", (SW + 0.4, 0.08, 0.22), (SX, sy0 - 0.55, SH + 0.02), cream, bevel=0.01)
+    for k in range(14):  # a frilly wooden valance, like old country stations
+        x = SX - SW / 2 - 0.1 + (SW + 0.2) * (k + 0.5) / 14
+        cyl("st_frill", 0.08, 0.0, 0.18, (x, sy0 - 0.55, SH - 0.17), cream, verts=4, bevel=0.0)
+    # sloped roof (front low over the platform, back high)
+    rf = box("st_roof", (SW + 0.6, SD + 1.2, 0.1), (SX, (sy0 + sy1) / 2 - 0.25, SH + 0.32), roof, rot=(0.28, 0, 0), bevel=0.02)
+    box("st_ridge", (SW + 0.7, 0.14, 0.12), (SX, sy1 + 0.3, SH + 0.76), mat("st_ridgem", (0.45, 0.22, 0.2), rough=0.7), bevel=0.02)
+    # bench inside
+    box("st_bench", (2.0, 0.45, 0.07), (SX, sy1 - 0.4, 0.62), wood, bevel=0.015)
+    box("st_benchback", (2.0, 0.06, 0.4), (SX, sy1 - 0.17, 0.9), wood, bevel=0.015)
+    for x in (-0.85, 0.85): box("st_benchleg", (0.07, 0.4, 0.46), (SX + x, sy1 - 0.4, 0.38), black, bevel=0.01)
+    # the departures blackboard on the back wall
+    box("board", (1.2, 0.04, 0.75), (SX + 0.95, sy1 - 0.07, 1.55), chalk, bevel=0.01)
+    box("st_boardframe", (1.3, 0.03, 0.85), (SX + 0.95, sy1 - 0.05, 1.55), wood, bevel=0.01)
+    _txt("DEPARTURES", (SX + 0.95, sy1 - 0.1, 1.82), (math.pi / 2, 0, 0), 0.09, chalkw, 0.003)
+    for k in range(4): box("st_chalkline", (0.8, 0.01, 0.025), (SX + 0.95, sy1 - 0.1, 1.65 - k * 0.12), chalkw, bevel=0.0)
+    # station clock hanging under the front of the roof (double-sided)
+    CZ = SH - 0.5
+    box("st_clockarm", (0.06, 0.06, 0.4), (SX, sy0 - 0.55, SH - 0.2), black, bevel=0.0)
+    cyl("st_clockcase", 0.3, 0.3, 0.12, (SX, sy0 - 0.55, CZ), black, rot=(math.pi / 2, 0, 0), verts=28, bevel=0.02)
+    cyl("st_clockface", 0.26, 0.26, 0.125, (SX, sy0 - 0.55, CZ), cream, rot=(math.pi / 2, 0, 0), verts=28, bevel=0.0)
+    for k in range(12):
+        a = k * math.pi / 6
+        box("st_tick", (0.02, 0.13, 0.05 if k % 3 else 0.07), (SX + math.sin(a) * 0.21, sy0 - 0.55, CZ + math.cos(a) * 0.21), black, rot=(0, a, 0), bevel=0.0)
+    for nm, Lh, wdt in (("clock_hour", 0.13, 0.035), ("clock_min", 0.2, 0.025)):
+        pv = _pivot(nm, (SX, sy0 - 0.55, CZ))
+        for yy in (-0.07, 0.07): _kid(box(nm + "_m", (wdt, 0.01, Lh), (SX, sy0 - 0.55 + yy, CZ + Lh / 2 - 0.02), black, bevel=0.0), pv)
+    # the station sign on two posts at the right end
+    GX = 3.2
+    for x in (GX - 1.1, GX + 1.1): box("st_signpost", (0.1, 0.1, 1.9), (x, 0.55, 0.95), cream, bevel=0.015)
+    box("st_sign", (2.5, 0.08, 0.5), (GX, 0.55, 1.65), mat("st_signm", (0.96, 0.92, 0.8), rough=0.6), bevel=0.03)
+    box("st_signedge", (2.62, 0.06, 0.62), (GX, 0.57, 1.65), green, bevel=0.02)
+    _txt("COOP JUNCTION", (GX, 0.5, 1.65), (math.pi / 2, 0, 0), 0.24, green, 0.012)
+    # lamp post between the sign and the shelter
+    LX = 0.9
+    cyl("st_lampbase", 0.12, 0.1, 0.25, (LX, 0.45, PH + 0.12), green, verts=14, bevel=0.01)
+    cyl("st_lamppole", 0.045, 0.045, 2.6, (LX, 0.45, PH + 1.4), green, verts=10, bevel=0.0)
+    box("st_lampbox", (0.24, 0.24, 0.32), (LX, 0.45, PH + 2.85), black, bevel=0.02)
+    box("station_lamp", (0.2, 0.25, 0.26), (LX, 0.45, PH + 2.85), lamp, bevel=0.01)
+    cyl("st_lamptop", 0.2, 0.02, 0.16, (LX, 0.45, PH + 3.08), black, verts=4, rot=(0, 0, math.pi / 4), bevel=0.0)
+    # flower tubs (red geraniums) and a luggage trolley with a mail sack
+    for x in (-4.0, 1.6, 4.0):
+        cyl("st_tub", 0.25, 0.2, 0.32, (x, 0.65, PH + 0.16), wood, verts=16, bevel=0.01)
+        cyl("st_soil", 0.22, 0.22, 0.02, (x, 0.65, PH + 0.32), soil, verts=16, bevel=0.0)
+        for k in range(6):
+            a = k * 1.05
+            sphere("st_leaf", 0.1, (x + math.cos(a) * 0.12, 0.65 + math.sin(a) * 0.12, PH + 0.4), mat("st_leafm", (0.3, 0.55, 0.25), rough=0.8), sub=1)
+            sphere("st_bloom", 0.06, (x + math.cos(a + 0.5) * 0.08, 0.65 + math.sin(a + 0.5) * 0.08, PH + 0.52), red, sub=1)
+    TX = 2.6
+    box("st_trolley", (0.9, 0.55, 0.06), (TX, -0.1, PH + 0.32), wood, bevel=0.01)
+    for x in (TX - 0.3, TX + 0.3): cyl("st_twheel", 0.13, 0.13, 0.05, (x, -0.1, PH + 0.13), black, rot=(0, math.pi / 2, 0), verts=14, bevel=0.0)
+    box("st_handle", (0.05, 0.05, 0.6), (TX + 0.48, -0.1, PH + 0.58), black, rot=(0, 0.4, 0), bevel=0.0)
+    sphere("st_sack", 0.25, (TX - 0.1, -0.1, PH + 0.55), mat("st_sackm", (0.82, 0.74, 0.58), rough=0.95), scale=(1.2, 0.9, 0.9), sub=2)
+    box("st_crate", (0.35, 0.35, 0.3), (TX + 0.25, -0.1, PH + 0.5), wood, bevel=0.02)
+
+def watertower():
+    # A railway water tower: a wooden tank with iron hoops on four legs, a pointy roof, a ladder,
+    # and a canvas spout that swings down to fill Biscuit's tanks. Named: "spout" (pivot, turns about X).
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("wt_planks", (0.85, 0.7, 0.55), tex="planks", scale=(3, 1))
+    iron = mat("lo_iron", (0.3, 0.3, 0.32), rough=0.45, metal=0.35)
+    roof = mat("st_roof", (0.7, 0.32, 0.28), tex="shingles", scale=(3, 2))
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 1))
+    canvas = mat("wt_canvas", (0.55, 0.45, 0.32), rough=0.9)
+    TZ = 2.3
+    for x in (-0.6, 0.6):
+        for y in (-0.6, 0.6):
+            box("wt_footing", (0.3, 0.3, 0.2), (x, y, 0.1), stone, bevel=0.02)
+            box("wt_leg", (0.16, 0.16, TZ), (x * 0.92, y * 0.92, TZ / 2), wood, rot=(y * 0.08, -x * 0.08, 0), bevel=0.02)
+    for z in (0.9, 1.7):
+        for s in (-1, 1):
+            box("wt_brace", (1.2, 0.08, 0.08), (0, s * 0.57, z), wood, bevel=0.01)
+            box("wt_brace", (0.08, 1.2, 0.08), (s * 0.57, 0, z), wood, bevel=0.01)
+    cyl("wt_deck", 0.95, 0.95, 0.1, (0, 0, TZ), wood, verts=32, bevel=0.01)
+    cyl("wt_tank", 0.82, 0.86, 1.3, (0, 0, TZ + 0.7), planks, verts=32, bevel=0.01)
+    for z in (TZ + 0.25, TZ + 0.7, TZ + 1.15): cyl("wt_hoop", 0.87, 0.87, 0.05, (0, 0, z), iron, verts=32, bevel=0.0)
+    cyl("wt_roof", 0.98, 0.05, 0.7, (0, 0, TZ + 1.7), roof, verts=10, bevel=0.0)
+    sphere("wt_knob", 0.07, (0, 0, TZ + 2.06), iron, sub=2)
+    for k in range(9): box("wt_rung", (0.36, 0.04, 0.04), (0.85, 0.3, 0.3 + k * 0.32), wood, bevel=0.0)
+    for y in (0.12, 0.48): box("wt_ladder", (0.04, 0.04, 3.1), (1.02, y, 1.55), wood, rot=(0, -0.08, 0), bevel=0.0)
+    # the spout: pivot on the front of the tank, an iron pipe with a floppy canvas end (rests tipped up)
+    pv = _pivot("spout", (0, -0.86, TZ + 0.35))
+    _kid(cyl("wt_spoutpipe", 0.11, 0.1, 1.4, (0, -0.86 - 0.7, TZ + 0.35), iron, rot=(math.pi / 2, 0, 0), verts=14, bevel=0.0), pv)
+    _kid(cyl("wt_spoutsock", 0.1, 0.09, 0.7, (0, -0.86 - 1.6, TZ + 0.22), canvas, rot=(math.pi / 2 + 0.5, 0, 0), verts=12, bevel=0.0), pv)
+    _kid(box("wt_chain", (0.02, 0.02, 0.9), (0.12, -0.86 - 1.3, TZ + 0.8), iron, bevel=0.0), pv)
+
+def tunnelhill():
+    # Tunnel Hill: a grassy hump the track goes straight through (along X), with stone portals at both ends,
+    # a dark stone lining inside, a few boulders and bushes. 14 long, 10 wide, 4.2 high. Bore: 1.9 wide, 2.95 high.
+    grass = mat("th_grass", (0.86, 0.9, 0.8), tex="grass", scale=(5, 4))
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    dark = mat("th_dark", (0.16, 0.15, 0.14), rough=1.0)
+    key = mat("bo_capstone", (0.78, 0.74, 0.68), tex="stone", scale=(2, 1))
+    bush = mat("th_bush", (0.33, 0.58, 0.28), rough=0.9)
+    HL, HW, HH, BW, BH, PX = 7.0, 5.0, 4.2, 0.95, 2.0, 5.2
+    hill = sphere("th_hill", 1.0, (0, 0, 0), grass, scale=(HL, HW, HH), sub=5); jitter(hill, 0.05)
+    bm = bmesh.new(); bm.from_mesh(hill.data)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.z < -0.05 or abs(v.co.x) > PX - 0.05], context="VERTS"); bm.to_mesh(hill.data); bm.free()  # ends cut off flat behind the portals
+    # cut the bore with a boolean (a box plus a round top)
+    cutter = box("th_cut", (HL * 2 + 2, BW * 2, BH + 0.2), (0, 0, (BH + 0.2) / 2 - 0.2), dark, bevel=0)
+    top = cyl("th_cut2", BW, BW, HL * 2 + 2, (0, 0, BH), dark, rot=(0, math.pi / 2, 0), verts=24, bevel=0)
+    for c in (cutter, top):
+        md = hill.modifiers.new("cut", "BOOLEAN"); md.object = c; md.operation = "DIFFERENCE"; md.solver = "EXACT"
+    bpy.context.view_layer.objects.active = hill
+    for md in list(hill.modifiers):
+        if md.type == "BOOLEAN": bpy.ops.object.modifier_apply(modifier=md.name)
+    bpy.data.objects.remove(cutter); bpy.data.objects.remove(top)
+    # lining: two walls and a half-pipe roof between the portals (dark, so it looks deep)
+    for s in (-1, 1): box("th_wall", (PX * 2, 0.1, BH), (0, s * (BW + 0.03), BH / 2), dark, bevel=0)
+    bpy.ops.mesh.primitive_cylinder_add(vertices=32, radius=BW + 0.05, depth=PX * 2, location=(0, 0, BH), rotation=(0, math.pi / 2, 0), end_fill_type="NOTHING")
+    rf = bpy.context.object; rf.name = "th_vault"
+    bm = bmesh.new(); bm.from_mesh(rf.data)
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if (rf.matrix_world @ v.co).z < BH - 0.01], context="VERTS"); bm.to_mesh(rf.data); bm.free()
+    finish(rf, dark, 0, True); dark.use_backface_culling = False
+    box("th_floor", (PX * 2, BW * 2, 0.02), (0, 0, 0.01), dark, bevel=0)
+    # portals: a stone face with an arched opening, a keystone, and a name stone above
+    for s in (-1, 1):
+        x = s * PX
+        face = box("th_portal", (0.45, 7.0, 3.7), (x, 0, 1.85), stone, bevel=0.03)
+        c1 = box("th_pc", (1.0, BW * 2, BH + 0.2), (x, 0, (BH + 0.2) / 2 - 0.2), dark, bevel=0)
+        c2 = cyl("th_pc2", BW, BW, 1.0, (x, 0, BH), dark, rot=(0, math.pi / 2, 0), verts=24, bevel=0)
+        for c in (c1, c2):
+            md = face.modifiers.new("cut", "BOOLEAN"); md.object = c; md.operation = "DIFFERENCE"; md.solver = "EXACT"
+        bpy.context.view_layer.objects.active = face
+        for md in list(face.modifiers):
+            if md.type == "BOOLEAN": bpy.ops.object.modifier_apply(modifier=md.name)
+        bpy.data.objects.remove(c1); bpy.data.objects.remove(c2)
+        for k in range(9):  # arch voussoirs, a ring of lighter stones around the opening
+            a = -math.pi / 2 + k * math.pi / 8
+            box("th_vous", (0.5, 0.22, 0.34), (x + s * 0.03, math.sin(a) * (BW + 0.15), BH + (BW + 0.15) * math.cos(a)), key, rot=(-a, 0, 0), bevel=0.02)
+        box("th_parapet", (0.6, 7.2, 0.25), (x, 0, 3.8), key, bevel=0.03)
+        for yy in (-3.2, 3.2): box("th_pier", (0.6, 0.5, 3.8), (x, yy, 1.9), key, bevel=0.03)
+        box("th_namestone", (0.5, 1.4, 0.36), (x + s * 0.03, 0, 3.35), key, bevel=0.02)
+        _txt("1926" if s > 0 else "OJ RAIL", (x + s * 0.29, 0, 3.35), (math.pi / 2, 0, s * math.pi / 2), 0.2, mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8), 0.01)
+    # boulders and bushes on the slopes
+    random.seed(9)
+    for k in range(10):
+        a = random.uniform(0, math.pi * 2); r = random.uniform(0.45, 0.85)
+        px, py = math.cos(a) * HL * r, math.sin(a) * HW * r
+        if abs(py) < 1.6 and abs(px) > 3.5: continue
+        pz = HH * math.sqrt(max(0, 1 - (px / HL) ** 2 - (py / HW) ** 2))
+        if k % 2: o = sphere("th_boulder", random.uniform(0.3, 0.5), (px, py, pz), stone, scale=(1.2, 1, 0.7), sub=2); jitter(o, 0.05)
+        else:
+            for j in range(3): sphere("th_bushball", random.uniform(0.35, 0.5), (px + j * 0.3 - 0.3, py + random.uniform(-0.2, 0.2), pz + 0.2), bush, sub=2)
+
+ASSETS.update({"loco": loco, "railcar": railcar, "station": station, "watertower": watertower, "tunnelhill": tunnelhill})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

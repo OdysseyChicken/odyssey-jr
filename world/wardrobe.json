@@ -1,6 +1,6 @@
 {
   "_about": "Odyssey Jr.'s closet: every outfit he has made. 'wearing' is the id of the one he has on. Each outfit has head, neck and body lists of parts (shape: box, roundbox, sphere, cylinder, cone, torus, capsule; size; pos [x,y,z]; color; optional rot). 'head' parts sit on top of his head, 'neck' around his neck, 'body' on the middle of his body. Add a new outfit here to add it to the closet.",
-  "wearing": "baker",
+  "wearing": "engineer",
   "outfits": [
     {
       "id": "aviator",
@@ -1332,6 +1332,364 @@
             0.4
           ],
           "color": "#ffffff"
+        }
+      ]
+    },
+    {
+      "id": "engineer",
+      "name": "Engine driver",
+      "icon": "🚂",
+      "made": "2026-11-21",
+      "note": "For train days: a puffy blue-and-white striped engineer's cap (hickory stripe, like real engine drivers wore), a red bandana for the soot, and a little brass whistle on a cord, so I can do the codes myself. Long long short long!",
+      "head": [
+        {
+          "shape": "cylinder",
+          "size": [
+            0.22,
+            0.21,
+            0.14
+          ],
+          "pos": [
+            0,
+            0.1,
+            -0.03
+          ],
+          "color": "#3d5a99",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.25
+          ],
+          "pos": [
+            0,
+            0.19,
+            -0.04
+          ],
+          "scale": [
+            1.05,
+            0.45,
+            1.1
+          ],
+          "color": "#3d5a99",
+          "texture": "fabric"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.018,
+            0.15,
+            0.018
+          ],
+          "pos": [
+            -0.212,
+            0.1,
+            0.007
+          ],
+          "rot": [
+            0,
+            -1.4,
+            0
+          ],
+          "color": "#f4f1ea"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.018,
+            0.15,
+            0.018
+          ],
+          "pos": [
+            -0.186,
+            0.1,
+            0.077
+          ],
+          "rot": [
+            0,
+            -1.0499999999999998,
+            0
+          ],
+          "color": "#f4f1ea"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.018,
+            0.15,
+            0.018
+          ],
+          "pos": [
+            -0.139,
+            0.1,
+            0.134
+          ],
+          "rot": [
+            0,
+            -0.7,
+            0
+          ],
+          "color": "#f4f1ea"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.018,
+            0.15,
+            0.018
+          ],
+          "pos": [
+            -0.074,
+            0.1,
+            0.172
+          ],
+          "rot": [
+            0,
+            -0.3500000000000001,
+            0
+          ],
+          "color": "#f4f1ea"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.018,
+            0.15,
+            0.018
+          ],
+          "pos": [
+            0.0,
+            0.1,
+            0.185
+          ],
+          "rot": [
+            0,
+            0.0,
+            0
+          ],
+          "color": "#f4f1ea"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.018,
+            0.15,
+            0.018
+          ],
+          "pos": [
+            0.074,
+            0.1,
+            0.172
+          ],
+          "rot": [
+            0,
+            0.3500000000000001,
+            0
+          ],
+          "color": "#f4f1ea"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.018,
+            0.15,
+            0.018
+          ],
+          "pos": [
+            0.139,
+            0.1,
+            0.134
+          ],
+          "rot": [
+            0,
+            0.6999999999999997,
+            0
+          ],
+          "color": "#f4f1ea"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.018,
+            0.15,
+            0.018
+          ],
+          "pos": [
+            0.186,
+            0.1,
+            0.077
+          ],
+          "rot": [
+            0,
+            1.0499999999999998,
+            0
+          ],
+          "color": "#f4f1ea"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.018,
+            0.15,
+            0.018
+          ],
+          "pos": [
+            0.212,
+            0.1,
+            0.007
+          ],
+          "rot": [
+            0,
+            1.4,
+            0
+          ],
+          "color": "#f4f1ea"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.225,
+            0.225,
+            0.03
+          ],
+          "pos": [
+            0,
+            0.04,
+            -0.03
+          ],
+          "color": "#24365e"
+        },
+        {
+          "shape": "roundbox",
+          "size": [
+            0.3,
+            0.03,
+            0.16,
+            0.012
+          ],
+          "pos": [
+            0,
+            0.04,
+            0.2
+          ],
+          "rot": [
+            0.18,
+            0,
+            0
+          ],
+          "color": "#24365e"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.035
+          ],
+          "pos": [
+            0,
+            0.27,
+            -0.04
+          ],
+          "color": "#24365e"
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.3,
+            0.06
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#c8372d",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.14,
+            0.2
+          ],
+          "pos": [
+            0,
+            -0.11,
+            0.3
+          ],
+          "rot": [
+            3.1416,
+            0,
+            0
+          ],
+          "color": "#c8372d",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.03
+          ],
+          "pos": [
+            0.09,
+            -0.06,
+            0.33
+          ],
+          "color": "#ffffff"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.025
+          ],
+          "pos": [
+            -0.08,
+            -0.13,
+            0.31
+          ],
+          "color": "#ffffff"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.012,
+            0.012,
+            0.32
+          ],
+          "pos": [
+            -0.12,
+            -0.2,
+            0.3
+          ],
+          "rot": [
+            0,
+            0,
+            0.35
+          ],
+          "color": "#f0e6cc"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.035,
+            0.045,
+            0.13
+          ],
+          "pos": [
+            -0.17,
+            -0.38,
+            0.32
+          ],
+          "color": "#d9a640",
+          "metal": 0.6,
+          "rough": 0.3
         }
       ]
     }

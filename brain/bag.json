@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-19",
+  "synced": "2026-11-20",
   "bag": [
     {
       "id": "seed-pouch",
@@ -18,14 +18,6 @@
       "from": "Made it when I built my plane",
       "got": "2026-11-14",
       "note": "A pilot never leaves home without it."
-    },
-    {
-      "id": "find-2026-11-14-2",
-      "name": "A blue feather",
-      "icon": "🪶",
-      "from": "Found under the big oak",
-      "got": "2026-11-14",
-      "note": "Not mine. MYSTERY SOLVED on Day 3: it's Rascal the blue jay's! And it's not even really blue: tiny bubbles in the feather scatter blue light. Hold it up to the light and it's brown."
     },
     {
       "id": "golden-compass",
@@ -74,6 +66,14 @@
       "from": "Made it for my frost post on Day 7",
       "got": "2026-11-19",
       "note": "Every morning at 9 I slide the little blue markers in my Six's thermometer back down to the mercury with it. It also picks up micrometeorites from my roof gutter. Two jobs!"
+    },
+    {
+      "id": "oj-rail-ticket",
+      "name": "Ticket No. 1, OJ Rail",
+      "icon": "🎫",
+      "from": "Punched it myself at Coop Junction on Day 9, the first day of OJ Rail",
+      "got": "2026-11-21",
+      "note": "COOP JUNCTION to COOP JUNCTION, via Tunnel Hill. Return. Fare: free. I punched a hole in it with my beak. It's a little crooked."
     }
   ],
   "shelves": {
@@ -167,6 +167,22 @@
           "from": "Made it at the kite post when I tied on my kite's tail",
           "got": "2026-11-20",
           "note": "Blue. The tail goes red, yellow, blue, so this one is for when a bow blows off. My bag is full, so it waits on my shelf."
+        },
+        {
+          "id": "find-2026-11-14-2",
+          "name": "A blue feather",
+          "icon": "🪶",
+          "from": "Found under the big oak",
+          "got": "2026-11-14",
+          "note": "Not mine. MYSTERY SOLVED on Day 3: it's Rascal the blue jay's! And it's not even really blue: tiny bubbles in the feather scatter blue light. Hold it up to the light and it's brown."
+        },
+        {
+          "id": "find-2026-11-20-1",
+          "name": "A snail shell",
+          "icon": "🐚",
+          "from": "Found in the garden",
+          "got": "2026-11-20",
+          "note": "Empty. Spirals to the right, like almost all snail shells. Put it on my shelf because my bag was full (I left the shiny pebble by the pond; I already have one)."
         }
       ]
     },
@@ -320,6 +336,30 @@
       "icon": "🍞",
       "where": "on the cooling bench at OJ Bakehouse (somebody nibbled it. Me. It was me.)",
       "weight": 1
+    },
+    {
+      "name": "A train ticket stub",
+      "icon": "🎫",
+      "where": "on the platform at Coop Junction",
+      "weight": 2
+    },
+    {
+      "name": "A lump of coal",
+      "icon": "🪨",
+      "where": "by the track (Biscuit dropped it)",
+      "weight": 2
+    },
+    {
+      "name": "An old railroad spike",
+      "icon": "📌",
+      "where": "by Tunnel Hill",
+      "weight": 1
+    },
+    {
+      "name": "A pine cone",
+      "icon": "🌲",
+      "where": "under the far pines, out past the track",
+      "weight": 2
     }
   ]
 }

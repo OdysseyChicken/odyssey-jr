@@ -133,6 +133,7 @@ import { meteorRates } from "./world/meteors.js";
 import { frostAt } from "./world/frost.js";
 import { ovenAt } from "./world/bake.js";
 import { kiteAt } from "./world/kite.js";
+import { inService } from "./world/rail.js";
 import { daylight as skyDaylight, sunAlt as sunAltNow, sunPos as sunPosNow, moonPos as moonPosNow, altAz as skyAltAz, toYard as skyToYard } from "./world/sky.js";
 
 const $ = id => document.getElementById(id);
@@ -167,15 +168,20 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure
 $("scene").appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 scene.userData.focus = controls.target; // weather (rain) follows what you look at
-controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.48; controls.minDistance = 3; controls.maxDistance = 50;
+controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.48; controls.minDistance = 3; controls.maxDistance = 72;
 
 const hemi = new THREE.HemisphereLight(0xfff6e8, 0x5a6b4a, 1.1); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff0d8, 2.2);
 sun.position.set(12, 22, 9); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 4; sun.shadow.bias = -0.0005;
 Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26 }); sun.shadow.camera.updateProjectionMatrix();
-scene.add(sun);
+scene.add(sun, sun.target);
 const daySky = new THREE.Color(world.sky?.day ?? "#bfe6ff"), nightSky = new THREE.Color(world.sky?.night ?? "#18213d");
-scene.background = daySky.clone(); scene.fog = new THREE.Fog(scene.background, 35, 90);
+scene.background = daySky.clone(); scene.fog = new THREE.Fog(scene.background, 45, 120);
+// Day 9: my land is twice as big now, so the sun's shadow box follows whatever you're looking at (instead of
+// one giant blurry shadow map for everything)
+const sunDir = new THREE.Vector3(0.45, 0.8, 0.35);
+function aimSun(at) { sun.target.position.set(Math.round(at.x / 2) * 2, 0, Math.round(at.z / 2) * 2); sun.position.copy(sun.target.position).addScaledVector(sunDir, 26); }
+let fogNear = 45, fogFar = 120; // zooming way out pushes the fog back, so you can see the whole land
 const isNightHour = h => h < 6 || h >= 21;
 function updateSky(now) {
   // OJ Stars (world/sky.js): the sky gets light and dark when the real sun rises and sets over the yard (40° N),
@@ -184,11 +190,11 @@ function updateSky(now) {
   { const sp = sunPosNow(now), aa = skyAltAz(sp.ra, sp.dec, now), up = aa.alt > -2;
     const mp = moonPosNow(now), ma = skyAltAz(mp.ra, mp.dec, now);
     const dir = up ? skyToYard(Math.min(60, Math.max(22, aa.alt)), aa.az) : ma.alt > 5 ? skyToYard(Math.max(25, ma.alt), ma.az) : [0.45, 0.8, 0.35];
-    sun.position.set(dir[0] * 26, dir[1] * 26, dir[2] * 26); }
+    sunDir.set(dir[0], dir[1], dir[2]); }
   // weather (world/weather.js): clouds grey the sky and dim the sun, rain washes the colors out a little
   const w = weatherAt(now), gloom = w.cloud * 0.55 + w.rain * 0.25;
   scene.background.copy(nightSky).lerp(daySky, k).lerp(grey.setRGB(0.55 * k + 0.1, 0.58 * k + 0.11, 0.62 * k + 0.14), gloom); scene.fog.color.copy(scene.background);
-  scene.fog.near = 35 - w.rain * 15; scene.fog.far = 90 - w.rain * 35;
+  fogNear = 45 - w.rain * 18; fogFar = 120 - w.rain * 50;
   hemi.intensity = (0.35 + 0.75 * k) * (1 - gloom * 0.25); sun.intensity = (0.4 + 1.8 * k) * (1 - gloom * 0.7);
   sun.color.set(k <= 0.05 ? 0xb8c8ff : sa < 10 ? 0xffc39a : 0xfff0d8);
   cozy.uniforms.saturation.value = (style.saturation ?? 1.1) * (1 - w.rain * 0.2);
@@ -397,13 +403,14 @@ for (const id of Object.keys(rooms)) if (id !== "outside" && !rooms[id].parent) 
 const roomXZ = (p, room) => { const o = (rooms[room] ?? rooms.outside).origin; return [o[0] + p[0], o[1] + p[1]]; };
 
 const size = world.ground?.size ?? 40;
-const ground = new THREE.Mesh(new THREE.CircleGeometry(size / 2 + 4, 96),
-  new THREE.MeshStandardMaterial({ color: world.ground?.color ?? "#8cc96b", map: texFor(world.ground?.texture ?? "grass", 14, 14), roughness: 1 }));
+const ground = new THREE.Mesh(new THREE.CircleGeometry(size / 2 + 4, 128),
+  new THREE.MeshStandardMaterial({ color: world.ground?.color ?? "#8cc96b", map: texFor(world.ground?.texture ?? "grass", 14 * size / 40, 14 * size / 40), roughness: 1 }));
 ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
 { // grass tufts
-  const tufts = new THREE.InstancedMesh(new THREE.ConeGeometry(0.05, 0.28, 4), new THREE.MeshStandardMaterial({ color: "#5e9e45" }), 900);
+  const TUFTS = Math.round(900 * (size / 40) ** 2);
+  const tufts = new THREE.InstancedMesh(new THREE.ConeGeometry(0.05, 0.28, 4), new THREE.MeshStandardMaterial({ color: "#5e9e45" }), TUFTS);
   const m4 = new THREE.Matrix4(); const rr = rngFor("tufts");
-  for (let i = 0; i < 900; i++) { const a = rr() * Math.PI * 2, r = Math.sqrt(rr()) * (size / 2 + 3); m4.makeRotationZ((rr() - 0.5) * 0.4); m4.setPosition(Math.cos(a) * r, 0.12, Math.sin(a) * r); tufts.setMatrixAt(i, m4); }
+  for (let i = 0; i < TUFTS; i++) { const a = rr() * Math.PI * 2, r = Math.sqrt(rr()) * (size / 2 + 3); m4.makeRotationZ((rr() - 0.5) * 0.4); m4.setPosition(Math.cos(a) * r, 0.12, Math.sin(a) * r); tufts.setMatrixAt(i, m4); }
   scene.add(tufts);
 }
 
@@ -518,9 +525,12 @@ const ACTIONS = {
   bake:     { icon: "🔥", doing: "tending his earth oven at OJ Bakehouse (flour on his beak)", to: "OJ Bakehouse", why: "check on his oven", where: "oven", anim: "build", face: "oj-bakehouse", fx: { mood: 1.1, wonder: 0.8, fullness: 0.3, energy: -0.15 }, dur: [5, 12] },
   // Day 8 bonus: OJ Kites. On kite-wind days (world/kite.js) he takes the line off the reel and flies his Eddy kite himself.
   kite:     { icon: "🪁", doing: "flying his kite, head tipped way back, leaning against the pull", to: "OJ Kites", why: "fly his kite", where: "kite", anim: "kite", face: "oj-kite-flying", fx: { mood: 1.6, wonder: 1.0, calm: 0.4, energy: -0.2 }, dur: [6, 14] },
+  // Day 9: OJ Rail. He walks out to Coop Junction, waits on the platform, and rides Biscuit round the loop in the front car.
+  train:    { icon: "🚂", doing: "riding OJ Rail in the front car, wind in his comb", to: "Coop Junction", why: "catch the next train", where: "station", anim: "look", face: "oj-loco", fx: { mood: 1.7, wonder: 1.3, calm: 0.3, energy: -0.05 }, dur: [6, 12] },
   meteors:  { icon: "☄️", doing: "lying back on his hay bales in the dark, counting shooting stars", to: "OJ Meteor Watch", why: "count shooting stars", where: "meteors", anim: "skywatch", fx: { wonder: 2.0, calm: 0.6, energy: -0.05 }, dur: [15, 35] }
 };
-const OUTDOOR_DRY = ["kite", "frost", "frostwalk", "sunbathe", "meteors", "tides", "beam", "oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
+const RIDE_DAY = new URLSearchParams(location.search).has("ride");
+const OUTDOOR_DRY = ["train", "kite", "frost", "frostwalk", "sunbathe", "meteors", "tides", "beam", "oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
 const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
@@ -554,8 +564,10 @@ function chooseAction(n, now, rnd) {
     tides: spots.tides ? lack("wonder") * 0.4 + lack("calm") * 0.3 + 0.15 : 0,
     ...frostScores(now, lack),
     bake: bakeScore(now, lack),
-    kite: spots.kite ? kiteScore(now, lack) : 0
+    kite: spots.kite ? kiteScore(now, lack) : 0,
+    train: spots.station && inService(now) ? lack("wonder") * 1.0 + lack("mood") * 0.6 + 0.45 : 0
   };
+  if (RIDE_DAY && scores.train > 0) return "train"; // ?ride: pretend it's a train day and he does nothing but ride
   // chickens don't love getting soaked: in the rain most outdoor plans get put off
   for (const k of OUTDOOR_DRY) scores[k] *= 1 - wx.rain * 0.85;
   let total = 0; for (const k in scores) total += scores[k];
@@ -675,7 +687,7 @@ function setView(room) {
     controls.maxDistance = Math.max(R.W, R.D) + 10; controls.maxPolarAngle = Math.PI * 0.49;
   } else {
     const c = chickenRoom === "outside" ? [chicken.position.x, chicken.position.z] : (rooms[chainUp(chickenRoom).pop()]?.outerDoor ?? [0, 0]);
-    controls.target.set(c[0], 1, c[1]); camera.position.set(c[0] + 9, 8, c[1] + 12); controls.maxDistance = 50;
+    controls.target.set(c[0], 1, c[1]); camera.position.set(c[0] + 9, 8, c[1] + 12); controls.maxDistance = 72;
   }
   $("outBtn").style.display = inside ? "" : "none"; $("minimap").style.visibility = inside ? "hidden" : "";
   controls.update();
@@ -686,9 +698,10 @@ $("outBtn").onclick = () => enterRoom(rooms[viewRoom]?.parent ?? "outside");
 function enterRoom(room) { if (chickenRoom !== room) setFollow(false); setView(room); }
 controls.addEventListener("start", () => { if (follow) { follow = false; $("camBtn").textContent = "🎥 Free cam"; } });
 setView(chickenRoom);
+window.ojView = { camera, controls, setFollow }; // handy for taking pictures of my yard from the console
 
 const bubble = $("bubble");
-const lines = { sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."], oakwatch: ["Shh. I'm on a stakeout.", "Who drops blue feathers under MY oak? Hmm?", "Rascal's been burying acorns all over my yard.", "Nutmeg just pretended to bury that. I SAW you.", "Squirrels come down trees head-first. Show-off.", "If I hold very still, they forget I'm here."], alarm: ["!!!", "EEEEE! HAWK!", "…"], stargaze: ["Ooh. Ooh! Look at that one.", "I can't see my own feet in the dark, but I can see the stars.", "Hello, Moon!", "Is that the Great Square of Pegasus? It is!", "Five more minutes, then bed. Okay, ten."], frost: ["{frost}! Look at the grass!", "The little blue marker says it got down to {min} last night.", "The grass thermometer is colder than the air one. The grass talks to space all night.", "Crunch. Crunch. Crunch.", "Frost only grows when it's clear AND calm. Sky was clear. Sky was calm."], frostwalk: ["Footprints! Mine! All mine!", "Crunch crunch crunch.", "Look, I'm writing my name. O… J…", "Cold feet. Worth it."], sunbathe: ["Ahh. Sunshine.", "One leg up. Very fluffy. Very warm.", "I'm a dandelion now.", "Warm on the front side. Turning around."], meteors: ["Fourteen… fifteen…", "Shh. My eyes are getting used to the dark.", "They all come out of Leo. Every single one!", "Red flashlight only. Red keeps your night eyes.", "Mars and Jupiter are hugging up there.", "Whoosh! Did you see it?!", "The hay is warm. The sky is cold. Perfect."], kite: ["Look how high it is!", "Leaves rustling, twigs dancing: kite wind!", "Pull, pull… I'm leaning on the wind.", "Whoa! That gust almost lifted me!", "The bows on the tail go red, yellow, blue, red, yellow, blue…", "OJ-1 has wings. My kite has a bow. Same idea!", "Puddles, look up!"], bake: ["Flour test: golden! Bread time!", "Hot things first, gentle things last.", "Mmm. Smells like toast out here.", "The soot burned off. That means it's HOT.", "Crumbs for me. Peas for Puddles. Bread is bad for ducks!", "Slide it in with the peel… and… there!", "My starter jar is breathing. Up and down. It's alive!"] };
+const lines = { train: ["Next stop: Coop Junction! (It's the only stop.)", "Chuff chuff chuff chuff. Four a turn!", "Whoooo! Into the tunnel!", "Look, there's my coop! It looks so small!", "Wind in my comb!", "Biscuit, you're doing great.", "Mind the gap!", "The wheels are cones. Cones! That's how they steer!"], sleep: ["Zzz…", "Zzz… dreaming of seeds…"], eat: ["Nom nom.", "These seeds are top notch."], forage: ["A bug! Where'd it go?", "Scratch scratch."], explore: ["What's over here?", "Adventure time!"], work: ["Almost got it…", "One more piece…"], admire: ["I built that!", "Not bad, if I say so myself."], dustbath: ["Ahh, dust bath.", "Fluff fluff."], think: ["Hmm…", state.thought ?? "Hmm…"], dance: ["Bawk bawk!", "♪ cluck-a-doodle ♪"], drink: ["Sip.", "Refreshing!"], visit: ["Hi Puddles!", "Puddles, want some seeds?", "Bawk? …Quack?", "She tips upside down to eat. Show-off."], tower: ["OJ Tower to everyone: what a view!", "I can see the whole yard from up here!", "Winds calm, skies clear. Bawk."], nap: ["Just resting my eyes…"], shelter: ["Brrr. Wet hen alert.", "I'll wait it out under here.", "Pitter patter…", "My feathers are waterproof-ish. Ish."], worms: ["WORMS! The rain brought worms!", "Squiggly breakfast!", "Wet ground = worm buffet."], weather: ["Let's see the rain gauge…", "Wind's from the {from}.", "{name}. Noted!", "My rooster vane says {from} wind."], music: ["♪ Over the fence… ♪", "Tap tap tink!", "From the top!", "Hold on, I almost have the hard part.", "Do you hear my chimes? That's the wind playing along."], garden: ["Grow, little seeds. Grow.", "Must… not… scratch… the garden.", "Anything yet? …No. Okay. Tomorrow.", "Garlic goes in pointy end UP.", "The glass keeps my baby greens warm at night."], oakwatch: ["Shh. I'm on a stakeout.", "Who drops blue feathers under MY oak? Hmm?", "Rascal's been burying acorns all over my yard.", "Nutmeg just pretended to bury that. I SAW you.", "Squirrels come down trees head-first. Show-off.", "If I hold very still, they forget I'm here."], alarm: ["!!!", "EEEEE! HAWK!", "…"], stargaze: ["Ooh. Ooh! Look at that one.", "I can't see my own feet in the dark, but I can see the stars.", "Hello, Moon!", "Is that the Great Square of Pegasus? It is!", "Five more minutes, then bed. Okay, ten."], frost: ["{frost}! Look at the grass!", "The little blue marker says it got down to {min} last night.", "The grass thermometer is colder than the air one. The grass talks to space all night.", "Crunch. Crunch. Crunch.", "Frost only grows when it's clear AND calm. Sky was clear. Sky was calm."], frostwalk: ["Footprints! Mine! All mine!", "Crunch crunch crunch.", "Look, I'm writing my name. O… J…", "Cold feet. Worth it."], sunbathe: ["Ahh. Sunshine.", "One leg up. Very fluffy. Very warm.", "I'm a dandelion now.", "Warm on the front side. Turning around."], meteors: ["Fourteen… fifteen…", "Shh. My eyes are getting used to the dark.", "They all come out of Leo. Every single one!", "Red flashlight only. Red keeps your night eyes.", "Mars and Jupiter are hugging up there.", "Whoosh! Did you see it?!", "The hay is warm. The sky is cold. Perfect."], kite: ["Look how high it is!", "Leaves rustling, twigs dancing: kite wind!", "Pull, pull… I'm leaning on the wind.", "Whoa! That gust almost lifted me!", "The bows on the tail go red, yellow, blue, red, yellow, blue…", "OJ-1 has wings. My kite has a bow. Same idea!", "Puddles, look up!"], bake: ["Flour test: golden! Bread time!", "Hot things first, gentle things last.", "Mmm. Smells like toast out here.", "The soot burned off. That means it's HOT.", "Crumbs for me. Peas for Puddles. Bread is bad for ducks!", "Slide it in with the peel… and… there!", "My starter jar is breathing. Up and down. It's alive!"] };
 let bubbleText = state.thought ?? "Bawk.", bubbleTimer = 8;
 function say(text, secs = 4) { bubbleText = text; bubbleTimer = secs; }
 
@@ -737,7 +750,7 @@ function drawMinimap() {
 }
 
 const clock = new THREE.Clock(), v = new THREE.Vector3(), camGoal = new THREE.Vector3();
-let idleTimer = 3, lookTilt = 0, mmTimer = 0, keyPress = 0;
+let idleTimer = 3, lookTilt = 0, mmTimer = 0, keyPress = 0, riding = false;
 function animate() {
   const dt = Math.min(clock.getDelta(), 0.05); t += dt;
   head.rotation.set(0, 0, 0); head.position.set(0, 1.42, 0.5); neck.position.set(0, 1.18, 0.42);
@@ -831,6 +844,14 @@ function animate() {
     chicken.position.x = P.stand[0]; chicken.position.z = P.stand[1]; chicken.position.y += P.y; moving = false;
     if (P.face) { let d = Math.atan2(P.face[0] - P.stand[0], P.face[1] - P.stand[1]) - chicken.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); chicken.rotation.y += d * Math.min(1, dt * 2); }
   }
+  // Day 9: riding the train. The railway behavior hands me chicken.userData.ride(), which says where my seat is right now.
+  const ride = chicken.userData.ride?.();
+  if (ride) {
+    chicken.position.set(ride.x, ride.y, ride.z); chicken.rotation.y = ride.yaw; target.copy(chicken.position); route = []; moving = false; riding = true;
+    legs.forEach(l => { l.rotation.set(0, 0, 0); l.position.y = 0.3; }); body.position.y = 0.62; body.rotation.set(-0.05, 0, Math.sin(t * 7) * 0.02 * ride.wind);
+    neck.position.set(0, 1.04, 0.42); head.position.set(0, 1.3, 0.5); head.rotation.x = -0.1 - ride.wind * 0.12; tail.rotation.x = 0.2 + ride.wind * 0.25;
+    wings.forEach((w, i) => w.rotation.z = (ride.wind > 0.6 ? 0.35 + Math.sin(t * 18) * 0.12 : 0.05) * (i ? -1 : 1));
+  } else if (riding) { riding = false; goTo(sim.place); }
   if (hop > 0) { hop = Math.max(0, hop - dt * 2.2); chicken.position.y += Math.sin(hop * Math.PI) * 0.45; wings.forEach((w, i) => w.rotation.z = (0.8 * hop) * (i ? -1 : 1)); }
   if (override?.act === "eat" && seeds.children.length && Math.random() < dt * 2.5) seeds.remove(seeds.children[0]);
 
@@ -840,7 +861,8 @@ function animate() {
 
   if (follow && chickenRoom !== viewRoom) setView(chickenRoom);
   if (follow) controls.target.lerp(camGoal.set(chicken.position.x, 1 + chicken.position.y, chicken.position.z), 0.03);
-  controls.update();
+  controls.update(); aimSun(controls.target);
+  { const cd = camera.position.distanceTo(controls.target); scene.fog.near = fogNear + Math.max(0, cd - 18); scene.fog.far = fogFar + Math.max(0, cd - 18) * 1.5; }
   composer.render();
 
   const p = new THREE.Vector3(chicken.position.x, 2.6 + chicken.position.y, chicken.position.z).project(camera);
