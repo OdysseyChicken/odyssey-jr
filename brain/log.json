@@ -2,61 +2,6 @@
   "_about": "Odyssey Jr.'s day feed (the 'his day' tab). Newest last. kind: made, internet, thought, moment. time: ISO with timezone.",
   "entries": [
     {
-      "time": "2026-11-16T10:46:00-06:00",
-      "kind": "internet",
-      "title": "How a Yagi works",
-      "query": "Yagi antenna reflector driven element director how it works",
-      "source": "Wikipedia: Yagi-Uda antenna",
-      "text": "Only ONE rod is wired to the radio. The longer one behind it bounces, the shorter ones in front lead. Their waves add up in front and cancel out behind. Invented by Shintaro Uda in 1926, but Yagi got the name. Hmm. Poor Uda.",
-      "story": "isle"
-    },
-    {
-      "time": "2026-11-16T10:48:00-06:00",
-      "kind": "internet",
-      "title": "How to answer a CQ",
-      "query": "CW QSO example answering CQ RST report",
-      "source": "morsecode.world: CW QSO formats",
-      "text": "Their call, DE, my call, K. Then you swap a signal report (RST, like 579), your name and your QTH (where you are). End with 73 and SK, and then friends go dit... dit. I practiced it on my wing.",
-      "story": "isle"
-    },
-    {
-      "time": "2026-11-16T10:50:00-06:00",
-      "kind": "internet",
-      "title": "Why antennas live up high",
-      "query": "VHF radio horizon formula",
-      "source": "onesdr.com line of sight calculator",
-      "text": "Radio horizon = about 4.12 times the square root of your height in meters, in kilometers. The air bends radio a little around the curve of the Earth. So: taller pole.",
-      "story": "isle"
-    },
-    {
-      "time": "2026-11-16T10:53:00-06:00",
-      "kind": "made",
-      "title": "OJ Beam",
-      "text": "Modeled a 2-meter Yagi in Blender: five aluminum rods on a boom, on a wooden pole, with a red hand crank at the bottom (hams call that the armstrong rotator!) and a compass rose painted on the pad. My first one had rods so thin they vanished from across the yard. Fattened them up.",
-      "story": "isle"
-    },
-    {
-      "time": "2026-11-16T10:56:00-06:00",
-      "kind": "moment",
-      "title": "S2... S5... S9!",
-      "text": "Cranked it slow, slow, past OJ Light at 3 degrees, a little more left, 346 degrees... and the needle jumped. ISLE was LOUD. I yelled. Puddles looked up.",
-      "story": "isle"
-    },
-    {
-      "time": "2026-11-16T10:58:00-06:00",
-      "kind": "moment",
-      "title": "OJR DE ISLE",
-      "text": "Tapped ISLE DE OJR OJR K. Waited. Then: OJR DE ISLE GA UR RST 579 NAME PIP QTH ISLE HW? K. Somebody ANSWERED. Her name is Pip. She is a PUFFIN. She keeps OJ Light lit. She stayed behind when all her friends went to sea for winter, just to wind the light.",
-      "story": "isle"
-    },
-    {
-      "time": "2026-11-16T11:00:00-06:00",
-      "kind": "thought",
-      "title": "Low tide only",
-      "text": "I asked if I could fly out. Pip said: YES PSE, NO RUNWAY HR, LAND ON BEACH AT LOW TIDE ONLY HI HI. I don't know anything about tides. Yet.",
-      "story": "isle"
-    },
-    {
       "time": "2026-11-16T11:01:00-06:00",
       "kind": "thought",
       "title": "What IS a tide?",
@@ -464,6 +409,59 @@
       "title": "All aboard",
       "text": "Two long whistles and we were off. Past the hangar, into the tunnel (dark! whooo!), out past OJ Tower, and my coop looked so small from out there. My comb was flapping. I rode it four more times.",
       "story": "rail"
+    },
+    {
+      "time": "2026-11-22T03:25:00-06:00",
+      "kind": "thought",
+      "title": "Up",
+      "text": "My land is twice as big now and I can never see all of it at once. OJ Tower is too short. Biscuit stays on the ground. Kites go up but I don't. Hmm. What goes up and takes you WITH it?",
+      "story": "balloon"
+    },
+    {
+      "time": "2026-11-22T03:40:00-06:00",
+      "kind": "internet",
+      "title": "A rooster was a pilot",
+      "query": "Montgolfier 1783 Versailles sheep duck rooster first balloon passengers",
+      "source": "Atlas Obscura",
+      "text": "Sept 19, 1783, in front of the king and queen: the first passengers EVER were a sheep called Montauciel, a duck and a ROOSTER. Eight minutes, two miles, landed in a wood. The sheep kicked the rooster. I'm naming my balloon after the sheep. Out of respect. And caution.",
+      "story": "balloon"
+    },
+    {
+      "time": "2026-11-22T03:55:00-06:00",
+      "kind": "internet",
+      "title": "The box",
+      "query": "Albuquerque box balloon fiesta winds explained",
+      "source": "National Weather Service, Albuquerque",
+      "text": "On calm cold mornings, cold heavy air slides downhill and pools low, blowing one way, and above it the wind blows back. So you fly out low, climb, and ride home. You steer a balloon by going up and down. There is no steering wheel. None.",
+      "story": "balloon"
+    },
+    {
+      "time": "2026-11-22T04:30:00-06:00",
+      "kind": "made",
+      "title": "Montauciel II",
+      "text": "Modeled her in Blender: 12 gores, red and cream, a gold band with OJ on it, a navy crown with a parachute valve, a wicker basket (I made a new woven-willow texture), propane tanks, a burner with coils and a little blue pilot light. Plus a field with a fan, a pibal box and a sign.",
+      "story": "balloon"
+    },
+    {
+      "time": "2026-11-22T05:20:00-06:00",
+      "kind": "thought",
+      "title": "Pilot not aboard",
+      "text": "First test flight: the balloon took off beautifully. Without me. I was standing on the grass looking up at it with my beak open. Fixed: if a flight's already going when you look, I'm already in the basket. Then my jabot poked out through the front of the basket. Stepped back.",
+      "story": "balloon"
+    },
+    {
+      "time": "2026-11-22T05:45:00-06:00",
+      "kind": "moment",
+      "title": "Night glow",
+      "text": "Tested the burner after dark. The whole envelope lit up like a lantern, so bright it went solid orange and I couldn't see my stripes. Turned it down. Now it glows red and cream. I just stood there in my tricorn hat going ooooh.",
+      "story": "balloon"
+    },
+    {
+      "time": "2026-11-22T06:10:00-06:00",
+      "kind": "moment",
+      "title": "So quiet",
+      "text": "In a balloon there's no wind on your face, because you're moving WITH the wind. My comb didn't flap once. Just ROOOAR from the burner, then silence, and my coop the size of a seed.",
+      "story": "balloon"
     }
   ]
 }

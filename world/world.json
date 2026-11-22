@@ -10,7 +10,7 @@
   },
   "spots": {
     "coop": [
-      -7.0,
+      -7,
       -4.3
     ],
     "garden": [
@@ -50,11 +50,11 @@
       -1
     ],
     "weather": [
-      8.0,
+      8,
       -0.6
     ],
     "shelter": [
-      -11.0,
+      -11,
       3.1
     ],
     "music": [
@@ -99,11 +99,15 @@
     ],
     "kite": [
       -4.5,
-      3.0
+      3
     ],
     "station": [
       3.15,
       25.7
+    ],
+    "balloon": [
+      -17.4,
+      16.8
     ]
   },
   "objects": [
@@ -119,7 +123,7 @@
       "src": "assets/models/coop.glb",
       "door": "home",
       "doorAt": [
-        -7.0,
+        -7,
         -4.3
       ],
       "note": "house. Click it to come inside!"
@@ -474,7 +478,7 @@
       "rot": -1.5708,
       "script": "behaviors/radio.js",
       "label": "OJ Radio",
-      "labelHeight": 3.0,
+      "labelHeight": 3,
       "note": "My radio shack (Day 4). The lever of my straight key has a smooth stick I found by the lookout inside the knob. Click it to send Morse code."
     },
     {
@@ -532,10 +536,10 @@
         -3.4
       ],
       "rot": 0,
-      "scale": 1.0,
+      "scale": 1,
       "script": "behaviors/frost.js",
       "label": "OJ Frost",
-      "labelHeight": 3.0,
+      "labelHeight": 3,
       "mapColor": "#dfeeff",
       "note": "My frost post (Day 7): a Six's max-min thermometer for the air and a grass thermometer lying on little forks for the lawn. On clear, still, cold nights the yard grows frost. Click it for the frost forecast!"
     },
@@ -548,7 +552,7 @@
         -2.6
       ],
       "rot": 0,
-      "scale": 1.0,
+      "scale": 1,
       "script": "behaviors/bakeoven.js",
       "label": "OJ Bakehouse",
       "labelHeight": 3.9,
@@ -564,7 +568,7 @@
         1.5
       ],
       "rot": 0,
-      "scale": 1.0,
+      "scale": 1,
       "script": "behaviors/kite.js",
       "label": "OJ Kites",
       "labelHeight": 2.8,
@@ -577,7 +581,7 @@
       "src": "assets/models/station.glb",
       "pos": [
         5.5,
-        25.0
+        25
       ],
       "rot": 0,
       "script": "behaviors/station.js",
@@ -668,8 +672,8 @@
         -34,
         -12
       ],
-      "scale": 1.0,
-      "rot": 0.0,
+      "scale": 1,
+      "rot": 0,
       "mapColor": "#4f9a3a"
     },
     {
@@ -704,7 +708,7 @@
         33,
         -14
       ],
-      "scale": 1.0,
+      "scale": 1,
       "rot": 2.1,
       "mapColor": "#4f9a3a"
     },
@@ -740,7 +744,7 @@
         -20,
         -34
       ],
-      "scale": 1.0,
+      "scale": 1,
       "rot": 4.2,
       "mapColor": "#4f9a3a"
     },
@@ -776,7 +780,7 @@
         20,
         33
       ],
-      "scale": 1.0,
+      "scale": 1,
       "rot": 6.3,
       "mapColor": "#4f9a3a"
     },
@@ -789,7 +793,7 @@
         -4
       ],
       "scale": 1.15,
-      "rot": 7.0,
+      "rot": 7,
       "mapColor": "#4f9a3a"
     },
     {
@@ -813,7 +817,7 @@
         -28
       ],
       "scale": 1.3,
-      "rot": 0.0,
+      "rot": 0,
       "mapColor": "#4f9a3a"
     },
     {
@@ -944,6 +948,35 @@
         35
       ],
       "noMapDot": true
+    },
+    {
+      "id": "oj-balloon-field",
+      "type": "model",
+      "src": "assets/models/balloonfield.glb",
+      "pos": [
+        -19,
+        16
+      ],
+      "rot": 0,
+      "scale": 1,
+      "label": "OJ Balloons",
+      "labelHeight": 3.2,
+      "mapColor": "#dc3a33",
+      "note": "My balloon field (Day 10), inside the loop of OJ Rail. A sign, an inflator fan, a pibal box with a little red pilot balloon, and three tether stakes for hops."
+    },
+    {
+      "id": "oj-balloon",
+      "type": "model",
+      "src": "assets/models/balloon.glb",
+      "pos": [
+        -19,
+        16
+      ],
+      "rot": 0,
+      "scale": 1,
+      "script": "behaviors/balloon.js",
+      "noMapDot": true,
+      "note": "Montauciel II, my hot-air balloon (Day 10). Red and cream gores, a gold band with OJ on it, a wicker basket with a step box so I can see out. Flies at sunrise and before sunset on calm dry days (world/balloon.js). Click it for a tethered hop."
     }
   ],
   "custom": {
@@ -1044,7 +1077,7 @@
         "size": [
           0.06,
           0.06,
-          1.0
+          1
         ],
         "pos": [
           0,
@@ -1130,7 +1163,7 @@
     "vignette": 0.35,
     "warmth": 0.15,
     "saturation": 1.1,
-    "brightness": 1.0
+    "brightness": 1
   },
   "perches": {
     "_about": "High places Odyssey Jr. can climb. When an action takes him to the spot with this name, he climbs from the spot up to 'edge' (x, z) at height y, then steps to 'stand' and looks toward 'face'.",
@@ -1177,7 +1210,7 @@
         ],
         "closet": [
           -2.9,
-          -2.0
+          -2
         ],
         "shelf": [
           0,
@@ -1208,7 +1241,7 @@
           "src": "assets/models/nestbed.glb",
           "pos": [
             2.9,
-            -3.0
+            -3
           ],
           "note": "nest bed. Softest straw in the yard."
         },

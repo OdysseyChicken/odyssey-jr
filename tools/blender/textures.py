@@ -106,6 +106,17 @@ def grass():  # Day 9: for Tunnel Hill, so my hill matches my lawn
         x,y=random.randrange(S),random.randrange(S); c=random.choice([(90,150,60),(175,225,140),(110,170,75)])
         d.line([(x,y),(x+random.randint(-3,3),y-random.randint(4,9))],fill=c+(150,),width=2)
     return im.filter(ImageFilter.GaussianBlur(0.6))
-for name,f in dict(grass=grass,ripstop=ripstop,planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid,clay=clay,brick=brick).items():
+def wicker():  # Day 10: woven willow for my balloon basket (over-under rows, like a real one)
+    im=Image.new("RGB",(S,S),(150,104,52)); d=ImageDraw.Draw(im,"RGBA")
+    W=32
+    for row in range(S//W+1):
+        for col in range(S//W+1):
+            x,y=col*W,row*W; over=(row+col)%2
+            c=random.choice([(214,168,98),(201,152,84),(222,180,110)])
+            if over: d.rounded_rectangle([x+1,y+5,x+W-1,y+W-5],radius=9,fill=c+(255,))
+            else: d.rounded_rectangle([x+5,y+1,x+W-5,y+W-1],radius=9,fill=tuple(int(v*0.86) for v in c)+(255,))
+    noise(d,5000,[(90,60,30),(250,220,160)],(15,50),(1,2))
+    return im.filter(ImageFilter.GaussianBlur(0.6))
+for name,f in dict(grass=grass,ripstop=ripstop,planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid,clay=clay,brick=brick,wicker=wicker).items():
     f().convert("RGB").save(f"{OUT}/{name}.png")
 print("ok")

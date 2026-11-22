@@ -2063,6 +2063,166 @@ def tunnelhill():
 ASSETS.update({"loco": loco, "railcar": railcar, "station": station, "watertower": watertower, "tunnelhill": tunnelhill})
 
 
+# ---------------- OJ Balloons (Day 10) ----------------
+# Montauciel II, my hot-air balloon (named after the sheep who flew with a duck and a ROOSTER at Versailles, 1783).
+# Origin = bottom center of the basket. Front = -Y. Named parts:
+#   "envelope" (pivot at the mouth, z = MOUTH; the whole bag + skirt + crown valve hang off it so it can lie down and fill up),
+#   "valve" (the parachute lid in the crown), "cables" (load cables, frame to mouth), "burner_flame" (cone, origin at the
+#   burner nozzles, points up), "pilot" (little blue pilot light), "seat" (where I stand; my head pokes over the rim), "basket".
+MOUTH = 3.35
+def _catmull(pts, n=6):
+    out = []
+    P = [pts[0]] + pts + [pts[-1]]
+    for i in range(1, len(P) - 2):
+        p0, p1, p2, p3 = P[i - 1], P[i], P[i + 1], P[i + 2]
+        for k in range(n):
+            t = k / n; t2, t3 = t * t, t * t * t
+            out.append(tuple(0.5 * (2 * p1[j] + (-p0[j] + p2[j]) * t + (2 * p0[j] - 5 * p1[j] + 4 * p2[j] - p3[j]) * t2 + (-p0[j] + 3 * p1[j] - 3 * p2[j] + p3[j]) * t3) for j in range(2)))
+    out.append(pts[-1]); return out
+
+def balloon():
+    red = mat("bl_red", (0.86, 0.22, 0.2), rough=0.6, tex="ripstop", scale=(3, 3))
+    cream = mat("bl_cream", (0.98, 0.93, 0.8), rough=0.6, tex="ripstop", scale=(3, 3))
+    gold = mat("bl_gold", (1.0, 0.78, 0.25), rough=0.6, tex="ripstop", scale=(3, 3))
+    navy = mat("bl_navy", (0.17, 0.24, 0.55), rough=0.6, tex="ripstop", scale=(3, 3))
+    skirt_m = mat("bl_skirt", (0.95, 0.85, 0.55), rough=0.8)
+    wicker = mat("bl_wicker", WOOD, tex="wicker", scale=(3, 2))
+    leather = mat("bl_leather", (0.45, 0.27, 0.15), rough=0.6)
+    steel = mat("bl_steel", (0.75, 0.77, 0.8), rough=0.35, metal=0.35)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    tankm = mat("bl_tank", (0.85, 0.85, 0.82), rough=0.4, metal=0.3)
+    cable = mat("bl_cable", (0.3, 0.3, 0.32), rough=0.5, metal=0.3)
+    wood = mat("wood", WOOD, tex="wood")
+    # --- basket: woven willow with a leather rim, a wooden floor, two propane tanks and a step box (so I can see out)
+    bk = _pivot("basket", (0, 0, 0))
+    W, D, H = 1.6, 1.5, 1.05
+    _kid(box("bl_basket", (W, D, H), (0, 0, H / 2), wicker, bevel=0.12), bk)
+    _kid(box("bl_floor", (W - 0.12, D - 0.12, 0.06), (0, 0, H - 0.02), mat("bl_dark", (0.2, 0.14, 0.1), rough=0.9), bevel=0), bk)
+    for x, y, w, d in ((0, -D / 2, W + 0.06, 0.12), (0, D / 2, W + 0.06, 0.12), (-W / 2, 0, 0.12, D + 0.06), (W / 2, 0, 0.12, D + 0.06)):
+        _kid(box("bl_rim", (w, d, 0.12), (x, y, H), leather, bevel=0.05), bk)
+    _kid(box("bl_skid", (W + 0.04, 0.14, 0.08), (0, -0.4, 0.04), wood, bevel=0.02), bk)
+    _kid(box("bl_skid", (W + 0.04, 0.14, 0.08), (0, 0.4, 0.04), wood, bevel=0.02), bk)
+    for x in (-0.48, 0.48):
+        _kid(cyl("bl_tank", 0.2, 0.2, 0.75, (x, 0.42, H - 0.05 + 0.3), tankm, verts=20, bevel=0.06), bk)
+        _kid(cyl("bl_tankcap", 0.07, 0.07, 0.08, (x, 0.42, H + 0.32), brass, verts=10, bevel=0.01), bk)
+    _pivot("seat", (0, 0.18, 0.18))
+    # uprights (suede-covered rods) up to the burner frame
+    FZ = 2.75
+    for x in (-0.66, 0.66):
+        for y in (-0.62, 0.62):
+            _kid(cyl("bl_rod", 0.045, 0.045, FZ - H, (x * 0.85, y * 0.85, (FZ + H) / 2), leather, verts=10, bevel=0), bk)
+    for x, y, w, d in ((0, -0.53, 1.2, 0.07), (0, 0.53, 1.2, 0.07), (-0.56, 0, 0.07, 1.12), (0.56, 0, 0.07, 1.12)):
+        _kid(box("bl_frame", (w, d, 0.07), (x, y, FZ), steel, bevel=0.02), bk)
+    # the burner: two coils (fat steel rings) and nozzles
+    for x in (-0.2, 0.2):
+        for k in range(4):
+            bpy.ops.mesh.primitive_torus_add(major_radius=0.17, minor_radius=0.035, location=(x, 0, FZ + 0.05 + k * 0.07))
+            o = bpy.context.object; o.name = "bl_coil"; finish(o, steel); _kid(o, bk)
+        _kid(cyl("bl_nozzle", 0.09, 0.06, 0.1, (x, 0, FZ + 0.37), steel, verts=12, bevel=0.01), bk)
+    _kid(box("bl_valvebox", (0.2, 0.12, 0.12), (0, -0.25, FZ - 0.08), brass, bevel=0.02), bk)
+    # the flame (hidden until I pull the blast valve) and the little blue pilot light that's always on
+    fl = _pivot("burner_flame", (0, 0, FZ + 0.42))
+    _kid(cyl("bl_flame_out", 0.3, 0.02, 1.3, (0, 0, FZ + 0.42 + 0.65), mat("bl_flame", (1, 0.6, 0.15), rough=1, emit=(1, 0.55, 0.12), emit_strength=6), verts=16, bevel=0), fl)
+    _kid(cyl("bl_flame_in", 0.17, 0.01, 0.8, (0, 0, FZ + 0.42 + 0.4), mat("bl_flame2", (1, 0.95, 0.6), rough=1, emit=(1, 0.95, 0.6), emit_strength=8), verts=12, bevel=0), fl)
+    pl = sphere("pilot", 0.05, (0.2, 0, FZ + 0.46), mat("bl_pilot", (0.4, 0.6, 1), rough=1, emit=(0.35, 0.55, 1), emit_strength=4), sub=1)
+    # load cables: from the frame corners up to the mouth ring
+    cb = _pivot("cables", (0, 0, FZ))
+    for x in (-0.56, 0.56):
+        for y in (-0.53, 0.53):
+            a = Vector((x, y, FZ)); b = Vector((x * 1.45, y * 1.45, MOUTH)); d = b - a
+            o = cyl("bl_cable", 0.018, 0.018, d.length, tuple((a + b) / 2), cable, verts=6, bevel=0)
+            o.rotation_mode = "QUATERNION"; o.rotation_quaternion = d.to_track_quat("Z", "Y"); _kid(o, cb)
+    # --- the envelope: 12 gores, red and cream, a gold band with OJ on it, a navy crown
+    env = _pivot("envelope", (0, 0, MOUTH))
+    prof = _catmull([(0.82, 0.0), (1.05, 0.5), (1.5, 1.2), (2.1, 2.0), (2.6, 2.8), (2.9, 3.6), (3.02, 4.4), (2.95, 5.1), (2.7, 5.7), (2.25, 6.2), (1.6, 6.6), (0.85, 6.86), (0.3, 6.96), (0.0, 6.99)], 5)
+    G, SUB = 12, 6; NT = G * SUB
+    verts, faces, fm = [], [], []
+    for (r, z) in prof:
+        for j in range(NT):
+            th = j / NT * math.pi * 2
+            bulge = 1 + 0.045 * math.sin(math.pi * (j % SUB) / SUB) * min(1, r / 1.2)   # each gore puffs out between its load tapes
+            verts.append((r * bulge * math.cos(th), r * bulge * math.sin(th), MOUTH + z))
+    for i in range(len(prof) - 1):
+        zc = (prof[i][1] + prof[i + 1][1]) / 2
+        for j in range(NT):
+            a, b = i * NT + j, i * NT + (j + 1) % NT
+            faces.append((a, b, b + NT, a + NT))
+            g = j // SUB
+            fm.append(3 if zc > 6.35 else 2 if 3.85 < zc < 4.95 else (0 if g % 2 == 0 else 1))
+    me = bpy.data.meshes.new("bl_envelope"); me.from_pydata(verts, [], faces); me.update()
+    uv = me.uv_layers.new()
+    for f in me.polygons:
+        for li in f.loop_indices:
+            v = me.vertices[me.loops[li].vertex_index].co; th = math.atan2(v.y, v.x)
+            uv.data[li].uv = (th / (2 * math.pi) * 6, v.z / 2)
+    o = bpy.data.objects.new("bl_envelope", me); bpy.context.collection.objects.link(o)
+    for m in (red, cream, gold, navy): o.data.materials.append(m)
+    for p, mi in zip(o.data.polygons, fm): p.material_index = mi; p.use_smooth = True
+    _kid(o, env)
+    # skirt (the fire-proof scoop round the mouth) and the crown valve lid
+    _kid(cyl("bl_skirt", 0.82, 1.0, 0.55, (0, 0, MOUTH - 0.22), skirt_m, verts=36, bevel=0), env)
+    bpy.data.objects["bl_skirt"].modifiers.new("solid", "SOLIDIFY").thickness = 0.03
+    v = _pivot("valve", (0, 0, MOUTH + 6.99))
+    _kid(cyl("bl_valvelid", 0.75, 0.55, 0.08, (0, 0, MOUTH + 6.97), navy, verts=24, bevel=0.02), v); _kid(v, env)
+    # OJ on both sides, on the gold band
+    for side in (-1, 1):
+        t = _txt("OJ", (0, side * 3.11, MOUTH + 4.38), (math.pi / 2, 0, 0 if side < 0 else math.pi), 0.95, navy, extrude=0.04)
+        _kid(t, env)
+    for side in (-1, 1):
+        t = _txt("OJ", (side * 3.11, 0, MOUTH + 4.38), (math.pi / 2, 0, side * math.pi / 2), 0.95, navy, extrude=0.04)
+        _kid(t, env)
+
+def balloonfield():
+    # OJ Balloons launch field: a sign with my name for the balloon, an inflator fan (named "fan_blades", spins about its
+    # axis = -Y), a pibal box with a red pilot balloon tied on (named "pibal_tied"), three tether stakes with rope coils.
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("bf_planks", (0.95, 0.92, 0.85), tex="planks")
+    trim = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    navy = mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)
+    redm = mat("bf_red", (0.86, 0.22, 0.2), rough=0.5)
+    steel = mat("bl_steel", (0.75, 0.77, 0.8), rough=0.35, metal=0.35)
+    dark = mat("bf_dark", (0.2, 0.2, 0.22), rough=0.6)
+    yel = mat("bf_yel", (1.0, 0.8, 0.25), rough=0.6)
+    rope = mat("bf_rope", (0.85, 0.75, 0.55), rough=0.9)
+    # sign (at x = 4.2)
+    sx, sy = 4.2, 2.6
+    for x in (sx - 0.85, sx + 0.85): box("bf_post", (0.12, 0.12, 2.1), (x, sy, 1.05), wood, bevel=0.02)
+    box("bf_board", (1.95, 0.08, 0.9), (sx, sy, 1.65), planks, bevel=0.03)
+    box("bf_trim", (2.05, 0.1, 0.06), (sx, sy, 2.12), redm, bevel=0.02); box("bf_trim", (2.05, 0.1, 0.06), (sx, sy, 1.18), redm, bevel=0.02)
+    _txt("OJ BALLOONS", (sx, sy - 0.05, 1.85), (math.pi / 2, 0, 0), 0.24, navy, extrude=0.01)
+    _txt("Montauciel II", (sx, sy - 0.05, 1.55), (math.pi / 2, 0, 0), 0.16, redm, extrude=0.008)
+    _txt("fly at dawn + dusk", (sx, sy - 0.05, 1.33), (math.pi / 2, 0, 0), 0.11, navy, extrude=0.006)
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=0.22, location=(sx, sy, 2.45)); o = bpy.context.object; o.name = "bf_ball"; o.scale = (1, 1, 1.2); finish(o, redm)
+    # inflator fan (at x = -2.5, y = 2.2, blowing toward -Y... toward the mouth of the envelope)
+    fx, fy = -2.6, 1.6
+    box("bf_fanbase", (1.0, 0.6, 0.12), (fx, fy, 0.18), dark, bevel=0.03)
+    for x in (-0.4, 0.4): cyl("bf_wheel", 0.15, 0.15, 0.08, (fx + x, fy + 0.25, 0.15), dark, rot=(0, math.pi / 2, 0), verts=14)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.62, minor_radius=0.07, location=(fx, fy, 0.85), rotation=(math.pi / 2, 0, 0)); o = bpy.context.object; o.name = "bf_cage"; finish(o, yel)
+    for a in (0.5, -0.5): box("bf_leg", (0.08, 0.08, 0.75), (fx + a * 0.9, fy, 0.5), yel, rot=(0, a * 0.5, 0), bevel=0.02)
+    cyl("bf_motor", 0.2, 0.2, 0.45, (fx, fy + 0.3, 0.85), dark, rot=(math.pi / 2, 0, 0), verts=18, bevel=0.03)
+    fb = _pivot("fan_blades", (fx, fy - 0.05, 0.85))
+    for k in range(5):
+        a = k * math.pi * 2 / 5
+        _kid(box("bf_blade", (0.17, 0.03, 0.52), (fx + math.sin(a) * 0.28, fy - 0.05, 0.85 + math.cos(a) * 0.28), steel, rot=(0.35, -a, 0), bevel=0.01), fb)
+    _kid(sphere("bf_hub", 0.08, (fx, fy - 0.08, 0.85), redm, sub=2), fb)
+    for k in range(6):
+        a = k * math.pi / 3; box("bf_guard", (0.02, 0.02, 1.2), (fx, fy - 0.12, 0.85), steel, rot=(0, a, 0), bevel=0)
+    # pibal box: a little crate with a red pilot balloon on a string
+    px, py = 3.0, -2.6
+    box("bf_crate", (0.6, 0.45, 0.45), (px, py, 0.225), wood, bevel=0.03)
+    _txt("PIBAL", (px, py - 0.235, 0.25), (math.pi / 2, 0, 0), 0.12, navy, extrude=0.006)
+    pb = _pivot("pibal_tied", (px, py, 0.45))
+    _kid(cyl("bf_string", 0.008, 0.008, 0.9, (px, py, 0.9), rope, verts=5, bevel=0), pb)
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=0.17, location=(px, py, 1.45)); o = bpy.context.object; o.name = "bf_pibal"; o.scale = (1, 1, 1.18); finish(o, mat("bf_pibalm", (0.95, 0.2, 0.25), rough=0.3)); _kid(o, pb)
+    # tether stakes with rope coils (for hops), on a circle of radius 3.6 round the basket
+    for k in range(3):
+        a = math.pi / 2 + k * math.pi * 2 / 3; x, y = math.cos(a) * 3.6, math.sin(a) * 3.6
+        cyl("bf_stake", 0.07, 0.04, 0.5, (x, y, 0.2), wood, verts=8)
+        bpy.ops.mesh.primitive_torus_add(major_radius=0.22, minor_radius=0.05, location=(x + 0.25, y, 0.06)); o = bpy.context.object; o.name = "bf_coil"; finish(o, rope)
+
+ASSETS.update({"balloon": balloon, "balloonfield": balloonfield})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

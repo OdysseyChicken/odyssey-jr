@@ -1,6 +1,6 @@
 {
   "_about": "Odyssey Jr.'s closet: every outfit he has made. 'wearing' is the id of the one he has on. Each outfit has head, neck and body lists of parts (shape: box, roundbox, sphere, cylinder, cone, torus, capsule; size; pos [x,y,z]; color; optional rot). 'head' parts sit on top of his head, 'neck' around his neck, 'body' on the middle of his body. Add a new outfit here to add it to the closet.",
-  "wearing": "engineer",
+  "wearing": "aeronaut",
   "outfits": [
     {
       "id": "aviator",
@@ -320,7 +320,7 @@
           ],
           "pos": [
             0,
-            0.0,
+            0,
             0
           ],
           "color": "#1b1b1f"
@@ -919,7 +919,7 @@
           ],
           "pos": [
             -0.32,
-            0.0,
+            0,
             -0.02
           ],
           "color": "#f7f7f2",
@@ -937,7 +937,7 @@
           ],
           "pos": [
             0.32,
-            0.0,
+            0,
             -0.02
           ],
           "color": "#f7f7f2",
@@ -1227,7 +1227,7 @@
           ],
           "pos": [
             0,
-            0.0,
+            0,
             0
           ],
           "rot": [
@@ -1459,13 +1459,13 @@
             0.018
           ],
           "pos": [
-            0.0,
+            0,
             0.1,
             0.185
           ],
           "rot": [
             0,
-            0.0,
+            0,
             0
           ],
           "color": "#f4f1ea"
@@ -1690,6 +1690,278 @@
           "color": "#d9a640",
           "metal": 0.6,
           "rough": 0.3
+        }
+      ]
+    },
+    {
+      "id": "aeronaut",
+      "name": "Aeronaut, 1783",
+      "icon": "🎈",
+      "made": "2026-11-22",
+      "note": "For balloon days, in honor of the rooster who flew at Versailles on Sept 19, 1783 with a sheep and a duck: a navy tricorn hat with gold trim and a white cockade, and a lace jabot with a red button. Very fancy for a chicken in a basket.",
+      "head": [
+        {
+          "shape": "sphere",
+          "size": [
+            0.2
+          ],
+          "pos": [
+            0,
+            0.1,
+            -0.02
+          ],
+          "scale": [
+            1,
+            0.55,
+            1
+          ],
+          "color": "#1f2c55",
+          "texture": "fabric"
+        },
+        {
+          "shape": "roundbox",
+          "size": [
+            0.5,
+            0.13,
+            0.035,
+            0.012
+          ],
+          "pos": [
+            0,
+            0.12,
+            -0.17
+          ],
+          "rot": [
+            0,
+            3.1416,
+            0
+          ],
+          "color": "#1f2c55",
+          "texture": "fabric"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.5,
+            0.022,
+            0.045
+          ],
+          "pos": [
+            0,
+            0.19,
+            -0.17
+          ],
+          "rot": [
+            0,
+            3.1416,
+            0
+          ],
+          "color": "#d9a640",
+          "metal": 0.5,
+          "rough": 0.35
+        },
+        {
+          "shape": "roundbox",
+          "size": [
+            0.5,
+            0.13,
+            0.035,
+            0.012
+          ],
+          "pos": [
+            0.13,
+            0.12,
+            0.055
+          ],
+          "rot": [
+            0,
+            1.0472,
+            0
+          ],
+          "color": "#1f2c55",
+          "texture": "fabric"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.5,
+            0.022,
+            0.045
+          ],
+          "pos": [
+            0.13,
+            0.19,
+            0.055
+          ],
+          "rot": [
+            0,
+            1.0472,
+            0
+          ],
+          "color": "#d9a640",
+          "metal": 0.5,
+          "rough": 0.35
+        },
+        {
+          "shape": "roundbox",
+          "size": [
+            0.5,
+            0.13,
+            0.035,
+            0.012
+          ],
+          "pos": [
+            -0.13,
+            0.12,
+            0.055
+          ],
+          "rot": [
+            0,
+            5.236,
+            0
+          ],
+          "color": "#1f2c55",
+          "texture": "fabric"
+        },
+        {
+          "shape": "box",
+          "size": [
+            0.5,
+            0.022,
+            0.045
+          ],
+          "pos": [
+            -0.13,
+            0.19,
+            0.055
+          ],
+          "rot": [
+            0,
+            5.236,
+            0
+          ],
+          "color": "#d9a640",
+          "metal": 0.5,
+          "rough": 0.35
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.05
+          ],
+          "pos": [
+            0.12,
+            0.16,
+            0.1
+          ],
+          "scale": [
+            1,
+            1,
+            0.5
+          ],
+          "color": "#ffffff"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.02
+          ],
+          "pos": [
+            0.13,
+            0.16,
+            0.125
+          ],
+          "color": "#d9a640",
+          "metal": 0.5,
+          "rough": 0.35
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.29,
+            0.045
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#fbf8f0",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.13,
+            0.24
+          ],
+          "pos": [
+            0,
+            -0.14,
+            0.31
+          ],
+          "rot": [
+            3.1416,
+            0,
+            0
+          ],
+          "color": "#fbf8f0",
+          "texture": "fabric"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.09,
+            0.025
+          ],
+          "pos": [
+            0,
+            -0.1,
+            0.33
+          ],
+          "rot": [
+            0.3,
+            0,
+            0
+          ],
+          "color": "#f1ead8"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.11,
+            0.025
+          ],
+          "pos": [
+            0,
+            -0.18,
+            0.33
+          ],
+          "rot": [
+            0.3,
+            0,
+            0
+          ],
+          "color": "#f1ead8"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.035
+          ],
+          "pos": [
+            0,
+            -0.03,
+            0.34
+          ],
+          "color": "#c8372d"
         }
       ]
     }

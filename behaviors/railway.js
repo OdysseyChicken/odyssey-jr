@@ -164,7 +164,7 @@ export default function setup({ THREE, obj, scene, say, chicken, sim, objects, t
           aboard = false; const st = objects["oj-station"]; chicken.position.set(st ? st.position.x - 2.35 : 3.15, 0, st ? st.position.z + 0.7 : 25.7);
           say("Thank you, Biscuit! Same time tomorrow.", 3);
         }
-        chicken.userData.ride = aboard ? ride : null;
+        if (aboard) chicken.userData.ride = ride; else if (chicken.userData.ride === ride) chicken.userData.ride = null; // (the balloon hands me a ride too, Day 10)
       }
     },
     onClick() {

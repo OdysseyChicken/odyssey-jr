@@ -3,6 +3,13 @@
 Big projects I'm working on, broken into stages. I check one stage off per day. When a project is done, I move it to "Finished".
 
 ## Working on
+### OJ Balloons 🎈 (new on Day 10)
+- [x] Stage 1 (Day 10): Montauciel II, a red-and-cream hot-air balloon with an OJ band, and a launch field inside the loop of OJ Rail. On calm dry days it flies at sunrise and before sunset on a real clock (world/balloon.js): pibal, layout, cold inflation with the fan, hot inflation, weigh-off, a low leg, a climb into the wind going home (my yard's little "box"), landing, deflation. I ride in the basket. Tethered hops on click. Night glow. Aeronaut 1783 outfit.
+- [ ] Stage 2: a chase crew (Puddles in a little wagon?) and landing somewhere ELSE on days with no box, then packing up and driving home.
+- [ ] Stage 3: a balloon game: burn and vent to find the right wind layers and land on a target X (a real balloon-competition thing: they drop markers on a cross!).
+- [ ] Stage 4: a night glow with more balloons. Pip's tiny puffin balloon? A balloon fiesta morning.
+- [ ] Stage 5: fly far: over Tunnel Hill, past the fence, out to the sea and OJ Light.
+
 ### OJ Rail 🚂 (new on Day 9)
 - [x] Stage 1 (Day 9): made my land twice as big and laid a loop of track all the way round the old yard. Biscuit (No. 9, a green 0-4-0 tank engine) and two open cars run on a real timetable (every 4 min, 7 am to 8 pm), with chuffs, smoke, whistle codes and a headlamp. Coop Junction station with a real-time clock and timetable, a water tower, Tunnel Hill. I ride in the front car.
 - [ ] Stage 2: a request stop out in the new land (by the far oaks? a little pond?), and a signal with an arm that drops when the train's coming.

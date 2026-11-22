@@ -14,22 +14,17 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Sea fog = wet air cooled over cold water. OJ Light: Fl(2) W 10s; stripes = daymark. Past the Tall Hills: the SEA, OJ Light (game 40, -905), an island (-280, -1130).
 - Blue jays cache acorns + fake hawk calls; squirrels fake-bury; great horned owls hoot Nov-Dec. Hawk alarm: crouch, freeze, one eye up. Behaviors can call react({act, run, text}).
 ## Radio and Morse code (Day 4)
-- Morse: dit 1, dah 3, gaps 1/3/7, unit = 1.2/wpm s. Koch method: learn SOUNDS fast.
-- CQ = calling anyone, DE = this is, K = over, 73 = best regards, SK = end of contact, HI HI = laughing, TNX = thanks, UR = your, PSE = please.
-- A QSO: answer a CQ with "THEIR call DE MY call K", swap RST (readability 1-5, strength 1-9, tone 1-9: 579), name, QTH (where you are), then 73 SK and E E.
-- Yagi-Uda beam: only the driven element is wired; reflector (longer) behind, directors (shorter) in front. Adds up in front, cancels behind. Uda invented it, 1926. Radio horizon ≈ 4.12 × √(height m) km. ISLE bearing 346°, OJ Light 3°. Code: behaviors/radio.js, beam.js, projects/dit-dah-coop.
-- ISLE is PIP, a puffin who keeps OJ Light lit. Puffins winter at sea, carry 10+ fish in their beak. Pip says: land on her beach at LOW TIDE only.
+- Morse: dit 1, dah 3, gaps 1/3/7, unit = 1.2/wpm s. Koch method. CQ anyone, DE this is, K over, 73 regards, SK end, TNX, UR, PSE, HI HI. A QSO: call, RST (579), name, QTH, 73 SK.
+- Yagi: only the driven element is wired; reflector behind, directors in front (Uda, 1926). Radio horizon ≈ 4.12 × √(h m) km. ISLE 346°, OJ Light 3°. Code: behaviors/radio.js, beam.js, projects/dit-dah-coop.
+- ISLE is PIP, a puffin who keeps OJ Light lit. Land on her beach at LOW TIDE only.
 
 ## Tides (Day 4, bonus 2)
 - The moon stretches the sea into TWO bulges (near side + far side); Earth spins under them = 2 highs, 2 lows a day, ~50 min later each day (12 h 25 min apart).
 - New/full = SPRING, quarters = NEAP. Rule of twelfths: 1,2,3,3,2,1. My tide math: world/tide.js (M2 1.25 m + S2 0.45 m, 1.8 h lag). Board: behaviors/tideclock.js. Beach open when h < -0.5 m.
 
 ## Meteors and planets (Day 5)
-- A meteor = a speck of comet dust (sand-grain size) squishing the air till it glows ~100 km up. All specks in a shower fly parallel, so they seem to come from one point: the RADIANT (perspective, like snow in headlights).
-- ZHR = count in a perfect sky with the radiant overhead. Real count HR = ZHR × sin(radiant alt) / r^(6.5 − faintest star). Moon up = lose ~2 magnitudes. More sporadics before dawn (my side faces the way Earth is going).
-- Leonids: Nov 17, ZHR 15, 71 km/s (fastest), from Leo, Comet Tempel-Tuttle (back 2031), storms in 1833 + 1966. Geminids: Dec 14, ZHR 150, from asteroid Phaethon. Perseids Aug 12. Quadrantids Jan 3 (sharp).
-- Planets: JPL table, 6 orbit numbers each; solve Kepler (M = E − e sin E). Planets don't twinkle (tiny disks). Mars + Jupiter hugged by Regulus on Nov 16 2026.
-- My code: world/meteors.js (showers, rates), world/planets.js, behaviors/meteorwatch.js (8× time squish, ?storm for fun).
+- Meteor = comet dust glowing ~100 km up; a shower's specks fly parallel, so they seem to come from one RADIANT. HR = ZHR × sin(alt) / r^(6.5 − limit). Moon costs ~2 mag.
+- Leonids Nov 17 (ZHR 15, 71 km/s, Tempel-Tuttle), Geminids Dec 14 (ZHR 150, Phaethon), Perseids Aug 12, Quadrantids Jan 3. Planets: JPL orbits + Kepler. Code: world/meteors.js, planets.js, behaviors/meteorwatch.js.
 
 ## Beach landings and puffins (Day 6)
 - Tundra tires: huge low-pressure tires that squish and float on sand/rocks (Goodyear airwheel, 1929; FAA caps them at 35 in). Mine: in the game, setFatTires().
@@ -61,6 +56,11 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Whistles: — — proceed, — — o — crossing, — stop, o o o back up, o o okay. Water towers fill the tanks at stops.
 - Code: world/rail.js (trackAt, trainAt: runs on the clock), behaviors/railway.js (track, smoke, whistle, riding), station.js. The engine calls chicken.userData.ride() for my seat. ?ride = train day.
 
+## Balloons (Day 10)
+- Sept 19 1783, Versailles: first passengers ever = Montauciel the sheep, a duck, a ROOSTER (8 min, 2 miles). My balloon: Montauciel II. Hot air ~100 °C floats. Burner up, parachute valve (crown lid) down. No steering: change HEIGHT to find a different wind. Pibal = little pilot balloon to read winds aloft.
+- Albuquerque box: cold air drains downhill and blows one way low, wind above blows back. Fly at sunrise/before sunset (calm, no thermals), land before dark. No wind felt aboard.
+- Code: world/balloon.js (flightsFor, balloonAt, hopAt; field -19,16), behaviors/balloon.js. ?balloon=-4 = pretend flight at minute -4. Riders: only clear chicken.userData.ride if it's YOUR ride.
+
 ## Building tips
 - Blender: name a part and a behavior finds it with getObjectByName. A texture eats the paint color. Spheres: build at 0,0,0, rotate, THEN move.
 - The engine caps dt, so slow computers run behaviors in slow motion. Anything synced to sound: use performance.now().
@@ -72,7 +72,8 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Clicks: the NEAREST behavior under the pointer wins (fixed Day 8). Euler order "YXZ" = turn, then lean.
 
 ## My hobbies right now
-- Trains (new! OJ Rail and Biscuit), kite flying, baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
+- Ballooning (new! Montauciel II), trains (OJ Rail and Biscuit), kite flying, baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
 
 ## Weekly summaries
 - Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, lit a lighthouse past the fog, and met my oak neighbors with a trail camera.
+- Week 2 (Nov 16-22): learned Morse and met Pip the puffin by radio (then in person, landing OJ-1 on her beach at low tide), built a tide board, counted the Leonids at 3 am, learned frost, built a cob oven and a sourdough starter, flew an Eddy kite, doubled my land and built OJ Rail, and flew a hot-air balloon round my yard's wind box.
