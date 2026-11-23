@@ -2223,6 +2223,86 @@ def balloonfield():
 ASSETS.update({"balloon": balloon, "balloonfield": balloonfield})
 
 
+def beetree():
+    # Day 11: the BEE TREE. A big old oak (far-oak-4, north-west corner, past the railway) with a hollow inside and a
+    # knothole on the south side. Wild honeybees live in there. Oaks keep their dead brown leaves into winter
+    # (marcescence), so this one is russet. The knothole mouth is an empty named "bee_door" (bees come and go there),
+    # facing -Y (= south in my yard). A brown propolis/wax stain runs down under the hole, where bees have walked for years.
+    bark = mat("bt_bark", (0.82, 0.78, 0.74), tex="bark", scale=(1.5, 3))
+    dark = mat("bt_hole", (0.05, 0.035, 0.03), rough=1.0)
+    stain = mat("bt_stain", (0.42, 0.26, 0.1), rough=0.6)
+    t = cyl("bt_trunk", 0.62, 0.42, 3.0, (0, 0, 1.5), bark, verts=20, bevel=0); jitter(t, 0.04)
+    for a in (0.3, 1.9, 3.3, 4.8):
+        cyl("bt_root", 0.24, 0.06, 1.0, (math.cos(a) * 0.5, math.sin(a) * 0.5, 0.14), bark, rot=(0, 1.35, a), verts=8, bevel=0)
+    # big limbs
+    for (a, tilt, L, z) in [(0.4, 0.8, 1.6, 2.6), (2.5, 0.9, 1.5, 2.8), (4.3, 0.75, 1.4, 2.5), (1.4, 0.35, 1.3, 3.0)]:
+        dx, dy = math.cos(a), math.sin(a)
+        cyl("bt_limb", 0.2, 0.1, L, (dx * math.sin(tilt) * L / 2, dy * math.sin(tilt) * L / 2, z + math.cos(tilt) * L / 2), bark,
+            rot=(-dy * tilt, dx * tilt, 0), verts=10, bevel=0)
+    # the knothole: a dark oval with a fat bark lip, about 2.1 up, on the front (-Y)
+    hz, hy = 2.05, -0.5
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=0.15, location=(0, hy - 0.01, hz)); o = bpy.context.object; o.name = "bt_knot"; o.scale = (0.85, 0.35, 1.35); finish(o, dark)
+    bpy.ops.mesh.primitive_torus_add(major_radius=0.17, minor_radius=0.055, location=(0, hy + 0.01, hz), rotation=(math.pi / 2, 0, 0)); o = bpy.context.object; o.name = "bt_lip"; o.scale = (0.9, 1.35, 1); finish(o, bark)
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=0.16, location=(0, hy + 0.03, hz - 0.33)); o = bpy.context.object; o.name = "bt_stain"; o.scale = (0.7, 0.25, 1.4); finish(o, stain)
+    _pivot("bee_door", (0, hy - 0.06, hz - 0.12))
+    # a bracket fungus shelf (just because they're cute)
+    for i, (x, z, r) in enumerate([(0.45, 0.9, 0.2), (0.5, 1.15, 0.15)]):
+        cyl("bt_fungus", r, r * 0.85, 0.06, (x, -0.3, z), mat("bt_fung", (0.86, 0.66, 0.38), rough=0.8), rot=(0.15, 0, 0), verts=16, bevel=0.02)
+    # russet winter leaves (oaks hang on to them)
+    cols = [(0.62, 0.36, 0.18), (0.72, 0.46, 0.22), (0.55, 0.3, 0.16)]
+    for i, (x, y, z, r) in enumerate([(0, 0.1, 3.9, 1.6), (1.1, 0.2, 3.5, 1.15), (-1.05, -0.1, 3.6, 1.1), (0.2, 0.9, 4.2, 1.0), (-0.3, -0.8, 4.3, 0.85), (0.1, 0.1, 4.8, 0.85)]):
+        s = sphere("bt_leaves", r, (x, y, z), mat(f"bt_leaf{i%3}", cols[i % 3], rough=0.95), sub=2, smooth=True); jitter(s, r * 0.1)
+
+def beeyard():
+    # Day 11: OJ Bees, the yard by the bee tree. A bait hive (an empty, dark, ~40 litre box with a small entrance near the
+    # bottom, facing south, up high on a post: what Seeley's scout bees vote for) with a "VACANCY" tag, a ladder, a sign,
+    # and a log stool where I sit and listen. Named: "vacancy" (the tag, it swings).
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("by_planks", (0.95, 0.92, 0.85), tex="planks")
+    darkply = mat("by_dark", (0.42, 0.3, 0.2), tex="planks")
+    shing = mat("by_shing", (0.75, 0.45, 0.35), tex="shingles")
+    bark = mat("by_bark", (0.82, 0.78, 0.74), tex="bark", scale=(1, 1))
+    navy = mat("ink_blue", (0.2, 0.3, 0.7), rough=0.8)
+    honey = mat("by_honey", (0.95, 0.68, 0.15), rough=0.5)
+    redm = mat("by_red", (0.86, 0.22, 0.2), rough=0.5)
+    hole = mat("by_hole", (0.04, 0.03, 0.03), rough=1)
+    cream = mat("by_cream", (0.98, 0.95, 0.86), rough=0.7)
+    # the post + bait hive (at x = 2.4)
+    px = 2.4; H = 4.2
+    box("by_post", (0.16, 0.16, H), (px, 0, H / 2), wood, bevel=0.02)
+    box("by_shelf", (0.95, 0.85, 0.08), (px, 0, H), wood, bevel=0.02)
+    for s in (-1, 1): box("by_brace", (0.06, 0.06, 0.8), (px + s * 0.25, 0, H - 0.3), wood, rot=(0, s * 0.7, 0), bevel=0.01)
+    box("by_box", (0.8, 0.7, 0.9), (px, 0, H + 0.49), darkply, bevel=0.03)
+    box("by_roof", (0.98, 0.9, 0.08), (px, 0, H + 0.98), shing, rot=(0.08, 0, 0), bevel=0.02)
+    cyl("by_door", 0.07, 0.07, 0.03, (px, -0.355, H + 0.14), hole, rot=(math.pi / 2, 0, 0), verts=16, bevel=0)
+    box("by_landing", (0.3, 0.12, 0.03), (px, -0.42, H + 0.08), wood, bevel=0.01)
+    _txt("OJ", (px, -0.36, H + 0.62), (math.pi / 2, 0, 0), 0.22, honey, extrude=0.01)
+    vac = _pivot("vacancy", (px + 0.25, -0.38, H + 0.42))
+    _kid(cyl("by_string", 0.006, 0.006, 0.16, (px + 0.25, -0.38, H + 0.34), cream, verts=5, bevel=0), vac)
+    _kid(box("by_tag", (0.42, 0.02, 0.15), (px + 0.25, -0.39, H + 0.2), cream, bevel=0.01), vac)
+    _kid(_txt("VACANCY", (px + 0.25, -0.405, H + 0.2), (math.pi / 2, 0, 0), 0.07, redm, extrude=0.004), vac)
+    # ladder leaning on the post
+    for s in (-0.22, 0.22): box("by_rail", (0.06, 0.06, H * 0.98), (px + s, -0.75, H * 0.47), wood, rot=(-0.17, 0, 0), bevel=0.01)
+    for k in range(9):
+        z = 0.35 + k * 0.45; y = -0.75 - (H * 0.47 - z) * math.tan(0.17) * -1
+        box("by_rung", (0.5, 0.05, 0.05), (px, -0.75 + (z - H * 0.47) * math.tan(0.17), z), wood, bevel=0.01)
+    # the sign (at x = -1.2)
+    sx = -1.4
+    for x in (sx - 0.75, sx + 0.75): box("by_spost", (0.11, 0.11, 1.9), (x, 0.3, 0.95), wood, bevel=0.02)
+    box("by_board", (1.75, 0.08, 0.85), (sx, 0.3, 1.45), planks, bevel=0.03)
+    box("by_strip", (1.85, 0.1, 0.06), (sx, 0.3, 1.9), honey, bevel=0.02); box("by_strip", (1.85, 0.1, 0.06), (sx, 0.3, 1.0), honey, bevel=0.02)
+    _txt("BEE TREE", (sx, 0.25, 1.66), (math.pi / 2, 0, 0), 0.24, navy, extrude=0.01)
+    _txt("let them be", (sx, 0.25, 1.4), (math.pi / 2, 0, 0), 0.14, redm, extrude=0.006)
+    _txt("(till spring)", (sx, 0.25, 1.2), (math.pi / 2, 0, 0), 0.11, navy, extrude=0.006)
+    # little hexagon on top of the sign
+    cyl("by_hex", 0.22, 0.22, 0.06, (sx, 0.3, 2.15), honey, rot=(math.pi / 2, 0, 0), verts=6, bevel=0.01)
+    # the listening stool: a sawn log
+    cyl("by_log", 0.33, 0.33, 0.45, (0.6, -1.1, 0.225), bark, verts=18, bevel=0.02)
+    cyl("by_logtop", 0.3, 0.3, 0.02, (0.6, -1.1, 0.455), mat("by_end", (0.86, 0.7, 0.5), rough=0.8), verts=18, bevel=0)
+
+ASSETS.update({"beetree": beetree, "beeyard": beeyard})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

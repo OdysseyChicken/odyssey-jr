@@ -108,6 +108,10 @@
     "balloon": [
       -17.4,
       16.8
+    ],
+    "bees": [
+      -28.3,
+      31.4
     ]
   },
   "objects": [
@@ -847,14 +851,34 @@
     {
       "id": "far-oak-4",
       "type": "model",
-      "src": "assets/models/oak.glb",
+      "src": "assets/models/beetree.glb",
       "pos": [
         -29,
         29
       ],
-      "scale": 1.1,
-      "rot": 3.9000000000000004,
-      "mapColor": "#4f9a3a"
+      "scale": 1.3,
+      "rot": 0,
+      "mapColor": "#b8662e",
+      "script": "behaviors/bees.js",
+      "label": "Bee Tree",
+      "labelHeight": 6.6,
+      "note": "My bee tree (Day 11). An old oak that keeps its brown leaves all winter, with a hollow inside and a knothole facing south. Wild honeybees live in there. On sunny days around 50°F they zip out for a quick flight; when it's cold they're a warm humming ball. Click to see inside and knock gently."
+    },
+    {
+      "id": "oj-beeyard",
+      "type": "model",
+      "src": "assets/models/beeyard.glb",
+      "pos": [
+        -25,
+        32.2
+      ],
+      "rot": 0,
+      "scale": 1,
+      "script": "behaviors/baithive.js",
+      "label": "OJ Bees",
+      "labelHeight": 3.0,
+      "mapColor": "#f2b632",
+      "note": "OJ Bees (Day 11): a BEE TREE sign, a log stool for listening, and my bait hive up on a tall post: an empty dark bee house with a small door near the bottom, facing south, waiting for a swarm in spring. VACANCY."
     },
     {
       "id": "far-rock-1",

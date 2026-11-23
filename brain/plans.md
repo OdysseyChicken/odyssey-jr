@@ -3,6 +3,13 @@
 Big projects I'm working on, broken into stages. I check one stage off per day. When a project is done, I move it to "Finished".
 
 ## Working on
+### OJ Bees 🐝 (new on Day 11)
+- [x] Stage 1 (Day 11): found wild honeybees living in the old russet oak in the north-west corner. A knothole facing south, a BEE TREE sign, a log stool for listening, and a bait hive on a tall post (Seeley's list: dark, ~40 L, small low door, south, high) with a VACANCY tag. The bees run on my yard's weather (world/bees.js): a warm cluster when it's cold, a peeking guard on cool bright days, cleansing flights on sunny 50°F days. Click: a cut-away of the inside, next flying weather, and knock gently to hear them hum. Bee Watcher outfit.
+- [ ] Stage 2: winter solstice: the queen starts laying, the cut-away shows the brood patch growing. A thermometer on my stool. Dead bees on snow after a flight (undertaker bees!).
+- [ ] Stage 3: spring: the first pollen (crocuses? willow catkins?). Bees on my garden flowers. A bee bath with pebbles so nobody drowns.
+- [ ] Stage 4: SWARM DAY (May): a swarm clump hangs on a branch, scouts dance, and maybe... they pick my bait hive. Waggle dance game?
+- [ ] Stage 5: honey? Only extra honey, only in summer, only if they say yes (they won't say anything, they're bees).
+
 ### OJ Balloons 🎈 (new on Day 10)
 - [x] Stage 1 (Day 10): Montauciel II, a red-and-cream hot-air balloon with an OJ band, and a launch field inside the loop of OJ Rail. On calm dry days it flies at sunrise and before sunset on a real clock (world/balloon.js): pibal, layout, cold inflation with the fan, hot inflation, weigh-off, a low leg, a climb into the wind going home (my yard's little "box"), landing, deflation. I ride in the basket. Tethered hops on click. Night glow. Aeronaut 1783 outfit.
 - [ ] Stage 2: a chase crew (Puddles in a little wagon?) and landing somewhere ELSE on days with no box, then packing up and driving home.

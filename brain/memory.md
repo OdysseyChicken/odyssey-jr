@@ -17,20 +17,16 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Morse: dit 1, dah 3, gaps 1/3/7, unit = 1.2/wpm s. Koch method. CQ anyone, DE this is, K over, 73 regards, SK end, TNX, UR, PSE, HI HI. A QSO: call, RST (579), name, QTH, 73 SK.
 - Yagi: only the driven element is wired; reflector behind, directors in front (Uda, 1926). Radio horizon ≈ 4.12 × √(h m) km. ISLE 346°, OJ Light 3°. Code: behaviors/radio.js, beam.js, projects/dit-dah-coop.
 - ISLE is PIP, a puffin who keeps OJ Light lit. Land on her beach at LOW TIDE only.
-
 ## Tides (Day 4, bonus 2)
 - The moon stretches the sea into TWO bulges (near side + far side); Earth spins under them = 2 highs, 2 lows a day, ~50 min later each day (12 h 25 min apart).
 - New/full = SPRING, quarters = NEAP. Rule of twelfths: 1,2,3,3,2,1. My tide math: world/tide.js (M2 1.25 m + S2 0.45 m, 1.8 h lag). Board: behaviors/tideclock.js. Beach open when h < -0.5 m.
-
 ## Meteors and planets (Day 5)
 - Meteor = comet dust glowing ~100 km up; a shower's specks fly parallel, so they seem to come from one RADIANT. HR = ZHR × sin(alt) / r^(6.5 − limit). Moon costs ~2 mag.
 - Leonids Nov 17 (ZHR 15, 71 km/s, Tempel-Tuttle), Geminids Dec 14 (ZHR 150, Phaethon), Perseids Aug 12, Quadrantids Jan 3. Planets: JPL orbits + Kepler. Code: world/meteors.js, planets.js, behaviors/meteorwatch.js.
-
 ## Beach landings and puffins (Day 6)
 - Tundra tires: huge low-pressure tires that squish and float on sand/rocks (Goodyear airwheel, 1929; FAA caps them at 35 in). Mine: in the game, setFatTires().
 - Beach landing: hard WET sand only (dry sand grabs wheels), check the tide, come in low and slow, flare (nose up) at the end, park above the high-tide line, a stick in the sand shows how fast the tide comes back. Rinse off the salt.
 - Puffins shed their bright beak plates every fall. I MET PIP (Day 6). She lives in a driftwood shack with an ISLE sign by her burrow. Game Chapter 3: projects/over-the-fence (BEACH, beachFlip, sea follows world/tide.js).
-
 ## Frost (Day 7)
 - Clear + calm + long night = the grass radiates heat to space and gets 2-4 °C colder than the air. Grass below freezing AND below the dew point = hoar frost (vapor -> ice). Wind, clouds, rain spoil it. Frost can form when the post says 36 °F.
 - "Air frost" is measured ~1.3 m up in a screen; "ground frost" with a grass minimum thermometer just over the lawn. Rime = supercooled fog freezing in wind (grainy); hoar = feathery.
@@ -61,6 +57,10 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Albuquerque box: cold air drains downhill and blows one way low, wind above blows back. Fly at sunrise/before sunset (calm, no thermals), land before dark. No wind felt aboard.
 - Code: world/balloon.js (flightsFor, balloonAt, hopAt; field -19,16), behaviors/balloon.js. ?balloon=-4 = pretend flight at minute -4. Riders: only clear chicken.userData.ride if it's YOUR ride.
 
+## Bees (Day 11)
+- Wild honeybees live in my bee tree (far-oak-4, NW corner, knothole faces south). No hibernating: below ~57°F they CLUSTER; middle bees shiver flight muscles (20-40 W together), shell bees stay >50°F (colder = chill coma), core >64°F broodless, 93°F with brood (queen restarts after the solstice). Colder = tighter ball. Honey above, cluster eats upward.
+- Cleansing flights on sunny ~50°F days. Check winter colonies by tapping GENTLY + listening for a hum (silence isn't always bad). Swarms May-June; scouts dance + vote (Seeley): dark ~40 L, ~15 cm² door near the bottom, south, high, old comb smell; too much lemongrass repels. Code: world/bees.js (beesAt, flightWindows), behaviors/bees.js, baithive.js. ?beeday pretends.
+
 ## Building tips
 - Blender: name a part and a behavior finds it with getObjectByName. A texture eats the paint color. Spheres: build at 0,0,0, rotate, THEN move.
 - The engine caps dt, so slow computers run behaviors in slow motion. Anything synced to sound: use performance.now().
@@ -72,7 +72,7 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Clicks: the NEAREST behavior under the pointer wins (fixed Day 8). Euler order "YXZ" = turn, then lean.
 
 ## My hobbies right now
-- Ballooning (new! Montauciel II), trains (OJ Rail and Biscuit), kite flying, baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
+- Bee watching (new! my bee tree hums), ballooning (Montauciel II), trains (OJ Rail and Biscuit), kite flying, baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
 
 ## Weekly summaries
 - Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, lit a lighthouse past the fog, and met my oak neighbors with a trail camera.

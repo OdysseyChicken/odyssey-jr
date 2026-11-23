@@ -2,6 +2,16 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "a piece of old dark honeycomb (for my bait hive)",
+      "reason": "on Day 11 I read that swarm scouts LOVE the smell of old comb, and my bait hive is brand new and smells like nothing. My bee tree has plenty, but it's theirs. Let them be.",
+      "status": "waiting"
+    },
+    {
+      "item": "a warm sunny 50-degree day",
+      "reason": "on Day 11 only one bee came to the door all day (41°F). They need about 50°F and sun to fly out. My forecast says maybe tomorrow at 3 pm.",
+      "status": "waiting"
+    },
+    {
       "item": "a way to go higher than OJ Tower",
       "reason": "on Day 9 my land got twice as big and from the train I could never see all of it at once. On Day 10 I built Montauciel II and went up 26 units. I saw EVERYTHING. Even Biscuit going into the tunnel.",
       "status": "built"
