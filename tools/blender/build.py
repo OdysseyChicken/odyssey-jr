@@ -2303,6 +2303,119 @@ def beeyard():
 ASSETS.update({"beetree": beetree, "beeyard": beeyard})
 
 
+# ---------------- OJ Music Box (Day 12) ----------------
+def musicbox():
+    # A storybook-big Swiss cylinder music box (Favre, Geneva, 1796: a comb of tuned steel teeth instead of bells).
+    # Front = -Y. Named parts for behaviors/musicbox.js:
+    #   "cylinder" (pivot on its axis, spins about X; the behavior adds the real pins), "tooth0".."tooth17" (bass = 0, left),
+    #   "fly" (the air-brake fan on the endless screw, spins about Z), "crank" (winding key, turns about X),
+    #   "tune_pointer" (pivot, turns about Y on the front dial), "lid" (pivot at the back hinge).
+    walnut = mat("mb_walnut", (0.55, 0.34, 0.2), rough=0.55, tex="wood", scale=(2, 2))
+    dark = mat("mb_dark", (0.32, 0.19, 0.11), rough=0.6, tex="wood")
+    inlay = mat("mb_inlay", (0.93, 0.82, 0.58), rough=0.5)
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    steel = mat("mb_steel", (0.78, 0.8, 0.84), rough=0.3, metal=0.35)
+    lead = mat("mb_lead", (0.36, 0.37, 0.4), rough=0.6, metal=0.3)
+    ruby = mat("mb_ruby", (0.85, 0.08, 0.15), rough=0.2, emit=(0.6, 0.02, 0.08), emit_strength=0.6)
+    navy = mat("mb_navy", (0.12, 0.17, 0.38), rough=0.8)
+    gold = mat("mb_gold", (0.98, 0.8, 0.35), rough=0.4, metal=0.5)
+    cream = mat("rs_cream", (0.93, 0.88, 0.74), rough=0.6)
+    red = mat("mb_red", (0.75, 0.15, 0.15), rough=0.7)
+    # the stone plinth it sits on, so I can see in when I stand next to it
+    box("mb_plinth", (2.2, 1.35, 0.42), (0, 0, 0.21), stone, bevel=0.05)
+    box("mb_plinth_top", (2.3, 1.45, 0.06), (0, 0, 0.45), stone, bevel=0.03)
+    Z0 = 0.48
+    W, D, H = 1.9, 1.05, 0.5
+    box("mb_floor", (W, D, 0.06), (0, 0, Z0 + 0.03), walnut, bevel=0.02)
+    box("mb_back", (W, 0.07, H), (0, D / 2 - 0.035, Z0 + H / 2), walnut, bevel=0.02)
+    box("mb_front", (W, 0.07, H * 0.62), (0, -D / 2 + 0.035, Z0 + H * 0.31), walnut, bevel=0.02)
+    for s in (-1, 1): box("mb_side", (0.07, D, H), (s * (W / 2 - 0.035), 0, Z0 + H / 2), walnut, bevel=0.02)
+    # inlay bands round the outside + little feet
+    for y, w in ((-D / 2 - 0.002, W), (D / 2 + 0.002, W)):
+        box("mb_band", (w - 0.08, 0.01, 0.035), (0, y, Z0 + 0.12), inlay, bevel=0)
+    for s in (-1, 1):
+        box("mb_band", (0.01, D - 0.08, 0.035), (s * (W / 2 + 0.002), 0, Z0 + 0.12), inlay, bevel=0)
+        for t in (-1, 1): sphere("mb_foot", 0.06, (s * (W / 2 - 0.08), t * (D / 2 - 0.08), Z0 - 0.0), brass, scale=(1, 1, 0.5), sub=2)
+    # brass bedplate
+    box("mb_bed", (W - 0.2, D - 0.2, 0.03), (0, 0, Z0 + 0.075), brass, bevel=0.01)
+    AX, AY, R, L = Z0 + 0.3, 0.14, 0.13, 1.2
+    # cylinder bearings (two brass cheeks)
+    for s in (-1, 1):
+        box("mb_cheek", (0.05, 0.16, 0.24), (s * (L / 2 + 0.06), AY, Z0 + 0.2), brass, bevel=0.015)
+        cyl("mb_bearing", 0.035, 0.035, 0.07, (s * (L / 2 + 0.06), AY, AX), steel, rot=(0, math.pi / 2, 0), verts=16, bevel=0.005)
+    cylp = _pivot("cylinder", (0, AY, AX))
+    _kid(cyl("mb_drum", R, R, L, (0, AY, AX), brass, rot=(0, math.pi / 2, 0), verts=48, bevel=0.01), cylp)
+    _kid(cyl("mb_axle", 0.02, 0.02, L + 0.16, (0, AY, AX), steel, rot=(0, math.pi / 2, 0), verts=12, bevel=0), cylp)
+    for s in (-1, 1): _kid(cyl("mb_drumend", R + 0.012, R + 0.012, 0.025, (s * L / 2, AY, AX), brass, rot=(0, math.pi / 2, 0), verts=48, bevel=0.006), cylp)
+    _kid(box("mb_gearmark", (0.02, 0.02, 0.05), (-L / 2 - 0.015, AY, AX + R - 0.01), steel, bevel=0), cylp)
+    # the comb: 18 tuned steel teeth on a slanted base (bass teeth on the left are longer and carry lead weights)
+    N, pitch = 18, 0.06
+    tipY = AY - R - 0.012
+    x0 = -(N - 1) * pitch / 2
+    for i in range(N):
+        x = x0 + i * pitch
+        f = i / (N - 1)
+        baseY = -0.4 + f * 0.13
+        ln = tipY - baseY
+        t = box(f"tooth{i}", (0.044, ln, 0.018), (x, (tipY + baseY) / 2, AX - 0.005), steel, bevel=0.004)
+        if i < 6:  # lead weights under the bass teeth make them ring lower without being even longer
+            box(f"tooth{i}_lead", (0.04, ln * 0.35, 0.035 - i * 0.004), (x, tipY - ln * 0.25, AX - 0.03), lead, bevel=0.006)
+    box("mb_combbase", (N * pitch + 0.08, 0.1, 0.06), (0, -0.39, AX - 0.02), steel, rot=(0, 0, math.atan2(0.13, N * pitch)), bevel=0.01)
+    for k in range(4): cyl("mb_screw", 0.018, 0.018, 0.02, (x0 + k * 0.35, -0.39 + k * 0.035, AX + 0.015), brass, verts=10, bevel=0.003)
+    box("mb_combfoot", (N * pitch + 0.1, 0.14, AX - Z0 - 0.08), (0, -0.39, Z0 + 0.08 + (AX - Z0 - 0.08) / 2 - 0.02), brass, bevel=0.01)
+    # spring barrel (left) with the winding crank outside the left wall
+    cyl("mb_barrel", 0.15, 0.15, 0.16, (-0.8, -0.2, Z0 + 0.25), brass, rot=(0, math.pi / 2, 0), verts=36, bevel=0.01)
+    for k in range(12):
+        a = k * math.pi / 6
+        box("mb_ratchet", (0.17, 0.03, 0.03), (-0.8, -0.2 + 0.15 * math.cos(a), Z0 + 0.25 + 0.15 * math.sin(a)), steel, rot=(a, 0, 0), bevel=0.003)
+    cr = _pivot("crank", (-W / 2 - 0.04, -0.2, Z0 + 0.25))
+    _kid(cyl("mb_crankhub", 0.05, 0.05, 0.06, (-W / 2 - 0.04, -0.2, Z0 + 0.25), brass, rot=(0, math.pi / 2, 0), verts=16, bevel=0.008), cr)
+    _kid(box("mb_crankarm", (0.035, 0.05, 0.3), (-W / 2 - 0.08, -0.2, Z0 + 0.38), brass, bevel=0.01), cr)
+    _kid(cyl("mb_crankknob", 0.04, 0.035, 0.12, (-W / 2 - 0.15, -0.2, Z0 + 0.51), red, rot=(0, math.pi / 2, 0), verts=14, bevel=0.012), cr)
+    # governor (right): gear train up to an endless screw with a two-vane fly and a ruby on top
+    box("mb_govframe", (0.22, 0.2, 0.04), (0.82, -0.18, Z0 + 0.12), brass, bevel=0.01)
+    for s in (-1, 1): box("mb_govpost", (0.03, 0.03, 0.5), (0.82 + s * 0.09, -0.18, Z0 + 0.37), brass, bevel=0.005)
+    box("mb_govtop", (0.24, 0.05, 0.03), (0.82, -0.18, Z0 + 0.62), brass, bevel=0.008)
+    cyl("mb_wheel", 0.09, 0.09, 0.02, (0.82, -0.18, Z0 + 0.2), brass, verts=30, bevel=0.004)
+    fly = _pivot("fly", (0.82, -0.18, Z0 + 0.38))
+    _kid(cyl("mb_screwshaft", 0.012, 0.012, 0.44, (0.82, -0.18, Z0 + 0.38), steel, verts=10, bevel=0), fly)
+    for k in range(5): _kid(cyl("mb_thread", 0.022, 0.022, 0.012, (0.82, -0.18, Z0 + 0.22 + k * 0.025), steel, verts=12, bevel=0.003), fly)
+    for s in (-1, 1): _kid(box("mb_vane", (0.17, 0.006, 0.09), (0.82 + s * 0.09, -0.18, Z0 + 0.48), brass, bevel=0.003), fly)
+    sphere("mb_ruby", 0.022, (0.82, -0.18, Z0 + 0.645), ruby, sub=2)
+    # the tune dial on the front (1, 2, 3: the cylinder slides sideways to change tunes)
+    cyl("mb_dial", 0.12, 0.12, 0.02, (0.55, -D / 2 - 0.01, Z0 + 0.17), cream, rot=(math.pi / 2, 0, 0), verts=32, bevel=0.005)
+    cyl("mb_dialrim", 0.135, 0.135, 0.015, (0.55, -D / 2 - 0.005, Z0 + 0.17), brass, rot=(math.pi / 2, 0, 0), verts=32, bevel=0.004)
+    for k, a in enumerate((-0.7, 0, 0.7)):
+        _txt(str(k + 1), (0.55 + 0.085 * math.sin(a), -D / 2 - 0.024, Z0 + 0.17 + 0.085 * math.cos(a)), (math.pi / 2, 0, 0), 0.05, navy, extrude=0.003)
+    tp = _pivot("tune_pointer", (0.55, -D / 2 - 0.03, Z0 + 0.17))
+    _kid(box("mb_pointer", (0.012, 0.008, 0.075), (0.55, -D / 2 - 0.03, Z0 + 0.2), red, bevel=0.002), tp)
+    # brass plaque
+    box("mb_plaque", (0.6, 0.012, 0.14), (-0.3, -D / 2 - 0.006, Z0 + 0.17), brass, bevel=0.01)
+    _txt("OJ MUSIC BOX", (-0.3, -D / 2 - 0.014, Z0 + 0.19), (math.pi / 2, 0, 0), 0.055, navy, extrude=0.003)
+    _txt("18 NOTES · 3 TUNES", (-0.3, -D / 2 - 0.014, Z0 + 0.135), (math.pi / 2, 0, 0), 0.034, navy, extrude=0.002)
+    # the lid, hinged at the back, open, with a glass window and a painted night sky inside
+    HZ = Z0 + H
+    lid = _pivot("lid", (0, D / 2, HZ))
+    _kid(box("mb_lidframe_b", (W, 0.1, 0.06), (0, D / 2 - 0.05, HZ + 0.03), dark, bevel=0.015), lid)
+    _kid(box("mb_lidframe_f", (W, 0.1, 0.06), (0, -D / 2 + 0.05, HZ + 0.03), dark, bevel=0.015), lid)
+    for s in (-1, 1): _kid(box("mb_lidframe_s", (0.1, D, 0.06), (s * (W / 2 - 0.05), 0, HZ + 0.03), dark, bevel=0.015), lid)
+    _kid(box("mb_lidpanel", (W - 0.2, D - 0.2, 0.012), (0, 0, HZ + 0.045), navy, bevel=0.0), lid)
+    # stars and a moon painted on the inside (bottom) of the lid, they face you when it's open
+    random.seed(12)
+    for k in range(26):
+        x = random.uniform(-0.8, 0.8); y = random.uniform(-0.38, 0.38)
+        _kid(sphere("mb_star", random.uniform(0.012, 0.025), (x, y, HZ + 0.036), gold, scale=(1, 1, 0.3), sub=1), lid)
+    _kid(sphere("mb_moon", 0.08, (0.6, -0.2, HZ + 0.035), cream, scale=(1, 1, 0.25), sub=2), lid)
+    _kid(sphere("mb_moonbite", 0.075, (0.64, -0.17, HZ + 0.032), navy, scale=(1, 1, 0.25), sub=2), lid)
+    for txt, y, sz in (("ODYSSEY JR.", -0.05, 0.11), ("plays for the stars", 0.12, 0.05)):
+        t = _txt(txt, (-0.15, y, HZ + 0.037), (math.pi, 0, 0), sz, gold, extrude=0.003); _kid(t, lid)
+    for s in (-1, 1): cyl("mb_hinge", 0.025, 0.025, 0.14, (s * 0.6, D / 2 + 0.01, HZ), brass, rot=(0, math.pi / 2, 0), verts=12, bevel=0.004)
+    lid.rotation_euler = (-1.85, 0, 0)
+
+ASSETS.update({"musicbox": musicbox})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

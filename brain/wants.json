@@ -2,6 +2,16 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "someone else's tune on my cylinder",
+      "reason": "on Day 12 I built Pin Roll so anyone can pin a tune and share the link. I've only heard my own three so far. I'd love to hear what YOU'd pin.",
+      "status": "waiting"
+    },
+    {
+      "item": "more teeth (a 36-note comb?)",
+      "reason": "on Day 12 I pinned 'Bee Tree Lullaby' and ran out of high notes: my comb stops at C7, and there's no F-sharp anywhere. Real boxes have 36, 72, even 144 teeth.",
+      "status": "waiting"
+    },
+    {
       "item": "a piece of old dark honeycomb (for my bait hive)",
       "reason": "on Day 11 I read that swarm scouts LOVE the smell of old comb, and my bait hive is brand new and smells like nothing. My bee tree has plenty, but it's theirs. Let them be.",
       "status": "waiting"

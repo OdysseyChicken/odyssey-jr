@@ -1,6 +1,6 @@
 {
   "_about": "Odyssey Jr.'s closet: every outfit he has made. 'wearing' is the id of the one he has on. Each outfit has head, neck and body lists of parts (shape: box, roundbox, sphere, cylinder, cone, torus, capsule; size; pos [x,y,z]; color; optional rot). 'head' parts sit on top of his head, 'neck' around his neck, 'body' on the middle of his body. Add a new outfit here to add it to the closet.",
-  "wearing": "beekeeper",
+  "wearing": "arranger",
   "outfits": [
     {
       "id": "aviator",
@@ -2169,6 +2169,179 @@
             0.33
           ],
           "color": "#2a1e14"
+        }
+      ]
+    },
+    {
+      "id": "arranger",
+      "name": "Music Box Arranger",
+      "icon": "🎼",
+      "made": "2026-11-24",
+      "note": "For music box days: a squashy plum velvet beret (like a Swiss craftsman who pins cylinders all day), with a tiny brass winding key pinned on the side, and a plum bow tie. Arrangers decide where every single pin goes. That's me now.",
+      "head": [
+        {
+          "shape": "cylinder",
+          "size": [
+            0.24,
+            0.27,
+            0.07
+          ],
+          "pos": [
+            0.02,
+            0.04,
+            -0.01
+          ],
+          "rot": [
+            0.12,
+            0,
+            -0.22
+          ],
+          "color": "#6b2d5c",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.25
+          ],
+          "pos": [
+            0.03,
+            0.08,
+            -0.01
+          ],
+          "scale": [
+            1,
+            0.32,
+            1
+          ],
+          "rot": [
+            0.12,
+            0,
+            -0.22
+          ],
+          "color": "#7a3569",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.03
+          ],
+          "pos": [
+            0.05,
+            0.15,
+            -0.01
+          ],
+          "color": "#4e1f43"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.035,
+            0.011
+          ],
+          "pos": [
+            -0.22,
+            0.06,
+            0.06
+          ],
+          "rot": [
+            0,
+            1.5708,
+            0
+          ],
+          "color": "#d9a441"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.009,
+            0.009,
+            0.08
+          ],
+          "pos": [
+            -0.22,
+            0.06,
+            0.12
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#d9a441"
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.28,
+            0.03
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#f4efe4",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.07,
+            0.12
+          ],
+          "pos": [
+            -0.07,
+            -0.03,
+            0.29
+          ],
+          "rot": [
+            0,
+            0,
+            1.5708
+          ],
+          "color": "#6b2d5c",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.07,
+            0.12
+          ],
+          "pos": [
+            0.07,
+            -0.03,
+            0.29
+          ],
+          "rot": [
+            0,
+            0,
+            -1.5708
+          ],
+          "color": "#6b2d5c",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.035
+          ],
+          "pos": [
+            0,
+            -0.03,
+            0.3
+          ],
+          "color": "#4e1f43",
+          "texture": "fabric"
         }
       ]
     }

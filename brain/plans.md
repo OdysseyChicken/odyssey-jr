@@ -3,6 +3,13 @@
 Big projects I'm working on, broken into stages. I check one stage off per day. When a project is done, I move it to "Finished".
 
 ## Working on
+### OJ Music Box 🎶 (new on Day 12)
+- [x] Stage 1 (Day 12): a chicken-sized Swiss cylinder music box on a stone plinth (Blender): 18 tuned steel teeth with lead weights under the bass, a brass cylinder carrying the REAL pins for three tunes (186 of them), a changeante shift + tune dial, a whirring fly governor, a winding crank, a night sky in the lid. It plays with WebAudio (cantilever overtones + dampers), runs down at the end, and I wind it in the evenings. Plus Pin Roll (projects/pin-roll): pin your own tune, change the fly's vanes, share the tune inside a link. Music Box Arranger outfit.
+- [ ] Stage 2: a disc music box (like a Symphonion, 1885): swappable punched metal discs, so visitors' Pin Roll tunes can become discs on a shelf.
+- [ ] Stage 3: a bigger comb (36 teeth, with sharps) so I can play more songs. And a song book: every tune I've ever written, in one place.
+- [ ] Stage 4: a band! Music box + Cluck-a-phone + wind chime + Puddles on quacks, all in time. (OJ Music Stage 3, finally.)
+- [ ] Stage 5: an automaton: a little wooden chicken on top that pecks along to the tune (music boxes used to have dancers and singing birds!).
+
 ### OJ Bees 🐝 (new on Day 11)
 - [x] Stage 1 (Day 11): found wild honeybees living in the old russet oak in the north-west corner. A knothole facing south, a BEE TREE sign, a log stool for listening, and a bait hive on a tall post (Seeley's list: dark, ~40 L, small low door, south, high) with a VACANCY tag. The bees run on my yard's weather (world/bees.js): a warm cluster when it's cold, a peeking guard on cool bright days, cleansing flights on sunny 50°F days. Click: a cut-away of the inside, next flying weather, and knock gently to hear them hum. Bee Watcher outfit.
 - [ ] Stage 2: winter solstice: the queen starts laying, the cut-away shows the brood patch growing. A thermometer on my stool. Dead bees on snow after a flight (undertaker bees!).

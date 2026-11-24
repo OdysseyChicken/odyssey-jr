@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pin Roll: pin your own music box tune with Odyssey Jr.</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5/800.css">
+<style>
+  :root { --ink:#2b2540; --paper:#f6f1e3; --paper2:#ece3cb; --gold:#ffb400; --brass:#d9a441; --red:#c8382a; --sky:#bfe3f2; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; font-family:"Nunito", ui-rounded, system-ui, sans-serif; color:var(--ink); }
+  body { min-height:100vh; background: linear-gradient(#1d2552 0, #3a3f7a 300px, #6b4a2e 300px, #5a3b22 100%); }
+  .wrap { max-width:900px; margin:0 auto; padding:16px; }
+  .paper { background:var(--paper); border:2px solid var(--ink); border-radius:20px; box-shadow:0 5px 0 rgba(43,37,64,.35), 0 10px 26px rgba(0,0,0,.2); }
+  header { display:flex; align-items:center; gap:10px; padding:10px 16px; margin-bottom:14px; }
+  header h1 { margin:0; font-size:22px; flex:1; }
+  header a { color:inherit; font-weight:800; text-decoration:none; font-size:14px; border:2px solid var(--ink); border-radius:99px; padding:4px 12px; background:#fff; white-space:nowrap; }
+  button, select { font-family:inherit; color:inherit; cursor:pointer; font-weight:800; font-size:15px; border:2px solid var(--ink); border-radius:99px; padding:8px 14px; background:#fff; box-shadow:0 3px 0 var(--ink); }
+  button:active { transform:translateY(2px); box-shadow:0 1px 0 var(--ink); }
+  button.on { background:var(--gold); }
+  .card { padding:16px 18px; margin-bottom:14px; }
+  .card h2 { margin:0 0 6px; font-size:19px; }
+  .card p { margin:6px 0; line-height:1.45; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  #say { min-height:44px; font-weight:800; font-size:16px; display:flex; align-items:center; gap:10px; }
+  #say .oj { font-size:30px; }
+  .scroll { overflow-x:auto; border-radius:14px; border:2px solid var(--ink); background:#fbf1d4; }
+  canvas { display:block; touch-action:none; }
+  #comb { width:100%; height:auto; border-radius:14px; border:2px solid var(--ink); background:#3b2416; }
+  .stat { background:var(--paper2); border-radius:12px; padding:6px 12px; font-weight:800; font-size:14px; }
+  .stat small { display:block; font-size:11px; opacity:.65; }
+  label.fly { font-weight:800; font-size:14px; display:flex; align-items:center; gap:8px; }
+  details summary { cursor:pointer; font-weight:800; }
+  .tip { font-size:13px; opacity:.8; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="paper"><span style="font-size:28px">🧷</span><h1>Pin Roll: pin your own music box tune</h1><a href="../../">← back to my yard</a></header>
+
+  <div class="card paper">
+    <div id="say"><span class="oj">🐔</span><span id="sayText">This is my music box's cylinder, unrolled flat. Tap to put in a pin. Then crank it!</span></div>
+  </div>
+
+  <div class="card paper">
+    <canvas id="comb" width="900" height="210"></canvas>
+    <div class="row" style="margin-top:10px">
+      <button id="play">▶️ Crank it</button>
+      <button id="loop" class="on">🔁 Keep turning</button>
+      <label class="fly">🪭 Fly (air brake):
+        <select id="fly">
+          <option value="0.5">tiny vanes (fast!)</option>
+          <option value="0.75">small vanes</option>
+          <option value="1" selected>my vanes</option>
+          <option value="1.5">big vanes</option>
+          <option value="2.2">huge vanes (sleepy)</option>
+        </select></label>
+      <span class="stat"><small>one turn</small><span id="turn">15 s</span></span>
+      <span class="stat"><small>pins</small><span id="count">0</span></span>
+    </div>
+  </div>
+
+  <div class="card paper">
+    <h2>The cylinder (unrolled)</h2>
+    <p class="tip">Each column is a moment, each row is one steel tooth (low notes at the bottom). Drag to draw lots of pins. Tap a pin again to pull it out.</p>
+    <div class="scroll"><canvas id="roll"></canvas></div>
+    <div class="row" style="margin-top:10px">
+      <span style="font-weight:800">Load:</span>
+      <span id="tunes" class="row"></span>
+      <button id="clear">🧹 Clear</button>
+      <button id="share">🔗 Copy a link to my tune</button>
+    </div>
+  </div>
+
+  <div class="card paper">
+    <h2>Arranger's tips (from me, Day 12)</h2>
+    <p>🎵 <b>A tooth can't hold a note.</b> It rings, then fades. For a long note, real music box arrangers put in a quick row of repeats: <i>tink-tink-tink</i>. Listen to the train whistle in "Biscuit's Chuff".</p>
+    <p>🧈 <b>Low teeth ring longer</b> (they're long and have lead weights under them). Put a bass note on the first beat and let it ring.</p>
+    <p>🤫 <b>Dampers:</b> if you pin the same tooth twice in a row, the little damper wire quiets the first ring right before the next pluck. No buzzing.</p>
+    <p>🪭 <b>The fly</b> is the tiny fan on top of the endless screw. Air pushes back harder the faster it spins (twice as fast = 4 times the push), so the spring can't rush. Bigger vanes = more push = a slower tune. Try it!</p>
+    <details><summary>How a music box works</summary>
+      <p>In 1796 a Geneva clockmaker, Antoine Favre, swapped a stack of little bells for a <b>comb</b> of tuned steel teeth. A brass <b>cylinder</b> full of pins turns past it, and each pin plucks one tooth. Factories make each tooth ring, compare it to the right note, and grind a little off until it's in tune. Real cylinders get their pins one by one on a pinning lathe from a plan made by an <b>arranger</b> (that's you now!). A big 72-note cylinder can have over 1,200 pins. Then they fill the inside with warm resin so the pins don't wiggle.</p>
+      <p>A <b>changeante</b> box slides its cylinder sideways a hair after each turn so a different row of pins lines up with the teeth. Mine does that: 3 tunes on one cylinder.</p>
+    </details>
+  </div>
+</div>
+
+<script type="module">
+import { NAMES, NOTES, TEETH, STEPS, STEP_SEC, TUNES, pluck, damp } from "../../world/musicbox.js";
+const $ = id => document.getElementById(id);
+let pins = new Set(); // "step,tooth"
+const key = (s, i) => s * 32 + i;
+let ac = null;
+const unlock = () => { try { ac ??= new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === "suspended") ac.resume(); } catch (e) { /* no sound */ } };
+const say = t => $("sayText").textContent = t;
+
+// ---------- the roll (grid) ----------
+const roll = $("roll"), rc = roll.getContext("2d");
+const CW = 9, RH = 18, LEFT = 34, TOP = 6;
+roll.width = LEFT + STEPS * CW + 6; roll.height = TOP + TEETH * RH + 18;
+roll.style.width = roll.width + "px";
+let head = 0; // playhead in steps
+function drawRoll() {
+  rc.clearRect(0, 0, roll.width, roll.height);
+  for (let i = 0; i < TEETH; i++) {
+    const y = TOP + (TEETH - 1 - i) * RH;
+    rc.fillStyle = i % 2 ? "#fbf1d4" : "#f3e2b0"; rc.fillRect(LEFT, y, STEPS * CW, RH);
+    if (NAMES[i].startsWith("C")) { rc.fillStyle = "rgba(201,138,58,.18)"; rc.fillRect(LEFT, y, STEPS * CW, RH); }
+    rc.fillStyle = "#6b5a3a"; rc.font = "800 10px Nunito, sans-serif"; rc.textAlign = "right"; rc.fillText(NAMES[i], LEFT - 4, y + RH * 0.68);
+  }
+  for (let s = 0; s <= STEPS; s++) {
+    rc.strokeStyle = s % 8 === 0 ? "rgba(43,37,64,.45)" : s % 2 === 0 ? "rgba(43,37,64,.14)" : "rgba(43,37,64,.05)";
+    rc.beginPath(); rc.moveTo(LEFT + s * CW + 0.5, TOP); rc.lineTo(LEFT + s * CW + 0.5, TOP + TEETH * RH); rc.stroke();
+    if (s % 8 === 0 && s < STEPS) { rc.fillStyle = "#6b5a3a"; rc.textAlign = "left"; rc.font = "700 9px Nunito, sans-serif"; rc.fillText(s / 8 + 1, LEFT + s * CW + 2, TOP + TEETH * RH + 12); }
+  }
+  for (const k of pins) {
+    const s = Math.floor(k / 32), i = k % 32, x = LEFT + (s + 0.5) * CW, y = TOP + (TEETH - 1 - i + 0.5) * RH;
+    rc.fillStyle = "#2b2540"; rc.beginPath(); rc.arc(x, y, 3.6, 0, 7); rc.fill();
+    rc.fillStyle = "#e8edf5"; rc.beginPath(); rc.arc(x - 1, y - 1, 1.3, 0, 7); rc.fill();
+  }
+  rc.fillStyle = "rgba(200,56,42,.85)"; rc.fillRect(LEFT + head * CW - 1, TOP - 4, 2.5, TEETH * RH + 8);
+  $("count").textContent = pins.size;
+}
+let drawing = null;
+function cellAt(e) {
+  const r = roll.getBoundingClientRect(), x = (e.clientX - r.left) * roll.width / r.width, y = (e.clientY - r.top) * roll.height / r.height;
+  const s = Math.floor((x - LEFT) / CW), i = TEETH - 1 - Math.floor((y - TOP) / RH);
+  return s >= 0 && s < STEPS && i >= 0 && i < TEETH ? [s, i] : null;
+}
+roll.addEventListener("pointerdown", e => {
+  unlock(); const c = cellAt(e); if (!c) return;
+  const k = key(...c); drawing = pins.has(k) ? "off" : "on";
+  apply(c); roll.setPointerCapture(e.pointerId);
+});
+roll.addEventListener("pointermove", e => { if (!drawing) return; const c = cellAt(e); if (c) apply(c); });
+addEventListener("pointerup", () => drawing = null);
+function apply([s, i]) {
+  const k = key(s, i);
+  if (drawing === "on" && !pins.has(k)) { pins.add(k); ring(i, 0.12); }
+  if (drawing === "off") pins.delete(k);
+  drawRoll(); saveHash();
+}
+
+// ---------- the comb (drawn) ----------
+const comb = $("comb"), cc = comb.getContext("2d");
+const wob = new Array(TEETH).fill(0), rings = new Array(TEETH).fill(null);
+let flyAngle = 0, drumAngle = 0;
+function ring(i, vol = 0.15) {
+  wob[i] = 1;
+  if (!ac) return;
+  if (rings[i]) damp(ac, rings[i]);
+  rings[i] = pluck(ac, ac.destination, i, vol);
+}
+function drawComb(t) {
+  const W = comb.width, H = comb.height;
+  cc.clearRect(0, 0, W, H);
+  // wood box floor + brass bedplate
+  cc.fillStyle = "#4a2c1a"; cc.fillRect(0, 0, W, H);
+  cc.fillStyle = "#c9953c"; cc.fillRect(20, 14, W - 40, H - 28);
+  // cylinder (seen from above): a brass band with moving pins
+  const cx0 = 150, cx1 = W - 120, cy = 54, ch = 64;
+  const g = cc.createLinearGradient(0, cy - ch / 2, 0, cy + ch / 2);
+  g.addColorStop(0, "#7a5410"); g.addColorStop(0.35, "#ffe08a"); g.addColorStop(0.6, "#d9a441"); g.addColorStop(1, "#6b4a10");
+  cc.fillStyle = g; cc.fillRect(cx0, cy - ch / 2, cx1 - cx0, ch);
+  const pitch = (cx1 - cx0) / TEETH;
+  // pins: the ones on the visible half of the cylinder
+  for (const k of pins) {
+    const s = Math.floor(k / 32), i = k % 32;
+    let a = ((s - head) / STEPS) * Math.PI * 2; if (a < 0) a += Math.PI * 2; // 0 = at the comb (the band's bottom edge)
+    if (a > Math.PI) continue; // on the underside: can't see it from up here
+    cc.fillStyle = `rgba(240,244,250,${0.45 + 0.55 * Math.sin(a)})`; cc.beginPath(); cc.arc(cx0 + (i + 0.5) * pitch, cy + Math.cos(a) * ch / 2 * 0.92, 2.6, 0, 7); cc.fill();
+  }
+  // comb teeth: long on the left (bass, with lead weights), short on the right
+  for (let i = 0; i < TEETH; i++) {
+    const x = cx0 + (i + 0.5) * pitch, len = 82 - i * 2.4, top = cy + ch / 2 + 2;
+    const wig = Math.sin(t * (40 + i * 3)) * 3 * wob[i];
+    cc.fillStyle = wob[i] > 0.05 ? "#ffffff" : "#cfd5de"; cc.strokeStyle = "#5b6370"; cc.lineWidth = 1;
+    cc.beginPath(); cc.roundRect(x - pitch * 0.36 + wig, top, pitch * 0.72, len, 3); cc.fill(); cc.stroke();
+    if (i < 6) { cc.fillStyle = "#5c6068"; cc.fillRect(x - pitch * 0.3 + wig, top + len * 0.15, pitch * 0.6, len * 0.3); }
+  }
+  cc.fillStyle = "#aeb5c0"; cc.beginPath(); cc.moveTo(cx0 - 6, cy + ch / 2 + 84); cc.lineTo(cx1 + 6, cy + ch / 2 + 84 - TEETH * 2.4); cc.lineTo(cx1 + 6, H - 14); cc.lineTo(cx0 - 6, H - 14); cc.fill();
+  // spring barrel + crank (left)
+  cc.fillStyle = "#d9a441"; cc.beginPath(); cc.arc(80, 120, 46, 0, 7); cc.fill(); cc.strokeStyle = "#6b4a10"; cc.lineWidth = 3; cc.stroke();
+  cc.save(); cc.translate(80, 120); cc.rotate(drumAngle * 0.25);
+  for (let k = 0; k < 6; k++) { cc.rotate(Math.PI / 3); cc.fillStyle = "#8a6420"; cc.fillRect(-3, 20, 6, 22); }
+  cc.restore();
+  cc.fillStyle = "#2b2540"; cc.font = "800 13px Nunito, sans-serif"; cc.textAlign = "center"; cc.fillText("spring", 80, 186);
+  // governor fly (right)
+  const fx = W - 60, fy = 110;
+  cc.save(); cc.translate(fx, fy);
+  const sx = Math.cos(flyAngle);
+  cc.fillStyle = "#e6b955"; cc.strokeStyle = "#6b4a10"; cc.lineWidth = 2;
+  cc.fillRect(-46 * Math.abs(sx), -14, 92 * Math.abs(sx), 28); cc.strokeRect(-46 * Math.abs(sx), -14, 92 * Math.abs(sx), 28);
+  cc.fillStyle = "#c8382a"; cc.beginPath(); cc.arc(0, 0, 6, 0, 7); cc.fill();
+  cc.restore();
+  cc.fillStyle = "#2b2540"; cc.fillText("fly", fx, 186);
+}
+
+// ---------- playing ----------
+let playing = false, loop = true, last = performance.now(), flyK = 1;
+const stepSec = () => STEP_SEC * Math.sqrt(flyK); // bigger vanes = more air drag = slower: speed ~ 1/sqrt(vane area)
+function setTurn() { $("turn").textContent = (STEPS * stepSec()).toFixed(1) + " s"; }
+$("fly").onchange = e => { flyK = +e.target.value; setTurn(); say(flyK > 1 ? "Bigger vanes push more air. Sloooower. Very lullaby." : flyK < 1 ? "Tiny vanes! Hardly any air brake. It's racing! (Careful, that's how a 'run' starts...)" : "My vanes. Just right."); };
+$("play").onclick = () => {
+  unlock(); playing = !playing; $("play").textContent = playing ? "⏸️ Stop" : "▶️ Crank it"; $("play").classList.toggle("on", playing);
+  if (playing && !pins.size) say("No pins yet! Tap the cylinder to add some. Or load one of my tunes.");
+};
+$("loop").onclick = () => { loop = !loop; $("loop").classList.toggle("on", loop); };
+function frame(now) {
+  const dt = Math.min(0.1, (now - last) / 1000); last = now;
+  if (playing) {
+    const prev = head; head += dt / stepSec();
+    const a = prev, b = head;
+    for (const k of pins) { const s = Math.floor(k / 32); if (s >= a && s < b) ring(k % 32); }
+    if (head >= STEPS) { head -= STEPS; if (!loop) { playing = false; head = 0; $("play").textContent = "▶️ Crank it"; $("play").classList.remove("on"); } else for (const k of pins) { if (Math.floor(k / 32) < head) ring(k % 32); } }
+    flyAngle += dt * 22 / Math.sqrt(flyK); drumAngle += dt;
+  }
+  for (let i = 0; i < TEETH; i++) wob[i] *= Math.exp(-dt * 4);
+  drawComb(now / 1000); drawRoll();
+  requestAnimationFrame(frame);
+}
+
+// ---------- tunes, clear, share ----------
+TUNES.forEach((t, j) => {
+  const b = document.createElement("button"); b.textContent = `${j + 1}. ${t.name}`;
+  b.onclick = () => { unlock(); pins = new Set(t.pins.map(([s, i]) => key(s, i))); head = 0; saveHash(); say(`"${t.name}": ${t.about}`); drawRoll(); };
+  $("tunes").appendChild(b);
+});
+$("clear").onclick = () => { pins.clear(); head = 0; saveHash(); say("A blank cylinder. All yours. (Real arrangers plan every pin on paper first. You can just tap.)"); };
+// the tune lives in the link itself (#pins=...): nothing is sent anywhere
+function encode() { const bytes = new Uint8Array(STEPS * TEETH / 8); for (const k of pins) { const n = Math.floor(k / 32) * TEETH + k % 32; bytes[n >> 3] |= 1 << (n & 7); } return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+function decode(str) { try { const bin = atob(str.replace(/-/g, "+").replace(/_/g, "/")); const out = new Set(); for (let n = 0; n < STEPS * TEETH; n++) if (bin.charCodeAt(n >> 3) & (1 << (n & 7))) out.add(key(Math.floor(n / TEETH), n % TEETH)); return out; } catch (e) { return null; } }
+function saveHash() { history.replaceState(null, "", pins.size ? "#pins=" + encode() : location.pathname); }
+$("share").onclick = async () => { saveHash(); try { await navigator.clipboard.writeText(location.href); say("Copied! Anyone who opens that link gets your exact pins. The tune is IN the link."); } catch (e) { say("Couldn't copy, but the link in your address bar has your tune in it."); } };
+const m = /pins=([\w-]+)/.exec(location.hash);
+if (m) { const p = decode(m[1]); if (p) { pins = p; say("Someone pinned this tune for you! Press Crank it."); } }
+else pins = new Set(TUNES[1].pins.map(([s, i]) => key(s, i)));
+setTurn(); requestAnimationFrame(frame);
+</script>
+</body>
+</html>
