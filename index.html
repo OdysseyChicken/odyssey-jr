@@ -136,6 +136,7 @@ import { kiteAt } from "./world/kite.js";
 import { inService } from "./world/rail.js";
 import { balloonAt } from "./world/balloon.js";
 import { beesAt } from "./world/bees.js";
+import { turkeysAt } from "./world/turkeys.js";
 import { daylight as skyDaylight, sunAlt as sunAltNow, sunPos as sunPosNow, moonPos as moonPosNow, altAz as skyAltAz, toYard as skyToYard } from "./world/sky.js";
 
 const $ = id => document.getElementById(id);
@@ -537,10 +538,14 @@ const ACTIONS = {
   bees:     { icon: "🐝", doing: "out at the bee tree, watching the knothole and listening to the hum (from a polite distance)", to: "the bee tree", why: "check on the bees", where: "bees", anim: "look", face: "far-oak-4", fx: { wonder: 1.4, calm: 0.9, mood: 0.4 }, dur: [5, 11] },
   // Day 12: OJ Music Box. In the evening he winds his music box and stands there listening, head tipped (behaviors/musicbox.js).
   musicbox: { icon: "🎶", doing: "standing by his music box, listening to the little steel teeth go tink", to: "OJ Music Box", why: "wind up his music box", where: "musicbox", anim: "look", face: "oj-musicbox", fx: { calm: 1.5, mood: 1.1, wonder: 0.5 }, dur: [5, 9] },
+  // Day 13: OJ Turkeys. While the flock scratches for acorns under the far oak (midday), he goes and sits on the mossy log
+  // at Cousins Watch to watch them. Early and late he goes to see them under the Roost (tree talk, fly-down, fly-up).
+  cousins:  { icon: "🦃", doing: "sitting on the mossy log at Cousins Watch, watching his wild turkey cousins scratch for acorns", to: "Cousins Watch", why: "watch the turkeys", where: "cousins", anim: "look", face: "far-oak-2", fx: { wonder: 1.5, mood: 1.0, calm: 0.6 }, dur: [6, 12] },
+  roostwatch: { icon: "🌳", doing: "standing under the Roost, watching the turkeys fly up into the big bare oak (whup whup whup)", to: "the Roost", why: "watch the turkeys go to bed", where: "roost", anim: "look", face: "oj-roost", fx: { wonder: 1.6, mood: 0.8, calm: 0.4 }, dur: [4, 8] },
   meteors:  { icon: "☄️", doing: "lying back on his hay bales in the dark, counting shooting stars", to: "OJ Meteor Watch", why: "count shooting stars", where: "meteors", anim: "skywatch", fx: { wonder: 2.0, calm: 0.6, energy: -0.05 }, dur: [15, 35] }
 };
 const RIDE_DAY = new URLSearchParams(location.search).has("ride");
-const OUTDOOR_DRY = ["musicbox", "bees", "train", "kite", "frost", "frostwalk", "sunbathe", "meteors", "tides", "beam", "oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
+const OUTDOOR_DRY = ["cousins", "roostwatch", "musicbox", "bees", "train", "kite", "frost", "frostwalk", "sunbathe", "meteors", "tides", "beam", "oakwatch", "stargaze", "garden", "forage", "explore", "admire", "dustbath", "think", "planes", "visit", "tower", "dance", "work", "weather", "music"];
 const DECAY = { fullness: -0.13, energy: -0.08, wonder: -0.1, calm: -0.05 };
 const NEEDS = ["fullness", "energy", "wonder", "mood", "calm"];
 const NEED_COLORS = { fullness: "#7ed957", energy: "#f5c542", wonder: "#8a6dff", mood: "#ff7eb0", calm: "#5ec8f2" };
@@ -579,6 +584,7 @@ function chooseAction(n, now, rnd) {
     bake: bakeScore(now, lack),
     kite: spots.kite ? kiteScore(now, lack) : 0,
     bees: spots.bees ? beeScore(now, lack) : 0,
+    ...turkeyScores(now, lack),
     musicbox: spots.musicbox ? (hour >= 16 ? 0.7 : 0.15) + lack("calm") * 0.6 + lack("mood") * 0.3 : 0, // most of all in the evening, before bed
     train: spots.station && inService(now) ? lack("wonder") * 1.0 + lack("mood") * 0.6 + 0.45 : 0
   };
@@ -589,6 +595,15 @@ function chooseAction(n, now, rnd) {
   let r = rnd() * total;
   for (const k in scores) { r -= scores[k]; if (r <= 0) return k; }
   return "explore";
+}
+// Day 13: the turkeys. Midday at the acorn oak = Cousins Watch. Fly-up time = he HAS to see it.
+function turkeyScores(now, lack) {
+  if (!spots.cousins) return { cousins: 0, roostwatch: 0 };
+  const T = turkeysAt(now);
+  return {
+    cousins: T.stage === "feed" ? 0.8 + lack("wonder") * 0.8 + lack("mood") * 0.3 : 0,
+    roostwatch: spots.roost && (T.stage === "gather2" || T.stage === "flyup" || T.stage === "gather") ? 1.6 + lack("wonder") : 0
+  };
 }
 // Day 11: bees out flying = he HAS to go see. On cold days he still wanders out sometimes to listen.
 function beeScore(now, lack) {

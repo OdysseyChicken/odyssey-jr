@@ -116,6 +116,14 @@
     "musicbox": [
       -5.5,
       17.6
+    ],
+    "cousins": [
+      23.4,
+      26.0
+    ],
+    "roost": [
+      32.4,
+      -14.6
     ]
   },
   "objects": [
@@ -1021,6 +1029,107 @@
       "labelHeight": 2.3,
       "mapColor": "#c98a3a",
       "note": "OJ Music Box (Day 12): a storybook-big Swiss cylinder music box on a stone plinth. 18 tuned steel teeth (lead weights under the bass ones), a brass cylinder with the real pins for three tunes, a fly governor that whirs, a winding crank, a tune dial, and a painted night sky inside the lid."
+    },
+    {
+      "id": "oj-roost",
+      "type": "model",
+      "src": "assets/models/roosttree.glb",
+      "pos": [
+        31,
+        -20
+      ],
+      "rot": 0.4,
+      "label": "The Roost",
+      "labelHeight": 7.2,
+      "mapColor": "#7a5a3a",
+      "note": "The Roost (Day 13): a huge old bare white oak in the east field where my wild turkey cousins sleep every night. They fly up at sunset and down at dawn.",
+      "scale": 1.25
+    },
+    {
+      "id": "oj-cousins-log",
+      "type": "model",
+      "src": "assets/models/cousinslog.glb",
+      "pos": [
+        24.4,
+        26.4
+      ],
+      "rot": -1.5708,
+      "label": "Cousins Watch",
+      "labelHeight": 1.9,
+      "mapColor": "#8a6a44",
+      "note": "Cousins Watch (Day 13): a mossy fallen log by the acorn oak. I sit here and watch the turkeys scratch."
+    },
+    {
+      "id": "turkey-jake",
+      "type": "model",
+      "src": "assets/models/turkeytom.glb",
+      "pos": [
+        29.8,
+        -16.4
+      ],
+      "script": "behaviors/turkeys.js",
+      "note": "Rusty the jake, a young wild turkey",
+      "noMapDot": true
+    },
+    {
+      "id": "turkey-hen-1",
+      "type": "model",
+      "src": "assets/models/turkeyhen.glb",
+      "pos": [
+        30.5,
+        -15.899999999999999
+      ],
+      "script": "behaviors/turkey-hen.js",
+      "note": "a wild turkey hen",
+      "noMapDot": true
+    },
+    {
+      "id": "turkey-hen-2",
+      "type": "model",
+      "src": "assets/models/turkeyhen.glb",
+      "pos": [
+        31.2,
+        -15.399999999999999
+      ],
+      "script": "behaviors/turkey-hen.js",
+      "note": "a wild turkey hen",
+      "noMapDot": true
+    },
+    {
+      "id": "turkey-hen-3",
+      "type": "model",
+      "src": "assets/models/turkeyhen.glb",
+      "pos": [
+        31.9,
+        -14.899999999999999
+      ],
+      "script": "behaviors/turkey-hen.js",
+      "note": "a wild turkey hen",
+      "noMapDot": true
+    },
+    {
+      "id": "turkey-hen-4",
+      "type": "model",
+      "src": "assets/models/turkeyhen.glb",
+      "pos": [
+        32.6,
+        -14.399999999999999
+      ],
+      "script": "behaviors/turkey-hen.js",
+      "note": "a wild turkey hen",
+      "noMapDot": true
+    },
+    {
+      "id": "turkey-hen-5",
+      "type": "model",
+      "src": "assets/models/turkeyhen.glb",
+      "pos": [
+        33.3,
+        -13.899999999999999
+      ],
+      "script": "behaviors/turkey-hen.js",
+      "note": "a wild turkey hen",
+      "noMapDot": true
     }
   ],
   "custom": {
@@ -1226,6 +1335,22 @@
         -14
       ],
       "secs": 5
+    },
+    "cousins": {
+      "edge": [
+        24.2,
+        26.0
+      ],
+      "stand": [
+        24.4,
+        26.1
+      ],
+      "y": 0.64,
+      "face": [
+        28.4,
+        23.2
+      ],
+      "secs": 4
     }
   },
   "interiors": {

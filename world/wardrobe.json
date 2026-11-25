@@ -1,6 +1,6 @@
 {
   "_about": "Odyssey Jr.'s closet: every outfit he has made. 'wearing' is the id of the one he has on. Each outfit has head, neck and body lists of parts (shape: box, roundbox, sphere, cylinder, cone, torus, capsule; size; pos [x,y,z]; color; optional rot). 'head' parts sit on top of his head, 'neck' around his neck, 'body' on the middle of his body. Add a new outfit here to add it to the closet.",
-  "wearing": "arranger",
+  "wearing": "turkey-trot",
   "outfits": [
     {
       "id": "aviator",
@@ -2342,6 +2342,193 @@
           ],
           "color": "#4e1f43",
           "texture": "fabric"
+        }
+      ]
+    },
+    {
+      "id": "turkey-trot",
+      "name": "Cousins Watch",
+      "icon": "🦃",
+      "made": "2026-11-25",
+      "note": "For turkey days: a rust-orange knit beanie with a cuff and a fat pompom, with a real wild turkey feather tucked in the side (Clover dropped it under the acorn oak: bronze, with a black band and a cream tip, like their tails), and a rust kerchief with a tiny acorn charm. Big cousins, warm hat.",
+      "head": [
+        {
+          "shape": "sphere",
+          "size": [
+            0.205
+          ],
+          "pos": [
+            0,
+            0.04,
+            0
+          ],
+          "scale": [
+            1,
+            0.85,
+            1
+          ],
+          "color": "#c4622d",
+          "texture": "fabric"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.2,
+            0.05
+          ],
+          "pos": [
+            0,
+            0.0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#a94f22",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.075
+          ],
+          "pos": [
+            0,
+            0.235,
+            0
+          ],
+          "color": "#f0e2c4",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.035,
+            0.34
+          ],
+          "pos": [
+            -0.19,
+            0.17,
+            -0.03
+          ],
+          "rot": [
+            0.1,
+            0,
+            0.45
+          ],
+          "color": "#7a4b26"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.03,
+            0.028,
+            0.05
+          ],
+          "pos": [
+            -0.245,
+            0.285,
+            -0.015
+          ],
+          "rot": [
+            0.1,
+            0,
+            0.45
+          ],
+          "color": "#1d1410"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.026
+          ],
+          "pos": [
+            -0.27,
+            0.33,
+            -0.01
+          ],
+          "scale": [
+            1,
+            1.4,
+            0.6
+          ],
+          "color": "#e8d5aa"
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.28,
+            0.035
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#b4552a",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.1,
+            0.14
+          ],
+          "pos": [
+            0,
+            -0.06,
+            0.27
+          ],
+          "rot": [
+            3.1416,
+            0,
+            0
+          ],
+          "color": "#b4552a",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.032
+          ],
+          "pos": [
+            0,
+            -0.15,
+            0.3
+          ],
+          "scale": [
+            1,
+            1.3,
+            1
+          ],
+          "color": "#a8743a"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.034
+          ],
+          "pos": [
+            0,
+            -0.12,
+            0.3
+          ],
+          "scale": [
+            1,
+            0.5,
+            1
+          ],
+          "color": "#5e4024"
         }
       ]
     }

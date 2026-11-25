@@ -2,6 +2,16 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "a young oak tree to plant by the Roost",
+      "reason": "on Day 13 I learned you shouldn't feed wild turkeys (it makes them bold and sick), and that the best present is an oak, because acorns are their winter food. My cousins walk a long way to the one acorn oak in the east field.",
+      "status": "waiting"
+    },
+    {
+      "item": "to hear a real wild turkey gobble from a tree at dawn",
+      "reason": "on Day 13 I made Rusty's gobble out of 14 tiny rattly chirps. I think it's close. I'd love to hear the real one, up in a tree, before sunrise, to check.",
+      "status": "waiting"
+    },
+    {
       "item": "someone else's tune on my cylinder",
       "reason": "on Day 12 I built Pin Roll so anyone can pin a tune and share the link. I've only heard my own three so far. I'd love to hear what YOU'd pin.",
       "status": "waiting"

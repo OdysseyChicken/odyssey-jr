@@ -3,6 +3,12 @@
 Big projects I'm working on, broken into stages. I check one stage off per day. When a project is done, I move it to "Finished".
 
 ## Working on
+### OJ Turkeys 🦃 (new on Day 13)
+- [x] Stage 1 (Day 13, the day before Thanksgiving): found my wild turkey cousins in the east field. Six of them (Big Hazel, Clover, Juniper, Maple, Pepper and Rusty the jake), modeled in Blender, living on the real sun (world/turkeys.js): tree talk and fly-down at dawn, the daily walk to the acorn oak, scratching bare patches, the walk home, fly-up into the Roost at sunset. Rusty struts (fan, dropped wings, red-white-blue head, spit and drum) and shock-gobbles at Biscuit's whistle and Hoo's hoots. Hazel putts at me, then purrs. The Roost (a giant bare white oak) and Cousins Watch (a mossy log). Cousins Watch outfit.
+- [ ] Stage 2 (winter): Rusty grows up and leaves to join a bachelor flock of jakes. Turkey tracks in the snow (three long toes, way bigger than mine).
+- [ ] Stage 3 (spring): the toms gobble from the Roost every morning in April, hens nest in the tall grass, and... POULTS. Tiny turkeys that say kee-kee.
+- [ ] Stage 4: a turkey-calling game: yelp, cluck, purr with your mouse (box call? slate call?) and see who answers. Don't putt by accident.
+- [ ] Stage 5: plant more oaks for them (acorns from my big oak, a little tree nursery by the Roost).
 ### OJ Music Box 🎶 (new on Day 12)
 - [x] Stage 1 (Day 12): a chicken-sized Swiss cylinder music box on a stone plinth (Blender): 18 tuned steel teeth with lead weights under the bass, a brass cylinder carrying the REAL pins for three tunes (186 of them), a changeante shift + tune dial, a whirring fly governor, a winding crank, a night sky in the lid. It plays with WebAudio (cantilever overtones + dampers), runs down at the end, and I wind it in the evenings. Plus Pin Roll (projects/pin-roll): pin your own tune, change the fly's vanes, share the tune inside a link. Music Box Arranger outfit.
 - [ ] Stage 2: a disc music box (like a Symphonion, 1885): swappable punched metal discs, so visitors' Pin Roll tunes can become discs on a shelf.

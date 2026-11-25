@@ -2416,6 +2416,163 @@ def musicbox():
 ASSETS.update({"musicbox": musicbox})
 
 
+# ---------------- Day 13: OJ Turkeys (my wild cousins) ----------------
+def _limb(name, p0, p1, r0, r1, m, verts=10):
+    # a tapered cylinder from p0 to p1 (for branches and necks)
+    a, b = Vector(p0), Vector(p1); d = b - a
+    bpy.ops.mesh.primitive_cone_add(vertices=verts, radius1=r0, radius2=r1, depth=d.length, location=(a + b) / 2)
+    o = bpy.context.object; o.name = name
+    o.rotation_mode = "QUATERNION"; o.rotation_quaternion = d.to_track_quat("Z", "Y")
+    return finish(o, m, 0)
+
+def _turkey(tom):
+    # Eastern wild turkey. Origin between the feet, faces -Y. Tom ~2.5 tall (I'm 2: they're BIG cousins), hen ~2.0.
+    # Named parts a behavior moves: tk_head (pivot: neck+head), tk_fan (pivot: the tail fan; strut = upright and spread),
+    # tk_wing_l / tk_wing_r (pivots: drop them to drag the primaries in a strut), tk_snood (mesh: stretches in a strut).
+    # Materials the behavior recolors: tk_skin (red <-> white <-> blue), tk_crown.
+    s = 1.0 if tom else 0.8
+    P = lambda x, y, z: (x * s, y * s, z * s)
+    bronze = mat("tk_bronze" if tom else "tk_brown", (0.36, 0.25, 0.15) if tom else (0.47, 0.36, 0.24), rough=0.45 if tom else 0.85, metal=0.25 if tom else 0.0)
+    edge = mat("tk_edge" if tom else "tk_buff", (0.08, 0.06, 0.05) if tom else (0.74, 0.62, 0.45), rough=0.6)
+    rust = mat("tk_rust", (0.55, 0.33, 0.17), rough=0.8)
+    band = mat("tk_band", (0.1, 0.07, 0.05), rough=0.7)
+    tip = mat("tk_tip", (0.78, 0.6, 0.38), rough=0.8)
+    white = mat("tk_white", (0.93, 0.92, 0.88), rough=0.8)
+    barred = mat("tk_barred", (0.25, 0.2, 0.16), rough=0.8)
+    legm = mat("tk_legs", (0.78, 0.5, 0.45) if tom else (0.7, 0.55, 0.5), rough=0.6)
+    skin = mat("tk_skin", (0.82, 0.12, 0.1) if tom else (0.55, 0.6, 0.72), rough=0.45)
+    crown = mat("tk_crown", (0.92, 0.93, 0.98) if tom else (0.58, 0.66, 0.8), rough=0.45)
+    beakm = mat("tk_beak", (0.6, 0.55, 0.45), rough=0.4)
+    black = mat("tk_black", (0.04, 0.03, 0.03), rough=0.2)
+    shine = mat("tk_shine", (1, 1, 1), rough=0.1)
+    # body: a big bronze barrel, a deep breast, scaly black-edged feathers
+    sphere("tk_body", 1, P(0, 0.05, 1.25), bronze, scale=(0.5 * s, 0.72 * s, 0.52 * s), sub=3)
+    sphere("tk_breast", 1, P(0, -0.38, 1.25), bronze, scale=(0.42 * s, 0.4 * s, 0.48 * s), sub=3)
+    random.seed(13)
+    for k in range(40):  # black feather edges like fish scales
+        a = random.uniform(-1.2, 1.2); z = random.uniform(0.95, 1.6); y = random.uniform(-0.6, 0.45)
+        r = math.sqrt(max(0.05, 1 - ((z - 1.25) / 0.55) ** 2 - (y / 0.8) ** 2))
+        sphere("tk_scale", 1, P(math.sin(a) * 0.5 * r, y - 0.02, z), edge, scale=(0.05 * s, 0.07 * s, 0.022 * s), sub=1)
+    if tom:  # the BEARD: a tassel of hair-like feathers hanging from the breast
+        _limb("tk_beard", P(0, -0.7, 1.4), P(0, -0.76, 1.0), 0.05 * s, 0.025 * s, black, verts=8)
+    # legs (long, pinkish, with spurs on a tom) and big feet
+    for sx in (-1, 1):
+        _limb("tk_leg", P(sx * 0.15, 0.02, 0.85), P(sx * 0.16, -0.02, 0.06), 0.06 * s, 0.045 * s, legm, verts=8)
+        sphere("tk_thigh", 1, P(sx * 0.18, 0.05, 0.95), bronze, scale=(0.14 * s, 0.2 * s, 0.2 * s), sub=2)
+        for a in (-0.45, 0, 0.45):
+            _limb("tk_toe", P(sx * 0.16, -0.02, 0.03), P(sx * 0.16 + math.sin(a) * 0.2, -0.02 - math.cos(a) * 0.22, 0.015), 0.025 * s, 0.015 * s, legm, verts=6)
+        _limb("tk_toe", P(sx * 0.16, -0.02, 0.03), P(sx * 0.16, 0.14, 0.02), 0.022 * s, 0.012 * s, legm, verts=6)
+        if tom: _limb("tk_spur", P(sx * 0.165, 0.02, 0.3), P(sx * 0.17, 0.1, 0.27), 0.018, 0.004, black, verts=6)
+    # wings: bronze coverts, white-barred primaries (a turkey's wing looks striped from the side)
+    for sx, nm in ((-1, "tk_wing_l"), (1, "tk_wing_r")):
+        pv = _pivot(nm, P(sx * 0.42, -0.3, 1.45))
+        _kid(sphere("tk_wingm", 1, P(sx * 0.48, 0.05, 1.3), bronze, scale=(0.08 * s, 0.5 * s, 0.3 * s), sub=3), pv)
+        _kid(sphere("tk_prim", 1, P(sx * 0.5, 0.32, 1.12), barred, scale=(0.06 * s, 0.42 * s, 0.17 * s), sub=2), pv)
+        for k in range(5):
+            _kid(box("tk_bar", (0.015 * s, 0.022 * s, 0.13 * s), P(sx * 0.53, 0.1 + k * 0.08, 1.12 + k * 0.012), mat("tk_barlight", (0.78, 0.74, 0.66), rough=0.85), bevel=0), pv)
+    # the tail fan: 15 long feathers fanned in a half circle, rusty with a black band and a buff tip. At rest the
+    # behavior folds it (squeezed and laid back); in a strut it stands up straight and spreads (scale 1, upright).
+    fp = _pivot("tk_fan", P(0, 0.62, 1.32))
+    n = 15
+    L = (1.0 if tom else 0.85)
+    for k in range(n):
+        a = -1.5 + 3.0 * k / (n - 1)
+        dx, dz = math.sin(a), math.cos(a)
+        base = Vector(P(0, 0.64, 1.32))
+        for (t0, t1, m_) in ((0.0, 0.72, rust), (0.72, 0.86, band), (0.86, 1.0, tip)):
+            a0 = base + Vector((dx, 0.0, dz)) * (L * t0 * s); a1 = base + Vector((dx, 0.0, dz)) * (L * t1 * s)
+            o = box("tk_feather", (0.13 * s * (0.9 + t1 * 0.4), 0.02 * s, (t1 - t0) * L * s + 0.01), tuple((a0 + a1) / 2), m_, rot=(0, a, 0), bevel=0.01)
+            o.location.y += k * 0.002  # tiny overlap so the feathers don't flicker
+            _kid(o, fp)
+    _kid(sphere("tk_rump", 1, P(0, 0.62, 1.3), bronze, scale=(0.3 * s, 0.14 * s, 0.25 * s), sub=2), fp)
+    # head + long neck on one pivot. Bare skin: a warty red neck (caruncles), a pale crown, a dangly SNOOD over the beak.
+    hp = _pivot("tk_head", P(0, -0.55, 1.55))
+    _kid(_limb("tk_neck", P(0, -0.6, 1.5), P(0, -0.82, 2.08), 0.13 * s, 0.07 * s, skin, verts=12), hp)
+    for k in range(9 if tom else 4):  # caruncles: bumpy knobs on the front of the neck
+        z = 1.62 + k * 0.05; y = -0.72 - (z - 1.55) * 0.42
+        _kid(sphere("tk_carun", (0.05 if tom else 0.03) * s, P((k % 3 - 1) * 0.05, y, z), skin, sub=1), hp)
+    _kid(sphere("tk_headm", 1, P(0, -0.86, 2.14), crown, scale=(0.085 * s, 0.11 * s, 0.09 * s), sub=3), hp)
+    _kid(sphere("tk_cheek", 1, P(0, -0.88, 2.1), skin, scale=(0.09 * s, 0.1 * s, 0.07 * s), sub=2), hp)
+    b = _kid(_limb("tk_beakm", P(0, -0.94, 2.13), P(0, -1.06, 2.1), 0.035 * s, 0.006, beakm, verts=8), hp)
+    # the wattle (a flap under the chin) and the snood
+    _kid(sphere("tk_wattle", 1, P(0, -0.9, 2.0), skin, scale=(0.04 * s, 0.05 * s, 0.09 * s), sub=2), hp)
+    sn = _kid(_limb("tk_snood", P(0, -0.96, 2.2), P(0.01, -1.04, 2.02 if tom else 2.15), 0.03 * s, 0.018 * s, skin, verts=8), hp)
+    for sx in (-1, 1):
+        _kid(sphere("tk_eye", 0.022 * s, P(sx * 0.07, -0.9, 2.16), black, sub=2), hp)
+        _kid(sphere("tk_eyeshine", 0.008 * s, P(sx * 0.082, -0.915, 2.168), shine, sub=1), hp)
+
+def turkeytom(): _turkey(True)
+def turkeyhen(): _turkey(False)
+
+def roosttree():
+    # Day 13: THE ROOST. A huge old bare white oak in the east field, with long level limbs, where my wild turkey
+    # cousins sleep. Turkeys like big trees with open branches (so they can fly straight up into them and see danger).
+    # Empties perch_0 .. perch_7 sit on top of the limbs: that's where each turkey stands at night.
+    bark = mat("rt_bark", (0.78, 0.76, 0.72), tex="bark", scale=(1.5, 4))
+    t = cyl("rt_trunk", 0.85, 0.55, 4.4, (0, 0, 2.2), bark, verts=22, bevel=0); jitter(t, 0.05)
+    for a in (0.2, 1.5, 2.9, 4.1, 5.3):
+        cyl("rt_root", 0.32, 0.06, 1.4, (math.cos(a) * 0.75, math.sin(a) * 0.75, 0.16), bark, rot=(0, 1.38, a), verts=8, bevel=0)
+    random.seed(21)
+    perches = []
+    # long level limbs, spiralling up the trunk (white oaks spread wide and low)
+    limbs = [(0.3, 3.3, 3.6), (2.0, 3.7, 3.4), (3.6, 3.5, 3.2), (5.0, 4.1, 3.0), (1.1, 4.6, 2.8), (2.8, 5.0, 2.6), (4.4, 5.3, 2.4), (0.0, 5.8, 2.0)]
+    for i, (a, z, L) in enumerate(limbs):
+        d = Vector((math.cos(a), math.sin(a), 0.18))
+        p0 = Vector((0, 0, z)); p1 = p0 + d * L
+        _limb("rt_limb", p0, p1, 0.24, 0.07, bark)
+        # a little upward elbow at the end + twigs
+        p2 = p1 + Vector((math.cos(a) * 0.5, math.sin(a) * 0.5, 0.9))
+        _limb("rt_tip", p1, p2, 0.08, 0.02, bark, verts=6)
+        for k in range(3):
+            q = p0 + (p1 - p0) * (0.45 + k * 0.2); b = a + random.choice((-1, 1)) * random.uniform(0.6, 1.1)
+            _limb("rt_twig", q, q + Vector((math.cos(b) * 0.8, math.sin(b) * 0.8, random.uniform(0.5, 1.0))), 0.05, 0.012, bark, verts=5)
+        pp = p0 + (p1 - p0) * 0.62; e = _pivot(f"perch_{i}", (pp.x, pp.y, pp.z + 0.17 - (0.24 - 0.17 * 0.62) * 0.3)); perches.append(e)
+    # the crown: a few upright leaders
+    for a in (0.7, 2.6, 4.6):
+        _limb("rt_leader", (0, 0, 4.2), (math.cos(a) * 1.0, math.sin(a) * 1.0, 7.0), 0.3, 0.06, bark)
+    # a few hanging-on russet leaves (oaks keep some all winter)
+    cols = [mat("rt_leaf0", (0.5, 0.3, 0.17), rough=0.95), mat("rt_leaf1", (0.58, 0.38, 0.2), rough=0.95)]
+    for k in range(18):
+        a = random.uniform(0, 6.28); r = random.uniform(1.5, 3.4); z = random.uniform(4.3, 6.8)
+        sphere("rt_leaves", random.uniform(0.14, 0.24), (math.cos(a) * r, math.sin(a) * r, z), cols[k % 2], scale=(1, 1, 0.6), sub=1)
+    # leaf litter + scratched patches under the tree, and a little sign
+    wood = mat("wood", WOOD, tex="wood")
+    dirt = mat("rt_dirt", (0.85, 0.8, 0.72), tex="dirt", scale=(2, 2))
+    cyl("rt_litter", 3.2, 3.2, 0.03, (0, 0, 0.015), mat("rt_litterm", (0.62, 0.45, 0.28), rough=1.0), verts=32, bevel=0)
+    cyl("rt_post", 0.06, 0.06, 1.3, (2.2, -3.2, 0.65), wood, verts=8, bevel=0)
+    box("rt_board", (1.5, 0.08, 0.55), (2.2, -3.25, 1.2), wood, bevel=0.02)
+    navy = mat("rt_ink", (0.16, 0.14, 0.25), rough=0.6)
+    _txt("THE ROOST", (2.2, -3.3, 1.28), (math.pi / 2, 0, 0), 0.17, navy, extrude=0.01)
+    _txt("turkeys sleep here", (2.2, -3.3, 1.07), (math.pi / 2, 0, 0), 0.09, navy, extrude=0.008)
+
+ASSETS.update({"turkeytom": turkeytom, "turkeyhen": turkeyhen, "roosttree": roosttree})
+
+def cousinslog():
+    # Day 13: a fallen log at the edge of the turkeys' feeding ground under the far oak, where I sit and watch my
+    # cousins scratch for acorns. Log runs along X, about 3 long. A little sign: COUSINS WATCH.
+    bark = mat("cl_bark", (0.75, 0.7, 0.64), tex="bark", scale=(2, 1))
+    endw = mat("cl_end", (0.86, 0.7, 0.5), rough=0.9)
+    ring = mat("cl_ring", (0.55, 0.4, 0.26), rough=0.9)
+    moss = mat("cl_moss", (0.42, 0.56, 0.25), rough=1.0)
+    lg = cyl("cl_log", 0.34, 0.3, 3.0, (0, 0, 0.32), bark, rot=(0, math.pi / 2, 0), verts=18, bevel=0); jitter(lg, 0.015)
+    for sx, r in ((-1, 0.34), (1, 0.3)):
+        cyl("cl_endcap", r * 0.96, r * 0.96, 0.01, (sx * 1.5, 0, 0.32), endw, rot=(0, math.pi / 2, 0), verts=18, bevel=0)
+        for k in (0.35, 0.65):
+            bpy.ops.mesh.primitive_torus_add(major_radius=r * k, minor_radius=0.008, location=(sx * 1.505, 0, 0.32), rotation=(0, math.pi / 2, 0), major_segments=24, minor_segments=4)
+            finish(bpy.context.object, ring)
+    for k in range(5): sphere("cl_mosspad", random.uniform(0.12, 0.2), (-1.0 + k * 0.5, random.uniform(-0.08, 0.08), 0.62), moss, scale=(1.4, 1, 0.3), sub=2)
+    cyl("cl_branch", 0.08, 0.03, 0.8, (0.6, -0.3, 0.55), bark, rot=(0.9, 0, 0.3), verts=8, bevel=0)
+    for k in range(3): sphere("cl_shroom", 0.06, (-0.6 + k * 0.18, -0.3, 0.22 + k * 0.03), mat("cl_shroomm", (0.88, 0.75, 0.55), rough=0.8), scale=(1, 0.5, 0.35), sub=2)
+    wood = mat("wood", WOOD, tex="wood"); ink = mat("cl_ink", (0.16, 0.14, 0.25), rough=0.6)
+    cyl("cl_post", 0.045, 0.045, 1.1, (1.9, -0.2, 0.55), wood, verts=8, bevel=0)
+    box("cl_board", (0.95, 0.06, 0.36), (1.9, -0.25, 1.0), wood, bevel=0.015)
+    _txt("COUSINS", (1.9, -0.29, 1.06), (math.pi / 2, 0, 0), 0.12, ink, extrude=0.006)
+    _txt("WATCH", (1.9, -0.29, 0.92), (math.pi / 2, 0, 0), 0.1, ink, extrude=0.006)
+    sphere("cl_feather_tip", 0.001, (0, 0, 0), ink, sub=1)
+
+ASSETS.update({"cousinslog": cousinslog})
+
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

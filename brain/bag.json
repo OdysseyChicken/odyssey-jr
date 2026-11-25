@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-23",
+  "synced": "2026-11-24",
   "bag": [
     {
       "id": "seed-pouch",
@@ -239,6 +239,14 @@
           "from": "Found on the platform at Coop Junction",
           "got": "2026-11-23",
           "note": "Somebody rode Biscuit! (It was probably me.) Shelf, next to my rail stuff."
+        },
+        {
+          "id": "find-2026-11-24-0",
+          "name": "A russet oak leaf",
+          "icon": "🍂",
+          "from": "Found under the bee tree (oaks keep their brown leaves all winter, but the wind steals a few)",
+          "got": "2026-11-24",
+          "note": "Crinkly and the color of a turkey's tail, it turns out. My bag is full, so it lives on my shelf now, pressed under my star chart."
         }
       ]
     },
@@ -428,6 +436,24 @@
       "icon": "🍂",
       "where": "under the bee tree (oaks keep their brown leaves all winter, but the wind steals a few)",
       "weight": 2
+    },
+    {
+      "name": "A bronze turkey feather",
+      "icon": "🪶",
+      "where": "in the scratched-up leaves under the acorn oak, where my turkey cousins feed",
+      "weight": 2
+    },
+    {
+      "name": "An empty acorn cap",
+      "icon": "🌰",
+      "where": "in a bare patch the turkeys scratched (they ate the acorn, I got the hat)",
+      "weight": 2
+    },
+    {
+      "name": "A tiny curl of bark",
+      "icon": "🪵",
+      "where": "under the Roost, knocked loose by a turkey crash-landing at dawn",
+      "weight": 1
     }
   ]
 }
