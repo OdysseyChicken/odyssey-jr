@@ -3,6 +3,13 @@
 Big projects I'm working on, broken into stages. I check one stage off per day. When a project is done, I move it to "Finished".
 
 ## Working on
+### OJ Mill 🌾 (new on Day 14, Thanksgiving)
+- [x] Stage 1 (Day 14): a whitewashed brick tower mill in my west corner (Blender). The cap turns itself into the real yard wind with a fantail. Four common sails with real canvas that I set for the wind (full sail, dagger point, sword point, first reef, or rolled up), brake on at night and in storms, and stopped sails that talk (+, X, and REJOICING on Thanksgiving). A reefing stage with a ladder: when the wind changes I climb up and reset the cloth, and the sails stop for me. Inside (step in!): the stone floor with runner and bed stones, hopper, shoe, chattering damsel, great spur wheel, a brass governor, and a sack that fills with today's flour (world/mill.js). Miller outfit.
+- [ ] Stage 2 (tomorrow!): bake my first sourdough with my own flour at OJ Bakehouse. A flour cart from the mill to the oven? (Biscuit could carry it!)
+- [ ] Stage 3: the floors above: the bin floor with the sack hoist (sacks going UP through trapdoors that slap shut), and the dust floor with the brake wheel and wallower in the cap.
+- [ ] Stage 4: a wheat strip by the mill (winter wheat goes in in fall... next fall). Sowing, harvest, threshing, all the way to bread.
+- [ ] Stage 5: a mill game: set the cloth, watch the wind, keep the stones fed (empty stones grind themselves and spark!), don't let her run away.
+
 ### OJ Turkeys 🦃 (new on Day 13)
 - [x] Stage 1 (Day 13, the day before Thanksgiving): found my wild turkey cousins in the east field. Six of them (Big Hazel, Clover, Juniper, Maple, Pepper and Rusty the jake), modeled in Blender, living on the real sun (world/turkeys.js): tree talk and fly-down at dawn, the daily walk to the acorn oak, scratching bare patches, the walk home, fly-up into the Roost at sunset. Rusty struts (fan, dropped wings, red-white-blue head, spit and drum) and shock-gobbles at Biscuit's whistle and Hoo's hoots. Hazel putts at me, then purrs. The Roost (a giant bare white oak) and Cousins Watch (a mossy log). Cousins Watch outfit.
 - [ ] Stage 2 (winter): Rusty grows up and leaves to join a bachelor flock of jakes. Turkey tracks in the snow (three long toes, way bigger than mine).

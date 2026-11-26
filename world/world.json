@@ -124,6 +124,14 @@
     "roost": [
       32.4,
       -14.6
+    ],
+    "mill": [
+      -30.6,
+      -19.6
+    ],
+    "millstage": [
+      -36.8,
+      -18.1
     ]
   },
   "objects": [
@@ -1130,6 +1138,25 @@
       "script": "behaviors/turkey-hen.js",
       "note": "a wild turkey hen",
       "noMapDot": true
+    },
+    {
+      "id": "oj-mill",
+      "type": "model",
+      "src": "assets/models/windmill.glb",
+      "pos": [
+        -34,
+        -21
+      ],
+      "rot": 1.5708,
+      "script": "behaviors/windmill.js",
+      "door": "mill",
+      "doorAt": [
+        -31.0,
+        -21
+      ],
+      "label": "OJ Mill",
+      "labelHeight": 13.2,
+      "note": "OJ Mill, my tower windmill (Day 14). Click it to see how the sails are set, or step inside to watch the stones."
     }
   ],
   "custom": {
@@ -1351,6 +1378,22 @@
         23.2
       ],
       "secs": 4
+    },
+    "millstage": {
+      "edge": [
+        -35.94,
+        -19.06
+      ],
+      "stand": [
+        -35.63,
+        -19.37
+      ],
+      "y": 2.27,
+      "face": [
+        -34,
+        -21
+      ],
+      "secs": 5
     }
   },
   "interiors": {
@@ -1446,6 +1489,66 @@
             0,
             0.6
           ]
+        }
+      ]
+    },
+    "mill": {
+      "name": "Inside OJ Mill (the stone floor)",
+      "size": [
+        10,
+        8
+      ],
+      "height": 4.6,
+      "floor": "planks",
+      "floorColor": "#dcc39c",
+      "wall": "#f3eee2",
+      "trim": "#3f7a5c",
+      "light": "#ffe2b0",
+      "door": [
+        -3.6,
+        1.5
+      ],
+      "spots": {
+        "stones": [
+          1.8,
+          0.4,
+          0.49
+        ],
+        "bench": [
+          2.9,
+          0.7
+        ],
+        "sacks": [
+          -2.9,
+          -2.4
+        ]
+      },
+      "objects": [
+        {
+          "id": "mill-door",
+          "type": "model",
+          "src": "assets/models/housedoor.glb",
+          "pos": [
+            -4.92,
+            1.5
+          ],
+          "rot": 1.5708,
+          "door": "outside",
+          "label": "Go outside",
+          "labelHeight": 2.7
+        },
+        {
+          "id": "mill-stones",
+          "type": "model",
+          "src": "assets/models/millroom.glb",
+          "pos": [
+            0,
+            -0.5
+          ],
+          "script": "behaviors/millstones.js",
+          "label": "The stones",
+          "labelHeight": 4.2,
+          "note": "My millstones. Click to listen to the damsel."
         }
       ]
     }

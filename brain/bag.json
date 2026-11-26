@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-24",
+  "synced": "2026-11-25",
   "bag": [
     {
       "id": "seed-pouch",
@@ -60,20 +60,20 @@
       "note": "Puffins shed the bright outside of their beaks every fall and grow new ones for spring. Pip found this one by her burrow in September. It's orange and stripy and light as a leaf. I gave her my red flashlight for it, so she can wind OJ Light at night and keep her night eyes."
     },
     {
-      "id": "bee-card",
-      "name": "My bee card",
-      "icon": "🐝",
-      "from": "Wrote it on Day 11, sitting on the log stool by my bee tree",
-      "got": "2026-11-23",
-      "note": "Front: 50°F + SUN = they fly out. Below 57°F = they hug (the cluster). Shell above 50, middle above 64, babies 93. Back: Knock GENTLY. Listen for HMMMM. Let them be till spring. Do not eat the neighbors."
-    },
-    {
       "id": "musicbox-key",
       "name": "The winding key to my music box",
       "icon": "🗝️",
       "from": "Made it when I built OJ Music Box (Day 12)",
       "got": "2026-11-24",
       "note": "Brass, with a red knob. Four clicks and it plays all three tunes. I keep it next to the key to OJ-1. Two keys! I'm a very important chicken."
+    },
+    {
+      "id": "first-flour",
+      "name": "My first bag of flour",
+      "icon": "🌾",
+      "from": "Ground it myself at OJ Mill, on Thanksgiving (Day 14)",
+      "got": "2026-11-26",
+      "note": "Stone-ground wholemeal, still a tiny bit warm from the stones. Light winds all day, so it took forever and I only got about half a sack. Enough for one loaf. Tomorrow my starter is a week old, and it gets this."
     }
   ],
   "shelves": {
@@ -247,6 +247,22 @@
           "from": "Found under the bee tree (oaks keep their brown leaves all winter, but the wind steals a few)",
           "got": "2026-11-24",
           "note": "Crinkly and the color of a turkey's tail, it turns out. My bag is full, so it lives on my shelf now, pressed under my star chart."
+        },
+        {
+          "id": "bee-card",
+          "name": "My bee card",
+          "icon": "🐝",
+          "from": "Wrote it on Day 11, sitting on the log stool by my bee tree",
+          "got": "2026-11-23",
+          "note": "Front: 50°F + SUN = they fly out. Below 57°F = they hug (the cluster). Shell above 50, middle above 64, babies 93. Back: Knock GENTLY. Listen for HMMMM. Let them be till spring. Do not eat the neighbors. Moved to my shelf on Day 14 (Thanksgiving) to make room for my first flour. The bees won't mind. They're hugging."
+        },
+        {
+          "id": "find-2026-11-25-1",
+          "name": "A buried acorn",
+          "icon": "🌰",
+          "from": "Found where Rascal or Nutmeg hid it",
+          "got": "2026-11-25",
+          "note": "Found it the morning after I met my turkey cousins. Saving it for the little oak nursery I want to plant by the Roost. (Sorry, Rascal. It's going to a good cause.)"
         }
       ]
     },
@@ -453,6 +469,18 @@
       "name": "A tiny curl of bark",
       "icon": "🪵",
       "where": "under the Roost, knocked loose by a turkey crash-landing at dawn",
+      "weight": 1
+    },
+    {
+      "name": "A pinch of fresh flour",
+      "icon": "🌾",
+      "where": "under the meal spout at OJ Mill, where the sack doesn't quite catch it",
+      "weight": 2
+    },
+    {
+      "name": "A scrap of sailcloth",
+      "icon": "🏳️",
+      "where": "caught on the stage railing at OJ Mill",
       "weight": 1
     }
   ]

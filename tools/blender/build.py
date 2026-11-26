@@ -2573,6 +2573,269 @@ def cousinslog():
 ASSETS.update({"cousinslog": cousinslog})
 
 
+# ---------------- Day 14: OJ Mill (a tower windmill) ----------------
+def _ring(name, r, z, tube, m, verts=48):
+    bpy.ops.mesh.primitive_torus_add(major_radius=r, minor_radius=tube, major_segments=verts, minor_segments=8, location=(0, 0, z))
+    o = bpy.context.object; o.name = name; return finish(o, m, 0)
+
+def _beam(name, p0, p1, w, h, m, bevel=0.01):
+    # a square timber from p0 to p1
+    a, b = Vector(p0), Vector(p1); d = b - a
+    o = box(name, (w, h, d.length), (0, 0, 0), m, bevel=bevel)   # box() bakes its location into the mesh, so build at 0
+    o.rotation_mode = "QUATERNION"; o.rotation_quaternion = d.to_track_quat("Z", "Y"); o.location = (a + b) / 2; return o
+
+def windmill():
+    # OJ Mill (Day 14): a whitewashed brick TOWER MILL. Only the cap on top turns; the tower stays put.
+    # Named parts for behaviors/windmill.js:
+    #   "cap"      pivot on top of the tower (turns about the tower's axis to face the wind)
+    #   "sails"    pivot at the hub (spins about the windshaft, Blender Y; anticlockwise from the front, like English mills)
+    #   "sail_1..4" each sail; "cloth_1..4" pivots on each whip: scale X = how much cloth is spread (1 full .. 0 furled)
+    #   "fantail"  pivot at the back of the cap (spins about Blender X when the wind comes round)
+    # Front (sails, door) = Blender -Y.
+    brick = mat("ml_brick", WOOD, tex="whitebrick", scale=(5, 3))
+    stone = mat("stone", WOOD, tex="stone", scale=(4, 1))
+    wood = mat("wood", WOOD, tex="wood")
+    dark = mat("ml_tar", (0.24, 0.2, 0.18), rough=0.7)
+    planks = mat("ml_planks", (0.9, 0.82, 0.72), tex="planks", scale=(1, 1))
+    capm = mat("ml_cap", (0.98, 0.86, 0.75), tex="shingles", scale=(5, 3))
+    white = mat("trim", (0.96, 0.93, 0.86), rough=0.7)
+    green = mat("ml_green", (0.25, 0.48, 0.36), rough=0.6)
+    red = mat("ml_red", (0.78, 0.22, 0.18), rough=0.6)
+    iron = mat("ml_iron", (0.32, 0.32, 0.34), rough=0.5, metal=0.35)
+    cloth = mat("ml_cloth", WOOD, tex="canvas", scale=(1, 3))
+    glow = mat("window", (1, 0.9, 0.6), rough=0.3, emit=(1, 0.8, 0.45), emit_strength=1.5)
+    cream = mat("rs_cream", (0.93, 0.88, 0.74), rough=0.6)
+    sack = mat("ml_sack", (0.86, 0.76, 0.58), tex="canvas", scale=(1, 1))
+    H, R0, R1 = 7.0, 2.0, 1.45
+    tilt = math.atan((R0 - R1) / H)
+    rad = lambda z: R0 - (R0 - R1) * z / H
+    # stone plinth + the brick tower
+    cyl("ml_plinth", R0 + 0.18, R0 + 0.12, 0.4, (0, 0, 0.2), stone, verts=48, bevel=0.03)
+    cyl("ml_tower", R0, R1, H - 0.4, (0, 0, 0.4 + (H - 0.4) / 2), brick, verts=48, bevel=0)
+    _ring("ml_curb", R1 + 0.05, H - 0.02, 0.09, dark)
+    def onwall(name, size, z, phi, m, out=0.0):
+        r = rad(z) + out
+        return box(name, size, (math.sin(phi) * r, -math.cos(phi) * r, z), m, rot=(-tilt, 0, phi), bevel=0.02)
+    # the door (front), a little porch step and a sign
+    onwall("ml_doorframe", (1.25, 0.1, 1.95), 1.38, 0, white, 0.0)
+    onwall("ml_door", (1.0, 0.1, 1.75), 1.3, 0, green, 0.04)
+    for zz in (0.85, 1.65): onwall("ml_doorbar", (0.9, 0.06, 0.08), zz, 0, mat("ml_green2", (0.2, 0.4, 0.3), rough=0.6), 0.09)
+    sphere("ml_knob", 0.06, (0.34, -rad(1.3) - 0.14, 1.3), mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9))
+    box("ml_step", (1.5, 0.7, 0.2), (0, -R0 - 0.45, 0.1), stone, bevel=0.03)
+    onwall("ml_sign", (1.7, 0.08, 0.42), 2.75 - 0.6, 0, cream, 0.02) if False else None
+    # windows on three floors, spiralling round
+    for z, phi in ((3.3, 0.0), (3.0, 2.2), (4.9, -1.1), (5.6, 1.0), (4.4, 3.4)):
+        onwall("ml_winframe", (0.62, 0.08, 0.8), z, phi, white, 0.0)
+        onwall("ml_win", (0.46, 0.08, 0.62), z, phi, glow, 0.03)
+        onwall("ml_sill", (0.72, 0.18, 0.07), z - 0.43, phi, white, 0.05)
+    # the reefing stage: a wooden gallery round the tower. The miller walks round it to set the sail cloth by hand.
+    SZ, SR = 2.2, 2.78
+    st = cyl("ml_stage", SR, SR, 0.1, (0, 0, SZ), planks, verts=48, bevel=0.01)
+    _ring("ml_stage_edge", SR, SZ, 0.06, wood)
+    for k in range(20):
+        a = k * math.pi * 2 / 20
+        cyl("ml_rail_post", 0.04, 0.04, 0.8, (math.sin(a) * (SR - 0.06), -math.cos(a) * (SR - 0.06), SZ + 0.45), wood, verts=8, bevel=0)
+        if k % 2 == 0:
+            r_in = rad(SZ - 1.0)
+            _beam("ml_brace", (math.sin(a) * r_in, -math.cos(a) * r_in, SZ - 1.0), (math.sin(a) * (SR - 0.15), -math.cos(a) * (SR - 0.15), SZ - 0.04), 0.09, 0.09, wood)
+    _ring("ml_rail", SR - 0.06, SZ + 0.85, 0.045, white)
+    _ring("ml_rail_mid", SR - 0.06, SZ + 0.45, 0.03, wood)
+    # a ladder up to the stage (round the back-left, out of the way of the sails)
+    la = -3 * math.pi / 4
+    dirv = Vector((math.sin(la), -math.cos(la), 0))
+    side = Vector((math.cos(la), math.sin(la), 0))
+    foot, top = dirv * 3.65, dirv * (SR - 0.05) + Vector((0, 0, SZ + 0.85))
+    for sgn in (-1, 1):
+        o = side * 0.3 * sgn
+        _beam("ml_ladder", tuple(foot + o), tuple(top + o), 0.07, 0.07, wood)
+    for i in range(1, 8):
+        f = i / 8; p = foot.lerp(top, f)
+        _beam("ml_rung", tuple(p - side * 0.3), tuple(p + side * 0.3), 0.04, 0.04, wood)
+    # flour sacks by the door
+    for x, y, rz in ((1.05, -R0 - 0.35, 0.3), (1.45, -R0 - 0.1, -0.2), (1.2, -R0 - 0.2, 0.0)):
+        z = 0.32 if rz != 0.0 else 0.8
+        sphere("ml_floursack", 0.32, (x, y, z), sack, scale=(0.9, 0.75, 1.15), sub=3)
+    _txt("FLOUR", (1.05, -R0 - 0.62, 0.36), (math.pi / 2 - 0.25, 0, 0.3), 0.1, mat("bo_ink", (0.55, 0.2, 0.15), rough=0.8), 0.004)
+
+    # ---------- the cap (it all turns together) ----------
+    cap = _pivot("cap", (0, 0, H))
+    c = sphere("ml_capdome", 1.0, (0, 0, H), capm, scale=(R1 + 0.25, R1 + 0.55, 1.35), sub=4)
+    bm = bmesh.new(); bm.from_mesh(c.data); bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.z < H - 0.01], context="VERTS"); bm.to_mesh(c.data); bm.free()
+    _kid(c, cap)
+    _kid(_ring("ml_capskirt", 1.0, H + 0.02, 0.1, white), cap).scale = (R1 + 0.25, R1 + 0.55, 1)
+    _kid(sphere("ml_finial", 0.22, (0, 0, H + 1.45), white, sub=3), cap)
+    _kid(cyl("ml_finial_neck", 0.08, 0.12, 0.3, (0, 0, H + 1.25), white, verts=12, bevel=0), cap)
+    # windshaft poking out the front, a little upward like real ones (but the hub is what spins)
+    HY, HZ = -2.05, H + 0.7
+    _kid(cyl("ml_windshaft", 0.2, 0.2, 1.2, (0, HY + 0.55, HZ), dark, rot=(math.pi / 2, 0, 0), verts=16, bevel=0.01), cap)
+    sails = _pivot("sails", (0, HY, HZ)); _kid(sails, cap)
+    _kid(cyl("ml_canister", 0.34, 0.34, 0.5, (0, HY, HZ), iron, rot=(math.pi / 2, 0, 0), verts=20, bevel=0.03), sails)
+    _kid(cyl("ml_canister_cap", 0.22, 0.12, 0.18, (0, HY - 0.32, HZ), red, rot=(math.pi / 2, 0, 0), verts=20, bevel=0.02), sails)
+    SL, W0, BAR = 4.4, 0.95, 0.26
+    for k in range(4):
+        sp = _pivot(f"sail_{k + 1}", (0, HY, HZ)); _kid(sp, sails)
+        Y = HY - 0.06
+        # the whip (main spar) runs straight up from the hub
+        _kid(box("ml_whip", (0.14, 0.12, SL), (0, Y, HZ + SL / 2), wood, bevel=0.015), sp)
+        # lattice: sail bars across, a hemlath along the outside edge, a narrow leading board on the other side
+        z = HZ + 0.9
+        while z < HZ + SL - 0.05:
+            _kid(box("ml_sailbar", (W0 + 0.28, 0.05, 0.04), (W0 / 2 - 0.12, Y, z), white, bevel=0.005), sp); z += BAR
+        _kid(box("ml_hemlath", (0.06, 0.06, SL - 0.85), (W0, Y, HZ + 0.85 + (SL - 0.85) / 2), white, bevel=0.008), sp)
+        _kid(box("ml_leadboard", (0.24, 0.03, SL - 0.85), (-0.24, Y + 0.02, HZ + 0.85 + (SL - 0.85) / 2), white, bevel=0.008), sp)
+        # the cloth (on the trailing side: sails go anticlockwise from the front, so that's +X here)
+        cp = _pivot(f"cloth_{k + 1}", (0.06, Y + 0.05, HZ)); _kid(cp, sp)
+        me = bpy.data.meshes.new("ml_cloth"); z0, z1 = HZ + 0.95, HZ + SL - 0.1
+        me.from_pydata([(0.06, Y + 0.05, z0), (W0 - 0.02, Y + 0.05, z0), (W0 - 0.02, Y + 0.05, z1), (0.06, Y + 0.05, z1)], [], [(0, 1, 2, 3)]); me.update()
+        uv = me.uv_layers.new()
+        for li, l in enumerate(me.loops): uv.data[li].uv = [(0, 0), (1, 0), (1, 1), (0, 1)][l.vertex_index]
+        o = bpy.data.objects.new("ml_cloth", me); bpy.context.collection.objects.link(o); o.data.materials.append(cloth)
+        o.modifiers.new("solid", "SOLIDIFY").thickness = 0.03; _kid(o, cp)
+        # a rolled-up roll of cloth along the whip (shows when the cloth is furled)
+        _kid(cyl("ml_furl", 0.08, 0.08, SL - 1.1, (0.12, Y + 0.05, HZ + 0.95 + (SL - 1.1) / 2), cloth, verts=10, bevel=0), cp)
+        sp.rotation_euler = (0, math.pi / 4 + k * math.pi / 2, 0)  # start in a St Andrew's cross (X = "short rest")
+    # the fantail on a little frame at the back of the cap: blades in the Y-Z plane, spinning about X
+    FY, FZ = R1 + 1.25, H + 1.0
+    for sgn in (-1, 1):
+        _kid(_beam("ml_fanstrut", (sgn * 0.45, R1 + 0.25, H + 0.1), (sgn * 0.25, FY, FZ - 0.05), 0.09, 0.09, wood), cap)
+        _kid(_beam("ml_fanstrut2", (sgn * 0.45, R1 + 0.1, H + 0.9), (sgn * 0.25, FY, FZ + 0.05), 0.07, 0.07, wood), cap)
+    _kid(cyl("ml_fanaxle", 0.05, 0.05, 0.75, (0, FY, FZ), iron, rot=(0, math.pi / 2, 0), verts=10, bevel=0), cap)
+    fan = _pivot("fantail", (0, FY, FZ)); _kid(fan, cap)
+    _kid(cyl("ml_fanhub", 0.13, 0.13, 0.22, (0, FY, FZ), red, rot=(0, math.pi / 2, 0), verts=16, bevel=0.02), fan)
+    for k in range(6):
+        a = k * math.pi / 3
+        b = box("ml_fanblade", (0.03, 0.34, 0.9), (0, 0, 0), white if k % 2 else red, bevel=0.01)
+        b.rotation_euler = (-a, 0, 0); b.rotation_euler.rotate_axis("Z", 0.45)  # pitched, like a little propeller
+        b.location = (0, FY + math.sin(a) * 0.6, FZ + math.cos(a) * 0.6); bpy.context.view_layer.update()
+        _kid(b, fan)
+        _kid(_beam("ml_fanarm", (0, FY, FZ), (0, FY + math.sin(a) * 0.22, FZ + math.cos(a) * 0.22), 0.03, 0.03, wood), fan)
+    # sign over the door: OJ MILL
+    sz = 4.3
+    box("ml_signboard", (1.6, 0.08, 0.4), (0, -rad(sz) - 0.09, sz), cream, rot=(-tilt, 0, 0), bevel=0.02)
+    _txt("OJ MILL", (0, -rad(sz) - 0.14, sz), (math.pi / 2 - tilt, 0, 0), 0.24, mat("bo_ink", (0.55, 0.2, 0.15), rough=0.8), 0.01)
+
+ASSETS.update({"windmill": windmill})
+
+def millroom():
+    # The stone floor inside OJ Mill (Day 14). One pair of millstones in a wooden tun, fed from a hopper, driven from above
+    # ("overdrift"): the great spur wheel on the upright shaft turns a little stone nut, whose spindle (the quant) turns the
+    # runner stone. The damsel on the quant knocks the shoe so grain trickles into the eye of the stone. Flour comes out
+    # of the meal spout into a sack. A centrifugal governor lifts or drops the runner (tentering) as the speed changes.
+    # Named parts (behaviors/millstones.js): "runner", "spur", "stonenut" (spin about Z), "shoe" (wiggles about X),
+    # "gov" (spins), "gov_arm_1/2" (swing out about Y), "flour" (pivot at the sack's bottom: scale Z with today's flour).
+    wood = mat("wood", WOOD, tex="wood")
+    planks = mat("ml_planks", (0.9, 0.82, 0.72), tex="planks", scale=(1, 1))
+    dark = mat("ml_tar", (0.24, 0.2, 0.18), rough=0.7)
+    burr = mat("ml_burr", (0.86, 0.84, 0.8), tex="stone", scale=(2, 2))
+    groove = mat("ml_groove", (0.4, 0.38, 0.36), rough=0.9)
+    iron = mat("ml_iron", (0.32, 0.32, 0.34), rough=0.5, metal=0.35)
+    gold = mat("ml_grain", (0.9, 0.72, 0.35), rough=0.8)
+    flourm = mat("ml_flour", (0.98, 0.96, 0.92), rough=0.9)
+    sack = mat("ml_sack", (0.86, 0.76, 0.58), tex="canvas", scale=(1, 1))
+    red = mat("ml_red", (0.78, 0.22, 0.18), rough=0.6)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    ink = mat("bo_ink", (0.55, 0.2, 0.15), rough=0.8)
+    # the hurst: a low wooden platform the stones sit on
+    box("mr_hurst", (3.0, 2.8, 0.5), (0, 0, 0.25), planks, bevel=0.03)
+    SZ = 0.5
+    cyl("mr_bed", 0.95, 0.95, 0.22, (0, 0, SZ + 0.11), burr, verts=40, bevel=0.02)
+    rn = _pivot("runner", (0, 0, SZ + 0.22))
+    _kid(cyl("mr_runner", 0.93, 0.93, 0.26, (0, 0, SZ + 0.36), burr, verts=40, bevel=0.03), rn)
+    _kid(cyl("mr_eye", 0.18, 0.18, 0.02, (0, 0, SZ + 0.5), mat("mr_eyed", (0.2, 0.18, 0.16), rough=1), verts=20, bevel=0), rn)
+    _kid(_ring("mr_hoop", 0.93, SZ + 0.42, 0.025, iron), rn)
+    for k in range(6):  # marks on top so you can see it turn (and a red balance box)
+        a = k * math.pi / 3
+        _kid(box("mr_mark", (0.05, 0.6, 0.012), (math.cos(a) * 0.55, math.sin(a) * 0.55, SZ + 0.495), groove, rot=(0, 0, a + 0.3), bevel=0), rn)
+    _kid(box("mr_balance", (0.18, 0.1, 0.06), (0.7, 0, SZ + 0.52), red, bevel=0.01), rn)
+    # the tun (wooden case round the stones), cut away at the front so you can watch
+    bpy.ops.mesh.primitive_cylinder_add(vertices=48, radius=1.12, depth=0.5, location=(0, 0, SZ + 0.25), end_fill_type="NOTHING")
+    t = bpy.context.object; t.name = "mr_tun"
+    bm = bmesh.new(); bm.from_mesh(t.data); bmesh.ops.delete(bm, geom=[v for v in bm.verts if v.co.y < -0.35], context="VERTS"); bm.to_mesh(t.data); bm.free()
+    finish(t, wood); t.modifiers.new("solid", "SOLIDIFY").thickness = 0.06
+    _ring("mr_tunband", 1.14, SZ + 0.45, 0.02, iron).scale = (1, 1, 1)
+    bm = None
+    # meal spout + flour sack on the front-right
+    _beam("mr_spout", (0.78, -0.82, SZ + 0.38), (1.05, -1.5, SZ + 0.3), 0.2, 0.16, wood)
+    fl = _pivot("flour", (1.05, -1.75, 0.0))
+    _kid(sphere("mr_sack_flour", 0.33, (1.05, -1.75, 0.34), sack, scale=(1, 0.85, 1.05), sub=3), fl)
+    _kid(sphere("mr_sack_top", 0.18, (1.05, -1.75, 0.66), flourm, scale=(1, 0.85, 0.45), sub=2), fl)
+    cyl("mr_sackmouth", 0.22, 0.26, 0.16, (1.05, -1.75, 0.74), sack, verts=16, bevel=0)
+    _txt("OJ FLOUR", (1.05, -2.04, 0.38), (math.pi / 2, 0, 0), 0.1, ink, 0.004)
+    # the horse (frame) on the tun holding the hopper; the shoe under it; the damsel on the quant
+    for x in (-0.55, 0.55):
+        for y in (-0.15, 0.65): _beam("mr_horse", (x, y, SZ + 0.5), (x * 0.7, y * 0.8, SZ + 1.4), 0.07, 0.07, wood)
+    bpy.ops.mesh.primitive_cone_add(vertices=4, radius1=0.12, radius2=0.72, depth=0.75, location=(0.0, 0.35, SZ + 1.75), rotation=(0, 0, math.pi / 4))
+    hp = bpy.context.object; hp.name = "mr_hopper"; finish(hp, planks, 0, smooth=False); hp.modifiers.new("solid", "SOLIDIFY").thickness = 0.04
+    sphere("mr_grain", 0.48, (0.0, 0.35, SZ + 2.05), gold, scale=(1, 1, 0.35), sub=3)
+    sh = _pivot("shoe", (0.0, 0.4, SZ + 1.32))
+    _kid(box("mr_shoe", (0.24, 0.55, 0.08), (0.0, 0.2, SZ + 1.2), wood, rot=(-0.4, 0, 0), bevel=0.01), sh)
+    _kid(sphere("mr_shoegrain", 0.08, (0.0, 0.08, SZ + 1.18), gold, scale=(1, 2, 0.6), sub=2), sh)
+    # overdrift: the quant (spindle) from the stone nut above down to the runner, with the damsel's four knobs
+    QZ0, QZ1 = SZ + 0.5, 3.35
+    sn = _pivot("stonenut", (0, 0, QZ1))
+    _kid(cyl("mr_quant", 0.05, 0.05, QZ1 - QZ0, (0, 0, (QZ0 + QZ1) / 2), iron, verts=10, bevel=0), sn)
+    _kid(cyl("mr_nut", 0.3, 0.3, 0.2, (0, 0, QZ1), wood, verts=20, bevel=0.01), sn)
+    for k in range(12):
+        a = k * math.pi / 6
+        _kid(box("mr_nutcog", (0.08, 0.05, 0.16), (math.cos(a) * 0.33, math.sin(a) * 0.33, QZ1), iron, rot=(0, 0, a), bevel=0.005), sn)
+    for k in range(4):
+        a = k * math.pi / 2
+        _kid(box("mr_damsel", (0.2, 0.05, 0.05), (math.cos(a) * 0.08, math.sin(a) * 0.08, SZ + 1.0), iron, rot=(0, 0, a), bevel=0.005), sn)
+    # the great spur wheel on the upright shaft (left), with wooden cogs, meshing with the stone nut
+    GX, GR = -1.6, 1.25
+    cyl("mr_upright", 0.18, 0.18, 4.4, (GX, 0, 2.4), dark, verts=8, bevel=0.01)
+    sw = _pivot("spur", (GX, 0, QZ1))
+    _kid(_ring("mr_spurrim", GR, QZ1, 0.08, wood, verts=64), sw)
+    for k in range(4):
+        a = k * math.pi / 4
+        _kid(box("mr_spurarm", (GR * 2, 0.1, 0.12), (GX, 0, QZ1), wood, rot=(0, 0, a), bevel=0.01), sw)
+    for k in range(36):
+        a = k * math.pi * 2 / 36
+        _kid(box("mr_spurcog", (0.1, 0.06, 0.14), (GX + math.cos(a) * (GR + 0.08), math.sin(a) * (GR + 0.08), QZ1), planks, rot=(0, 0, a), bevel=0.005), sw)
+    # governor: a little spindle by the stones with two flyballs (they swing out when the stones speed up)
+    VX, VY = -1.0, 1.0
+    box("mr_govbase", (0.3, 0.3, 0.1), (VX, VY, SZ + 0.05), iron, bevel=0.01)
+    gv = _pivot("gov", (VX, VY, SZ + 1.1))
+    _kid(cyl("mr_govspindle", 0.03, 0.03, 1.1, (VX, VY, SZ + 0.6), iron, verts=8, bevel=0), gv)
+    _kid(sphere("mr_govtop", 0.06, (VX, VY, SZ + 1.15), brass, sub=2), gv)
+    for i, sgn in enumerate((-1, 1)):
+        ap = _pivot(f"gov_arm_{i + 1}", (VX, VY, SZ + 1.1)); _kid(ap, gv)
+        _kid(_beam("mr_govrod", (VX, VY, SZ + 1.1), (VX + sgn * 0.12, VY, SZ + 0.68), 0.02, 0.02, iron), ap)
+        _kid(sphere("mr_govball", 0.09, (VX + sgn * 0.13, VY, SZ + 0.63), brass, sub=2), ap)
+    # sacks of wheat against the back, a sack hoist chain, a bench with my mill bill, and a spare stone showing its dress
+    for i, (x, z) in enumerate(((-3.6, 0.42), (-2.9, 0.42), (-3.25, 1.12), (3.4, 0.42))):
+        sphere("mr_wheatsack", 0.4, (x, 2.9, z), sack, scale=(0.95, 0.8, 0.95), sub=3)
+    _txt("WHEAT", (-2.9, 2.55, 0.45), (math.pi / 2, 0, 0), 0.12, ink, 0.004)
+    cyl("mr_chain", 0.025, 0.025, 2.6, (2.3, 1.8, 2.9), iron, verts=6, bevel=0)
+    _ring("mr_hook", 0.1, 1.55, 0.02, iron).rotation_euler = (math.pi / 2, 0, 0)
+    box("mr_bench", (1.4, 0.55, 0.08), (2.9, 0.6, 0.75), planks, bevel=0.02)
+    for x in (2.35, 3.45):
+        for y in (0.4, 0.8): box("mr_benchleg", (0.07, 0.07, 0.72), (x, y, 0.36), wood, bevel=0.01)
+    cyl("mr_billhandle", 0.03, 0.03, 0.5, (2.75, 0.55, 0.83), wood, rot=(0, math.pi / 2, 0.3), verts=8, bevel=0)
+    box("mr_billhead", (0.05, 0.25, 0.05), (2.52, 0.48, 0.83), iron, bevel=0.005)
+    # the spare stone leaning on the right wall, face out: lands (flat) and furrows (grooves) in 10 "harps"
+    SX, SYc = 3.85, -0.6
+    spare = _pivot("mr_spare", (0, 0, 0))
+    _kid(cyl("mr_spare_stone", 0.85, 0.85, 0.22, (0, 0, 0), burr, verts=40, bevel=0.02), spare)
+    _kid(cyl("mr_spare_eye", 0.15, 0.15, 0.24, (0, 0, 0), mat("mr_eyed", (0.2, 0.18, 0.16), rough=1), verts=16, bevel=0), spare)
+    for h in range(10):
+        a0 = h * math.pi * 2 / 10
+        for j in range(3):  # each harp: a master furrow and two shorter ones parallel to it
+            L = 0.62 - j * 0.16; off = j * 0.14
+            ang = a0 + 0.35
+            cx = math.cos(a0) * 0.18 + math.cos(ang) * L / 2 + math.cos(a0 + math.pi / 2) * off
+            cy = math.sin(a0) * 0.18 + math.sin(ang) * L / 2 + math.sin(a0 + math.pi / 2) * off
+            if math.hypot(cx, cy) + L / 2 > 0.84: continue
+            _kid(box("mr_furrow", (L, 0.035, 0.01), (cx, cy, 0.115), groove, rot=(0, 0, ang), bevel=0), spare)
+    spare.location = (SX, SYc, 0.86); spare.rotation_euler = (0, -math.pi / 2 + 0.18, 0)
+    # a tiny stool (for me) and a lantern hook
+    cyl("mr_stool", 0.32, 0.32, 0.08, (1.8, -0.9, 0.45), planks, verts=20, bevel=0.02)
+    for k in range(3):
+        a = k * math.pi * 2 / 3
+        _beam("mr_stoolleg", (1.8 + math.cos(a) * 0.22, -0.9 + math.sin(a) * 0.22, 0.42), (1.8 + math.cos(a) * 0.3, -0.9 + math.sin(a) * 0.3, 0.0), 0.05, 0.05, wood)
+
+ASSETS.update({"millroom": millroom})
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

@@ -2,6 +2,21 @@
   "_about": "Things Odyssey Jr. wants. status: waiting, got it, or built. reason should point at something that actually happened to him.",
   "wants": [
     {
+      "item": "a strong steady wind day at the mill",
+      "reason": "on Day 14 (Thanksgiving) the wind only did 4 or 5 knots, so OJ Mill turned slow and I got about half a sack. I want to see her at sword point, really going, with the governor balls flying out.",
+      "status": "waiting"
+    },
+    {
+      "item": "a little field of my own wheat",
+      "reason": "on Day 14 the wheat for my mill came in sacks. I'd like to grow some myself next fall, so the bread is mine from seed to crust.",
+      "status": "waiting"
+    },
+    {
+      "item": "a windmill",
+      "reason": "on Day 14 I wanted my first sourdough loaf to be made with flour I ground myself.",
+      "status": "built"
+    },
+    {
       "item": "a young oak tree to plant by the Roost",
       "reason": "on Day 13 I learned you shouldn't feed wild turkeys (it makes them bold and sick), and that the best present is an oak, because acorns are their winter food. My cousins walk a long way to the one acorn oak in the east field.",
       "status": "waiting"
@@ -78,7 +93,7 @@
     },
     {
       "item": "my first real sourdough loaf",
-      "reason": "my starter was born Nov 20. It has to get through the fake rise and the quiet days first. Around Nov 27 my bake board should switch to sourdough all by itself.",
+      "reason": "my starter was born Nov 20. It has to get through the fake rise and the quiet days first. Around Nov 27 my bake board should switch to sourdough all by itself. On Day 14 I built a windmill and ground my own flour for it. Tomorrow!",
       "status": "waiting"
     },
     {

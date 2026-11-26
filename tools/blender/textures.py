@@ -117,6 +117,23 @@ def wicker():  # Day 10: woven willow for my balloon basket (over-under rows, li
             else: d.rounded_rectangle([x+5,y+1,x+W-5,y+W-1],radius=9,fill=tuple(int(v*0.86) for v in c)+(255,))
     noise(d,5000,[(90,60,30),(250,220,160)],(15,50),(1,2))
     return im.filter(ImageFilter.GaussianBlur(0.6))
-for name,f in dict(grass=grass,ripstop=ripstop,planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid,clay=clay,brick=brick,wicker=wicker).items():
+def canvas():  # Day 14: sailcloth for my windmill sails. Heavy canvas, a tight weave, a bit weathered
+    im=Image.new("RGB",(S,S),(236,226,204)); d=ImageDraw.Draw(im,"RGBA")
+    for i in range(0,S,4):
+        d.line([(i,0),(i,S)],fill=(200,186,160,70)); d.line([(0,i+2),(S,i+2)],fill=(255,250,236,60))
+    for k in range(5):  # seams where the cloth was sewn together
+        y=k*S//5+50; d.line([(0,y),(S,y)],fill=(180,160,128,130),width=3)
+    noise(d,4000,[(150,130,100),(255,250,240)],(15,45),(1,3))
+    return im.filter(ImageFilter.GaussianBlur(0.5))
+def whitebrick():  # Day 14: whitewashed brick for my windmill tower (lime wash over old red brick)
+    im=Image.new("RGB",(S,S),(214,206,192)); d=ImageDraw.Draw(im,"RGBA")
+    for row in range(16):
+        for c in range(-1,9):
+            x=c*64+(row%2)*32; y=row*32
+            v=random.randint(234,250); col=(v,v-random.randint(4,10),v-random.randint(14,24),255)
+            d.rounded_rectangle([x+3,y+3,x+61,y+29],radius=4,fill=col)
+    noise(d,5000,[(180,120,100),(150,140,128),(255,255,250)],(15,55),(1,3))
+    return im.filter(ImageFilter.GaussianBlur(0.6))
+for name,f in dict(grass=grass,ripstop=ripstop,planks=planks,wood=wood,shingles=shingles,stone=stone,dirt=dirt,water=water,bark=bark,hay=hay,plaid=plaid,clay=clay,brick=brick,wicker=wicker,canvas=canvas,whitebrick=whitebrick).items():
     f().convert("RGB").save(f"{OUT}/{name}.png")
 print("ok")

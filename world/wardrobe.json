@@ -1,6 +1,6 @@
 {
   "_about": "Odyssey Jr.'s closet: every outfit he has made. 'wearing' is the id of the one he has on. Each outfit has head, neck and body lists of parts (shape: box, roundbox, sphere, cylinder, cone, torus, capsule; size; pos [x,y,z]; color; optional rot). 'head' parts sit on top of his head, 'neck' around his neck, 'body' on the middle of his body. Add a new outfit here to add it to the closet.",
-  "wearing": "turkey-trot",
+  "wearing": "miller",
   "outfits": [
     {
       "id": "aviator",
@@ -2529,6 +2529,236 @@
             1
           ],
           "color": "#5e4024"
+        }
+      ]
+    },
+    {
+      "id": "miller",
+      "name": "Miller",
+      "icon": "🌾",
+      "made": "2026-11-26",
+      "note": "For mill days: a soft brown flat cap with a little peak, dusted with flour (you can't keep a miller's cap clean, so I didn't try), and a white cotton neckerchief with a tiny brass wheat ear on the knot. Made on Thanksgiving, the day I ground my first flour.",
+      "head": [
+        {
+          "shape": "sphere",
+          "size": [
+            0.215
+          ],
+          "pos": [
+            0,
+            0.03,
+            -0.01
+          ],
+          "scale": [
+            1.05,
+            0.5,
+            1.08
+          ],
+          "color": "#8a6a4a",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.2,
+            0.21,
+            0.04
+          ],
+          "pos": [
+            0,
+            -0.01,
+            0
+          ],
+          "color": "#7a5c3e",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.15
+          ],
+          "pos": [
+            0,
+            -0.01,
+            0.2
+          ],
+          "scale": [
+            1.15,
+            0.18,
+            0.9
+          ],
+          "color": "#6e5236",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.03
+          ],
+          "pos": [
+            0,
+            0.13,
+            -0.01
+          ],
+          "color": "#6e5236"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.03
+          ],
+          "pos": [
+            0.08,
+            0.11,
+            0.05
+          ],
+          "color": "#fbf7ee"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.025
+          ],
+          "pos": [
+            -0.1,
+            0.1,
+            -0.04
+          ],
+          "color": "#fbf7ee"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.022
+          ],
+          "pos": [
+            0.04,
+            0.12,
+            -0.1
+          ],
+          "color": "#fbf7ee"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.028
+          ],
+          "pos": [
+            0.05,
+            0.02,
+            0.27
+          ],
+          "scale": [
+            1,
+            0.5,
+            1
+          ],
+          "color": "#fbf7ee"
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.28,
+            0.04
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#f7f3ea",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.11,
+            0.16
+          ],
+          "pos": [
+            0,
+            -0.07,
+            0.27
+          ],
+          "rot": [
+            3.1416,
+            0,
+            0
+          ],
+          "color": "#f7f3ea",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.024
+          ],
+          "pos": [
+            0,
+            -0.02,
+            0.31
+          ],
+          "scale": [
+            1,
+            1.5,
+            0.8
+          ],
+          "color": "#c9a040"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.02
+          ],
+          "pos": [
+            -0.025,
+            -0.05,
+            0.31
+          ],
+          "scale": [
+            1,
+            1.5,
+            0.8
+          ],
+          "color": "#c9a040"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.02
+          ],
+          "pos": [
+            0.025,
+            -0.05,
+            0.31
+          ],
+          "scale": [
+            1,
+            1.5,
+            0.8
+          ],
+          "color": "#c9a040"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.007,
+            0.007,
+            0.1
+          ],
+          "pos": [
+            0,
+            -0.1,
+            0.31
+          ],
+          "color": "#a88030"
         }
       ]
     }
