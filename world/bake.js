@@ -52,7 +52,7 @@ const dayIdx = d => Math.floor(new Date(d.getFullYear(), d.getMonth(), d.getDate
 
 export function menuFor(d) {
   const i = dayIdx(d), st = starterAt(atHour(d, 9));
-  const loaf = st.ready ? { name: "SOURDOUGH loaves", icon: "🥖", note: `made with my own starter (${st.age} days old). Tangy! Real wild yeast from my flour.` } : LOAVES[i % LOAVES.length];
+  const loaf = st.ready ? { name: "SOURDOUGH loaves", icon: "🥖", note: `${d.getFullYear() === 2026 && d.getMonth() === 10 && d.getDate() === 27 ? "MY FIRST EVER! " : ""}made with Odoughssey, my starter (${st.age} days old), and flour from OJ Mill. Scored with my lame. Tangy! Real wild yeast.` } : LOAVES[i % LOAVES.length];
   return { loaf, cookie: COOKIES[(i * 3 + 1) % COOKIES.length], roast: ROASTS[(i * 7 + 2) % ROASTS.length] };
 }
 

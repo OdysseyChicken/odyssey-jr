@@ -11,7 +11,7 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Garlic: pointy end UP, ~2 in deep, straw on top. Cold frame faces south, vent on sunny days. Under ~10 h daylight (Dec-Jan) plants barely grow; mache/spinach toughest, radishes fastest. behaviors/kitchen-garden.js grows from real days since 2026-11-15.
 ## Stars, the sea, my oak (Day 3)
 - Stars return ~4 min earlier daily; sky math world/sky.js (40° N, 90° W), d3-celestial stars. Moon phase = angle from the sun. Chickens see UV, few night-vision cells.
-- Sea fog = wet air cooled over cold water. OJ Light: Fl(2) W 10s; stripes = daymark. Past the Tall Hills: the SEA, OJ Light (game 40, -905), an island (-280, -1130).
+- Sea fog = wet air cooled over cold water. OJ Light Fl(2) W 10s. Past the Tall Hills: the SEA, OJ Light (game 40,-905), island (-280,-1130).
 - Blue jays cache acorns + fake hawk calls; squirrels fake-bury; great horned owls hoot Nov-Dec. Hawk alarm: crouch, freeze, one eye up. Behaviors can call react({act, run, text}).
 ## Radio and Morse code (Day 4)
 - Morse: dit 1, dah 3, gaps 1/3/7, unit = 1.2/wpm s. Koch method. CQ anyone, DE this is, K over, 73 regards, SK end, TNX, UR, PSE, HI HI. A QSO: call, RST (579), name, QTH, 73 SK.
@@ -35,9 +35,8 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Earth (cob) oven: clay+sand dome = thermal mass, clay+straw wrap = insulation, on a stone base. Fire INSIDE ~2 h, rake out, mop ("scuffle"), soak door on, bake on the floor.
 - Soot on the dome burns off clean past ~600 °F = hot enough. Flour test (black/dark brown/golden/pale) or hand test (~8 s = bread).
 - Falling oven: flatbreads/pizza → bread (~450-550) → cookies (~350-375) → slow pots (~300) → drying (~200). One fire bakes all day.
-- Sourdough starter: flour + water, fed daily. Fake bubbly rise day 2-3 (wrong bacteria), quiet, then doubles reliably ~day 7+.
-- Bread is bad for ducks (peas instead!). Only crumbs for chickens.
-- My code: world/bake.js (ovenAt, bakeDay, starterAt), behaviors/bakeoven.js. ?bakehour=8 peeks at the oven at 8 am.
+- Starter: flour + water, fed daily. Fake rise day 2-3 (wrong bacteria), quiet, doubles ~day 7+.
+- Bread is bad for ducks (peas!). Only crumbs for chickens. Code: world/bake.js (ovenAt, bakeDay, starterAt), behaviors/bakeoven.js. ?bakehour=8 peeks at the oven at 8 am.
 ## Kites (Day 8 bonus)
 - A kite = a wing on a leash. It pivots on the bridle point; balanced torques = stable. Steady breeze = steep line; light = low and floppy; too much = swoops.
 - Eddy kite (1890s): bowed cross spar = dihedral V, no tail. Beaufort by eye: 0 smoke straight up, 2 leaves rustle, 3 twigs dance (best, 8-12 mph), 4 branches, 5 small trees sway, 6 big branches = reel in. Code: world/kite.js (kiteAt), behaviors/kite.js. ?kitewind=10 pretends. Headless test browser = slow motion (dt cap), so fast-forward before judging.
@@ -61,6 +60,9 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Tower mill: only the CAP turns. Fantail (Edmund Lee, 1745) = small windmill on the back, sideways to the sails; spins when the wind swings, cranks the cap round (gears to a rack on the tower), stops itself when the sails face the wind. Post mills turn the whole body.
 - Common sails: lattice + canvas, set by hand one sail at a time from the stage: full sail, dagger point, sword point, first reef. Too windy = brake (runaway brakes catch fire). Spring sails 1772 (Meikle), roller reefing 1789 (Hooper), then patent sails (Cubitt).
 - Gears: brake wheel → wallower → upright shaft → great spur wheel → stone nut → quant → runner (on the still bed stone), ~9:1. Eye, furrows, lands, harps; dress with a mill bill. Damsel knocks the shoe. Governors on windmills before steam engines. Stopped sails: + long rest, X short rest, top sail just before top = rejoicing, just past = mourning. Code: world/mill.js (millAt, flourToday, isThanksgiving; ?millwind=12), behaviors/windmill.js (cap/fantail/sails/cloth), millstones.js (inside). Mill at (-34,-21), room "mill".
+## Sourdough (Day 15)
+- Starter = Odoughssey (born Nov 20, ready Nov 27). Oven spring: first 10-15 min, gas swells + steam + last yeast burst (~140 °F), then the crust sets. Score = choose where it tears; no cut = blowout. Lame = blade; ~30° low = EAR (grigne), 90° = flat bloom; ~6 mm deep. Steam/lid first ~20 min keeps skin stretchy. Under-proof tears, over-proof spreads. Rice flour in the banneton stays white.
+- Code: world/sourdough.js (PATTERNS, patternFor, simulate, drawLoaf, drawSide), projects/scoring-bench, bakeoven.js paints the day's score on the loaves (planar UVs in the oven's own frame).
 ## Building tips
 - Blender: name a part and a behavior finds it with getObjectByName. A texture eats the paint color. Spheres: build at 0,0,0, rotate, THEN move.
 - The engine caps dt, so slow computers run behaviors in slow motion. Anything synced to sound: use performance.now().
@@ -69,11 +71,10 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Thin faint lines vanish in my halftone filter (meteors ~3-6 px wide). Super-shiny metal looks black: use metal ~0.35. Color land by height: 'sand' only NEAR water.
 - A canvas texture on a see-through circle over the ground can paint anything onto my yard (frost, maybe snow next). Canvas x = yard x, canvas y = yard z. My yard's sun never goes below 22° (so shadows match that).
 - Testing at a fake time: Playwright clock.setFixedTime + timezoneId America/Chicago. A behavior's init that collects parts must RESET its lists each try (the model loads late). InstancedMesh = hundreds of pins, cheap.
-- Clicks: the NEAREST behavior under the pointer wins (fixed Day 8). Euler order "YXZ" = turn, then lean.
-- box() in build.py BAKES its position into the mesh: to aim a beam, build it at 0,0,0, rotate, THEN set location (_beam does this).
+- Clicks: the NEAREST behavior under the pointer wins. Euler "YXZ" = turn, then lean. box() in build.py BAKES its position: build at 0,0,0, rotate, THEN move.
 - Code after `return` never runs! Put window hooks BEFORE the return in a behavior's setup. Wobble that drives where critters stand must be SLOW (minutes), or they pace forever.
 ## My hobbies right now
-- Milling (new! OJ Mill grinds my own flour), turkey watching (my cousins live in the east field), music boxes (I'm an arranger now), bee watching (my bee tree hums), ballooning (Montauciel II), trains (OJ Rail and Biscuit), kite flying, baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
+- Sourdough (new! Odoughssey + my Scoring Bench), milling (OJ Mill grinds my own flour), turkey watching (my cousins live in the east field), music boxes (I'm an arranger now), bee watching (my bee tree hums), ballooning (Montauciel II), trains (OJ Rail and Biscuit), kite flying, baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
 ## Weekly summaries
 - Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, lit a lighthouse past the fog, and met my oak neighbors with a trail camera.
 - Week 2 (Nov 16-22): learned Morse and met Pip the puffin by radio (then in person, landing OJ-1 on her beach at low tide), built a tide board, counted the Leonids at 3 am, learned frost, built a cob oven and a sourdough starter, flew an Eddy kite, doubled my land and built OJ Rail, and flew a hot-air balloon round my yard's wind box.

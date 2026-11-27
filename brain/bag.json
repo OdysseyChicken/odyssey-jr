@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-25",
+  "synced": "2026-11-26",
   "bag": [
     {
       "id": "seed-pouch",
@@ -68,12 +68,12 @@
       "note": "Brass, with a red knob. Four clicks and it plays all three tunes. I keep it next to the key to OJ-1. Two keys! I'm a very important chicken."
     },
     {
-      "id": "first-flour",
-      "name": "My first bag of flour",
-      "icon": "🌾",
-      "from": "Ground it myself at OJ Mill, on Thanksgiving (Day 14)",
-      "got": "2026-11-26",
-      "note": "Stone-ground wholemeal, still a tiny bit warm from the stones. Light winds all day, so it took forever and I only got about half a sack. Enough for one loaf. Tomorrow my starter is a week old, and it gets this."
+      "id": "my-lame",
+      "name": "My lame (a bread-scoring blade)",
+      "icon": "🔪",
+      "from": "Made it at my workbench on Day 15, for my first sourdough",
+      "got": "2026-11-27",
+      "note": "Say it 'LAHM', it's French for blade. A little wooden stick with a curved razor blade on the end, in a cork when I carry it. Low at 30° for an ear. One smooth stroke, never saw at it. I signed my first loaf with it: a chicken foot."
     }
   ],
   "shelves": {
@@ -263,6 +263,14 @@
           "from": "Found where Rascal or Nutmeg hid it",
           "got": "2026-11-25",
           "note": "Found it the morning after I met my turkey cousins. Saving it for the little oak nursery I want to plant by the Roost. (Sorry, Rascal. It's going to a good cause.)"
+        },
+        {
+          "id": "find-2026-11-26-0",
+          "name": "A piece of sea glass",
+          "icon": "🫧",
+          "from": "Found on the beach below OJ Light",
+          "got": "2026-11-26",
+          "note": "A SECOND one! This one is pale blue, like the sky over Pip's island. The green one stays in my bag; this one lives on my shelf where the sun hits it."
         }
       ]
     },
@@ -271,11 +279,11 @@
       "items": [
         {
           "id": "sourdough-starter",
-          "name": "My sourdough starter (in a jar)",
+          "name": "Odoughssey, my sourdough starter (in a jar)",
           "icon": "🫙",
           "from": "Made it on Day 8: flour and water, stirred with my beak",
           "got": "2026-11-20",
-          "note": "Born Nov 20 at 8 am. I feed it every morning. My notes say it'll do a big FAKE rise in a couple of days, then go quiet, then really wake up after about a week. Then: sourdough. It needs a name. Working on it."
+          "note": "Born Nov 20 at 8 am. Fake rise on day 2, quiet and sour for days, then on day 7 it DOUBLED. Ready! Named it Odoughssey on Day 15 (O-DOUGH-ssey, like me but bread). It went into my first ever sourdough loaf with flour from OJ Mill."
         },
         {
           "id": "flour-pouch",
@@ -292,6 +300,14 @@
           "from": "Made it on Day 8 for sliding bread in and out of the oven",
           "got": "2026-11-20",
           "note": "A big flat wooden spatula on a long handle. Too long for my bag. It leans on the post."
+        },
+        {
+          "id": "first-sourdough-ear",
+          "name": "A little ear off my first sourdough loaf",
+          "icon": "🍞",
+          "from": "Snapped it off my first ever sourdough loaf (Day 15), flour from OJ Mill, starter Odoughssey",
+          "got": "2026-11-27",
+          "note": "My chicken-foot cuts were at 45°, so the ears came out small (low and flat at 30° makes the big ones, I know that NOW). Small is still the crunchiest bit. I was going to eat it. Then I didn't. It's my first one."
         }
       ]
     }
@@ -482,6 +498,12 @@
       "icon": "🏳️",
       "where": "caught on the stage railing at OJ Mill",
       "weight": 1
+    },
+    {
+      "name": "A crunchy crust crumb",
+      "icon": "🥖",
+      "where": "under the cooling bench at OJ Bakehouse",
+      "weight": 2
     }
   ]
 }

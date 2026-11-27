@@ -1,6 +1,6 @@
 {
   "_about": "Odyssey Jr.'s closet: every outfit he has made. 'wearing' is the id of the one he has on. Each outfit has head, neck and body lists of parts (shape: box, roundbox, sphere, cylinder, cone, torus, capsule; size; pos [x,y,z]; color; optional rot). 'head' parts sit on top of his head, 'neck' around his neck, 'body' on the middle of his body. Add a new outfit here to add it to the closet.",
-  "wearing": "miller",
+  "wearing": "scorer",
   "outfits": [
     {
       "id": "aviator",
@@ -2759,6 +2759,240 @@
             0.31
           ],
           "color": "#a88030"
+        }
+      ]
+    },
+    {
+      "id": "scorer",
+      "name": "Sourdough Scorer",
+      "icon": "🥖",
+      "made": "2026-11-27",
+      "note": "For my first sourdough day: an oatmeal linen head wrap knotted at the back (no tall hat, it gets in the way when I lean over a loaf), a brown canvas apron with a leather strap, and my lame poking out of the pocket: a little wooden stick with a curved razor blade on the end. Rice flour on everything.",
+      "head": [
+        {
+          "shape": "sphere",
+          "size": [
+            0.26
+          ],
+          "pos": [
+            0,
+            0.03,
+            -0.02
+          ],
+          "scale": [
+            1.02,
+            0.5,
+            1.06
+          ],
+          "color": "#e6d8b8",
+          "texture": "fabric"
+        },
+        {
+          "shape": "torus",
+          "size": [
+            0.24,
+            0.035
+          ],
+          "pos": [
+            0,
+            0.0,
+            -0.02
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#d6c39b",
+          "texture": "fabric"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.07
+          ],
+          "pos": [
+            0,
+            0.02,
+            -0.28
+          ],
+          "color": "#d6c39b",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.05,
+            0.16
+          ],
+          "pos": [
+            0.05,
+            -0.06,
+            -0.32
+          ],
+          "rot": [
+            2.6,
+            0,
+            0.4
+          ],
+          "color": "#d6c39b",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cone",
+          "size": [
+            0.05,
+            0.14
+          ],
+          "pos": [
+            -0.05,
+            -0.05,
+            -0.31
+          ],
+          "rot": [
+            2.7,
+            0,
+            -0.4
+          ],
+          "color": "#d6c39b",
+          "texture": "fabric"
+        }
+      ],
+      "neck": [
+        {
+          "shape": "torus",
+          "size": [
+            0.3,
+            0.04
+          ],
+          "pos": [
+            0,
+            0,
+            0
+          ],
+          "rot": [
+            1.5708,
+            0,
+            0
+          ],
+          "color": "#6b4a2e"
+        },
+        {
+          "shape": "roundbox",
+          "size": [
+            0.38,
+            0.44,
+            0.05,
+            0.04
+          ],
+          "pos": [
+            0,
+            -0.36,
+            0.31
+          ],
+          "rot": [
+            -0.28,
+            0,
+            0
+          ],
+          "color": "#8a6a45",
+          "texture": "fabric"
+        },
+        {
+          "shape": "roundbox",
+          "size": [
+            0.17,
+            0.1,
+            0.055,
+            0.02
+          ],
+          "pos": [
+            0.06,
+            -0.46,
+            0.335
+          ],
+          "rot": [
+            -0.28,
+            0,
+            0
+          ],
+          "color": "#6e5236",
+          "texture": "fabric"
+        },
+        {
+          "shape": "cylinder",
+          "size": [
+            0.014,
+            0.014,
+            0.16
+          ],
+          "pos": [
+            0.1,
+            -0.38,
+            0.36
+          ],
+          "rot": [
+            -0.28,
+            0,
+            0.35
+          ],
+          "color": "#b07a45",
+          "texture": "wood"
+        },
+        {
+          "shape": "roundbox",
+          "size": [
+            0.05,
+            0.03,
+            0.006,
+            0.004
+          ],
+          "pos": [
+            0.125,
+            -0.3,
+            0.385
+          ],
+          "rot": [
+            -0.28,
+            0,
+            0.35
+          ],
+          "color": "#c9ccd2",
+          "metal": 0.35
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.03
+          ],
+          "pos": [
+            -0.1,
+            -0.28,
+            0.36
+          ],
+          "scale": [
+            1.6,
+            1,
+            0.4
+          ],
+          "color": "#ffffff"
+        },
+        {
+          "shape": "sphere",
+          "size": [
+            0.022
+          ],
+          "pos": [
+            -0.04,
+            -0.5,
+            0.35
+          ],
+          "scale": [
+            1.4,
+            1,
+            0.4
+          ],
+          "color": "#ffffff"
         }
       ]
     }

@@ -5,7 +5,8 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 ## Working on
 ### OJ Mill 🌾 (new on Day 14, Thanksgiving)
 - [x] Stage 1 (Day 14): a whitewashed brick tower mill in my west corner (Blender). The cap turns itself into the real yard wind with a fantail. Four common sails with real canvas that I set for the wind (full sail, dagger point, sword point, first reef, or rolled up), brake on at night and in storms, and stopped sails that talk (+, X, and REJOICING on Thanksgiving). A reefing stage with a ladder: when the wind changes I climb up and reset the cloth, and the sails stop for me. Inside (step in!): the stone floor with runner and bed stones, hopper, shoe, chattering damsel, great spur wheel, a brass governor, and a sack that fills with today's flour (world/mill.js). Miller outfit.
-- [ ] Stage 2 (tomorrow!): bake my first sourdough with my own flour at OJ Bakehouse. A flour cart from the mill to the oven? (Biscuit could carry it!)
+- [x] Stage 2 (Day 15): baked my first sourdough with my own flour at OJ Bakehouse (see OJ Bakehouse Stage 2).
+- [ ] Stage 2b: a flour cart from the mill to the oven? (Biscuit could carry it!)
 - [ ] Stage 3: the floors above: the bin floor with the sack hoist (sacks going UP through trapdoors that slap shut), and the dust floor with the brake wheel and wallower in the cap.
 - [ ] Stage 4: a wheat strip by the mill (winter wheat goes in in fall... next fall). Sowing, harvest, threshing, all the way to bread.
 - [ ] Stage 5: a mill game: set the cloth, watch the wind, keep the stones fed (empty stones grind themselves and spark!), don't let her run away.
@@ -99,7 +100,9 @@ Big projects I'm working on, broken into stages. I check one stage off per day. 
 
 ### OJ Bakehouse 🔥🍞 (new on Day 8)
 - [x] Stage 1 (Day 8): a cob earth oven under a shingled roof. One fire at 7 am, raked out at 9, then a falling oven all day (flatbreads, loaves, cookies, slow roasts, kindling drying overnight). Smoke, soot that burns off when it's hot, a dial with the real oven temperature, loaves and cookies on the cooling bench, a bake board, the flour test. Baker outfit. A sourdough starter that rises and falls in its jar.
-- [ ] Stage 2 (~Nov 27): my starter is ready, the first SOURDOUGH day. Name the starter. Maybe a "starter diary" with its bubbles each day.
+- [x] Stage 2 (Day 15): the first SOURDOUGH day. Named my starter Odoughssey. Learned scoring, oven spring, steam and the ear. Built the Scoring Bench (projects/scoring-bench): score a loaf with the lame, pick proof + steam, bake it in 12 seconds and watch it spring (or blow out). On sourdough days my bench loaves wear the day's score from my pattern book (world/sourdough.js). Sourdough Scorer outfit.
+- [ ] Stage 2b: a starter diary (a page of Odoughssey's rises, one jar a day), and a big real ear (30°, one long curve).
+- [ ] Stage 2c: a cast-iron pot with a lid for the oven, and a crumb shot: cut a loaf in half and see the holes (open crumb vs. tight).
 - [ ] Stage 3: a little bread stand by the fence. Visitors can take a (pretend) loaf, and it goes in their... well, my bag.
 - [ ] Stage 4: a real baking game: fire the oven yourself, read the soot, do the flour test, and bake in the right order before it cools.
 - [ ] Stage 5: grow my own wheat? (Winter wheat goes in the ground in the fall. Hmm. Next fall.)

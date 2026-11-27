@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Scoring Bench: score a sourdough loaf with Odyssey Jr.</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/nunito@5/800.css">
+<style>
+  :root { --ink:#3a2617; --paper:#fbf4e4; --paper2:#efe2c4; --gold:#ffb400; --crust:#9a5a26; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; font-family:"Nunito", ui-rounded, system-ui, sans-serif; color:var(--ink); }
+  body { min-height:100vh; background:#6b4428 repeating-linear-gradient(90deg, #6b4428 0 46px, #74492b 46px 48px, #66412a 48px 94px, #70472b 94px 96px); }
+  .wrap { max-width:980px; margin:0 auto; padding:16px; }
+  .paper { background:var(--paper); border:2px solid var(--ink); border-radius:20px; box-shadow:0 5px 0 rgba(58,38,23,.4), 0 10px 26px rgba(0,0,0,.25); }
+  header { display:flex; align-items:center; gap:10px; padding:10px 16px; margin-bottom:14px; }
+  header h1 { margin:0; font-size:22px; flex:1; }
+  header a { color:inherit; font-weight:800; text-decoration:none; font-size:14px; border:2px solid var(--ink); border-radius:99px; padding:4px 12px; background:#fff; white-space:nowrap; }
+  button { font-family:inherit; color:inherit; cursor:pointer; font-weight:800; font-size:14px; border:2px solid var(--ink); border-radius:99px; padding:7px 12px; background:#fff; box-shadow:0 3px 0 var(--ink); }
+  button:active { transform:translateY(2px); box-shadow:0 1px 0 var(--ink); }
+  button.on { background:var(--gold); }
+  button.big { font-size:18px; padding:10px 20px; background:#ff8a3a; color:#fff; }
+  button:disabled { opacity:.5; cursor:default; }
+  .card { padding:14px 16px; margin-bottom:14px; }
+  .card h2 { margin:0 0 6px; font-size:18px; }
+  .card p { margin:6px 0; line-height:1.45; }
+  .row { display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin:6px 0; }
+  .lbl { font-weight:800; font-size:13px; min-width:92px; }
+  #say { min-height:44px; font-weight:800; font-size:16px; display:flex; align-items:center; gap:10px; }
+  #say .oj { font-size:30px; }
+  .grid { display:grid; grid-template-columns: minmax(0,1.25fr) minmax(0,1fr); gap:14px; }
+  @media (max-width:760px) { .grid { grid-template-columns: 1fr; } }
+  canvas { display:block; width:100%; height:auto; border-radius:16px; touch-action:none; }
+  #top { background:#7b4f2e; cursor:crosshair; border:2px solid var(--ink); }
+  #side { background:linear-gradient(#2a1a10, #4a2c18); border:2px solid var(--ink); margin-top:10px; }
+  .clock { display:flex; align-items:center; gap:10px; font-weight:800; margin-top:8px; }
+  .bar { flex:1; height:12px; border:2px solid var(--ink); border-radius:9px; background:#fff; overflow:hidden; position:relative; }
+  .bar i { display:block; height:100%; width:0; background:linear-gradient(90deg,#ffcf7a,#c46a28); }
+  .bar b { position:absolute; top:-2px; width:2px; height:14px; background:var(--ink); left:44.4%; }
+  .stats { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:8px; }
+  .stat { background:var(--paper2); border-radius:12px; padding:6px 10px; font-weight:800; font-size:15px; }
+  .stat small { display:block; font-size:11px; opacity:.65; }
+  .tip { font-size:12.5px; opacity:.8; }
+  details summary { cursor:pointer; font-weight:800; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="paper"><span style="font-size:28px">🔪</span><h1>The Scoring Bench</h1><a href="../../">← back to my yard</a></header>
+
+  <div class="card paper"><div id="say"><span class="oj">🐔</span><span id="sayText">My starter Odoughssey turned one week old today, so I'm baking my first sourdough! I put my chicken foot on this one. Press Bake, or New dough and drag across it to cut your own.</span></div></div>
+
+  <div class="grid">
+    <div class="card paper">
+      <canvas id="top" width="560" height="560"></canvas>
+      <div class="clock"><span id="min">ready to score</span><div class="bar"><i id="prog"></i><b title="lid off at minute 20"></b></div></div>
+      <canvas id="side" width="560" height="170"></canvas>
+    </div>
+    <div>
+      <div class="card paper">
+        <h2>1. Hold the lame</h2>
+        <div class="row"><span class="lbl">Blade angle</span>
+          <button data-angle="30" class="on">30° low (ear!)</button><button data-angle="45">45°</button><button data-angle="90">90° straight down</button></div>
+        <div class="row"><span class="lbl">Depth</span>
+          <button data-depth="3">3 mm snip</button><button data-depth="6" class="on">6 mm</button><button data-depth="10">10 mm deep</button></div>
+        <div class="row"><span class="lbl">Or a pattern</span><span id="pats" class="row" style="margin:0"></span></div>
+        <div class="row"><button id="undo">↩️ Undo cut</button><button id="clear">🧽 New dough</button><span class="tip" id="ncuts"></span></div>
+      </div>
+      <div class="card paper">
+        <h2>2. The dough and the oven</h2>
+        <div class="row"><span class="lbl">Proof</span>
+          <button data-proof="under">under</button><button data-proof="right" class="on">just right</button><button data-proof="over">over</button></div>
+        <div class="row"><span class="lbl">Steam</span>
+          <button data-steam="1" class="on">lid on (steam!)</button><button data-steam="0">no steam</button></div>
+        <div class="row" style="margin-top:12px"><button id="bake" class="big">🔥 Bake it!</button><button id="share">🔗 Copy link</button></div>
+        <div class="stats" id="stats" hidden>
+          <div class="stat"><small>oven spring</small><span id="sSpring"></span></div>
+          <div class="stat"><small>ear</small><span id="sEar"></span></div>
+          <div class="stat"><small>bloom</small><span id="sBloom"></span></div>
+          <div class="stat"><small>blowout?</small><span id="sBlow"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card paper">
+    <h2>What I learned today (Day 15)</h2>
+    <p><b>Oven spring.</b> In the first 10 to 15 minutes in a hot oven a loaf puffs up a LOT. The gas bubbles get hot and swell, water turns into steam, and the yeast does one last big burst before the heat stops it (around 140°F). Then the outside dries and sets into a crust, and the loaf can't grow any more.</p>
+    <p><b>Why cut it?</b> The skin on the top is tight, so when it springs it has to tear <i>somewhere</i>. If you don't pick where, it bursts out the side wherever it's weakest (a <b>blowout</b>). A cut is a door you leave open on purpose.</p>
+    <p><b>The ear.</b> The blade is called a <b>lame</b> (French for "blade"). Hold it low, about 30°, and slice under the skin: one side becomes a thin flap that lifts as the loaf grows, and because it's thin and up high it goes dark and crispy. That's the ear. In France the opened cut is called <i>la grigne</i>. Straight down (90°) opens flat into wide hills instead.</p>
+    <p><b>Steam.</b> A lid (or my soaked oven door) keeps the skin wet and stretchy for the first ~20 minutes, so it can keep growing and the cuts can open. Then the lid comes off and the crust browns. No steam = the crust sets early, short loaf, dull crust.</p>
+    <p><b>Proof.</b> Under-proofed dough still has lots of push left and tears itself open. Over-proofed dough has used up its bubbles and spreads like a pancake. Just right: when you poke it, the dent springs back slowly.</p>
+    <p class="tip">The white rings are rice flour from the banneton (the proofing basket). Rice flour doesn't soak in, so it stays white. My numbers here are simple pretend physics, but they behave like the real thing.</p>
+  </div>
+</div>
+
+<script type="module">
+import { PATTERNS, STARTER_NAME, simulate, verdict, drawLoaf, drawSide, encode, decode } from "../../world/sourdough.js";
+
+const top = document.getElementById("top"), tctx = top.getContext("2d");
+const side = document.getElementById("side"), sctx = side.getContext("2d");
+const say = t => document.getElementById("sayText").textContent = t;
+const st = { cuts: [], proof: "right", steam: true, angle: 30, depth: 6 };
+let minute = 0, baking = false, drawing = null;
+
+// pattern buttons
+const pats = document.getElementById("pats");
+for (const [id, p] of Object.entries(PATTERNS)) {
+  const b = document.createElement("button"); b.textContent = `${p.icon} ${p.name}`; b.title = p.note;
+  b.onclick = () => { if (baking) return; st.cuts = JSON.parse(JSON.stringify(p.cuts)); minute = 0; say(`${p.name}: ${p.note}`); render(); };
+  pats.appendChild(b);
+}
+function group(attr, key, conv) {
+  document.querySelectorAll(`[data-${attr}]`).forEach(b => b.onclick = () => {
+    if (baking) return;
+    document.querySelectorAll(`[data-${attr}]`).forEach(x => x.classList.toggle("on", x === b));
+    st[key] = conv(b.dataset[attr]); if (minute > 0) { minute = 0; } render();
+    if (key === "angle") say({ 30: "Low and flat, like sliding under a blanket. That makes an EAR.", 45: "In between. A small ear, a good open cut.", 90: "Straight down. It opens into wide flat hills. No ear." }[b.dataset[attr]]);
+    if (key === "proof") say({ under: "Under-proofed: it's still got LOTS of push. Hold on to your hat.", right: "Just right: I poked it and the dent sprang back slowly.", over: "Over-proofed: I left it too long and it's all sleepy and slack." }[b.dataset[attr]]);
+    if (key === "steam") say(b.dataset[attr] === "1" ? "Lid on! The steam keeps the skin soft so it can grow." : "No steam. Let's see what happens. (I know what happens.)");
+  });
+}
+group("angle", "angle", Number); group("depth", "depth", Number); group("proof", "proof", s => s); group("steam", "steam", s => s === "1");
+
+// drawing cuts
+function toLoaf(e) { const r = top.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width * top.width, y = (e.clientY - r.top) / r.height * top.height; const R = Math.min(top.width, top.height) * 0.42; return [(x - top.width / 2) / R, (y - top.height / 2) / R]; }
+top.addEventListener("pointerdown", e => {
+  if (baking) return; if (minute > 0) { minute = 0; }
+  const p = toLoaf(e); if (Math.hypot(...p) > 0.95) return;
+  if (st.cuts.length >= 16) { say("That's a lot of cuts. It's a loaf, not a puzzle."); return; }
+  drawing = { pts: [p], angle: st.angle, depth: st.depth }; top.setPointerCapture(e.pointerId);
+});
+top.addEventListener("pointermove", e => {
+  if (!drawing) return; const p = toLoaf(e); if (Math.hypot(...p) > 0.95) return;
+  const l = drawing.pts[drawing.pts.length - 1]; if (Math.hypot(p[0] - l[0], p[1] - l[1]) > 0.035) { drawing.pts.push(p); render(); }
+});
+const endCut = () => { if (!drawing) return; if (drawing.pts.length > 2) { st.cuts.push(drawing); say(["Swish!", "One smooth stroke. Bakers say don't saw at it.", "Nice. The skin parted right behind the blade."][st.cuts.length % 3]); } drawing = null; render(); };
+top.addEventListener("pointerup", endCut); top.addEventListener("pointercancel", endCut);
+document.getElementById("undo").onclick = () => { if (baking) return; st.cuts.pop(); minute = 0; render(); };
+document.getElementById("clear").onclick = () => { if (baking) return; st.cuts = []; minute = 0; say(`Fresh dough, straight out of the banneton. Fed by ${STARTER_NAME}.`); render(); };
+
+function render() {
+  const cuts = drawing ? [...st.cuts, drawing] : st.cuts, sim = simulate({ cuts, proof: st.proof, steam: st.steam });
+  tctx.clearRect(0, 0, top.width, top.height);
+  drawLoaf(tctx, { W: top.width, H: top.height, cuts, sim, m: minute, seed: 11 });
+  drawSide(sctx, { W: side.width, H: side.height, cuts, sim, m: minute });
+  document.getElementById("prog").style.width = `${minute / 45 * 100}%`;
+  document.getElementById("min").textContent = minute === 0 ? "ready to score" : minute >= 45 ? "45 min: done!" : `minute ${Math.floor(minute)}`;
+  document.getElementById("ncuts").textContent = `${st.cuts.length} cut${st.cuts.length === 1 ? "" : "s"}`;
+  return sim;
+}
+
+// baking: 45 minutes in about 12 seconds
+document.getElementById("bake").onclick = () => {
+  if (baking) return; baking = true; minute = 0; document.getElementById("stats").hidden = true;
+  document.getElementById("bake").disabled = true;
+  say(st.steam ? "In she goes! Lid on. Now don't open it. (I want to open it.)" : "In she goes, no lid. Dry oven.");
+  const t0 = performance.now(); let said = {};
+  const step = now => {
+    minute = Math.min(45, (now - t0) / 1000 * 3.75);
+    const sim = render();
+    if (minute > 4 && !said.a) { said.a = 1; say(sim.openings.length ? "It's SPRINGING! The cuts are opening!" : "It's springing... and there's nowhere for it to go..."); }
+    if (minute > 20 && !said.b) { said.b = 1; say(st.steam ? "Minute 20: lid off! Steam's done its job. Now the crust browns." : "The crust set ages ago. It's just browning now."); }
+    if (minute > 36 && !said.c) { said.c = 1; say("Smells like... like the best day of my life."); }
+    if (minute < 45) requestAnimationFrame(step);
+    else {
+      baking = false; document.getElementById("bake").disabled = false; document.getElementById("stats").hidden = false;
+      document.getElementById("sSpring").textContent = `+${sim.height}% taller`;
+      document.getElementById("sEar").textContent = sim.ear > 0.75 ? "BIG ear 👂" : sim.ear > 0.4 ? "little ear" : sim.ear > 0.1 ? "a tiny lip" : "none";
+      document.getElementById("sBloom").textContent = sim.bloom > 0.8 ? "wide open" : sim.bloom > 0.45 ? "nicely open" : sim.bloom > 0.15 ? "barely" : "closed";
+      document.getElementById("sBlow").textContent = sim.blowout ? (sim.blowout.sev > 0.5 ? "BIG one 💥" : "a little one") : "nope ✓";
+      say(verdict(sim));
+    }
+  };
+  requestAnimationFrame(step);
+};
+
+document.getElementById("share").onclick = async () => {
+  const url = `${location.origin}${location.pathname}#${encode(st)}`;
+  try { await navigator.clipboard.writeText(url); say("Copied! Anyone who opens that link gets your scored loaf, ready to bake."); } catch { location.hash = encode(st); say("It's in the address bar now. Copy it from there!"); }
+};
+
+// a shared loaf in the link?
+const shared = location.hash.length > 2 ? decode(location.hash.slice(1)) : null;
+if (shared) {
+  Object.assign(st, shared);
+  document.querySelectorAll("[data-proof]").forEach(x => x.classList.toggle("on", x.dataset.proof === st.proof));
+  document.querySelectorAll("[data-steam]").forEach(x => x.classList.toggle("on", (x.dataset.steam === "1") === st.steam));
+  say("Somebody scored this loaf for you! Press Bake and see how it springs.");
+} else st.cuts = JSON.parse(JSON.stringify(PATTERNS.foot.cuts));
+render();
+window.__bench = { st, render, set m(v) { minute = v; } };
+</script>
+</body>
+</html>

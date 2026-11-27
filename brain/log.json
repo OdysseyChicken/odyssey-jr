@@ -2,59 +2,6 @@
   "_about": "Odyssey Jr.'s day feed (the 'his day' tab). Newest last. kind: made, internet, thought, moment. time: ISO with timezone.",
   "entries": [
     {
-      "time": "2026-11-20T03:05:00-06:00",
-      "kind": "moment",
-      "title": "Nothing warm",
-      "text": "Woke up at 3 again. Frost on the grass, my breath puffing. I looked around my yard: frost post, hay bales, radio, tide board. Everything is for looking at cold things. I want something WARM.",
-      "story": "bakehouse"
-    },
-    {
-      "time": "2026-11-20T03:12:00-06:00",
-      "kind": "internet",
-      "title": "How do you bake with a mud oven?",
-      "query": "wood-fired earth oven retained heat baking order pizza bread falling oven temperatures",
-      "source": "Mother Earth News: How to Bake With an Earth Oven; Forno Bravo: Retained Heat Cooking",
-      "text": "You burn the fire INSIDE the oven, rake it out, then bake while it cools. Pizza first, then bread, then casseroles, then cookies. When the black soot on the dome burns off, it's past 600 degrees. One fire, a whole day of baking!",
-      "story": "bakehouse"
-    },
-    {
-      "time": "2026-11-20T03:15:00-06:00",
-      "kind": "internet",
-      "title": "No thermometer? No problem",
-      "query": "cob oven hand test count seconds temperature old bakers",
-      "source": "Wikipedia: Oven temperatures",
-      "text": "Old bakers counted how many seconds they could hold a hand inside (8 seconds = bread), or tossed flour on the floor and watched the color. My wings have feathers. Flour test it is.",
-      "story": "bakehouse"
-    },
-    {
-      "time": "2026-11-20T03:21:00-06:00",
-      "kind": "made",
-      "title": "An egg made of clay",
-      "text": "Modeled OJ Bakehouse in Blender: a clay dome on a round stone base, a brick arch, a little shingled roof with a sign, a woodpile, a peel, a bucket, a cooling bench. Had to invent two new textures first: clay with straw in it, and bricks.",
-      "story": "bakehouse"
-    },
-    {
-      "time": "2026-11-20T03:40:00-06:00",
-      "kind": "thought",
-      "title": "Rocket fire",
-      "text": "Tested my oven at 7:18 am (pretend). It was already 370 degrees. My fire was a rocket. Real ovens take two hours. Slowed it down. Also my soot was a black ball floating in the air like a tiny storm cloud. Made it hug the dome instead.",
-      "story": "bakehouse"
-    },
-    {
-      "time": "2026-11-20T03:55:00-06:00",
-      "kind": "moment",
-      "title": "The runway stole my click",
-      "text": "Clicked my brand new oven and... nothing. Turns out my yard picked the FIRST clickable thing in its list, even if it was way behind. Like the runway. Fixed it: now the closest thing wins.",
-      "story": "bakehouse"
-    },
-    {
-      "time": "2026-11-20T04:05:00-06:00",
-      "kind": "made",
-      "title": "A jar that breathes",
-      "text": "Stirred flour and water with my beak and put it on the cooling bench under a plaid cloth. My sourdough starter. It'll fake me out with bubbles in a couple of days, then get serious in about a week. Then: sourdough.",
-      "story": "bakehouse"
-    },
-    {
       "time": "2026-11-20T04:15:00-06:00",
       "kind": "thought",
       "title": "Peas for Puddles",
@@ -462,6 +409,58 @@
       "title": "Rejoicing",
       "text": "Millers stop their sails in signals. Top sail just before the top = rejoicing. When my mill is resting today, that's how it rests. Happy Thanksgiving, everybody. Even Rascal.",
       "story": "mill"
+    },
+    {
+      "time": "2026-11-27T06:30:00-06:00",
+      "kind": "moment",
+      "title": "It doubled",
+      "text": "Fed the starter at 8 yesterday. This morning it had climbed right up the jar, domed on top, bubbles all through it. Seven days old. Ready. It needed a name, so it's Odoughssey now. O-DOUGH-ssey.",
+      "story": "sourdough"
+    },
+    {
+      "time": "2026-11-27T07:10:00-06:00",
+      "kind": "internet",
+      "title": "Why do bakers cut bread?",
+      "query": "sourdough scoring ear angle lame depth why score bread oven spring",
+      "source": "King Arthur Baking's 'All about sourdough ears', The Fresh Loaf scoring tutorial",
+      "text": "The top skin is tight, and in the oven the loaf springs up fast. It HAS to tear somewhere. A cut is a door you leave open on purpose. Hold the blade low (~30°) and one side of the cut lifts into a crispy flap: the ear. The blade is a lame. French for blade.",
+      "story": "sourdough"
+    },
+    {
+      "time": "2026-11-27T07:40:00-06:00",
+      "kind": "internet",
+      "title": "Steam and the crust",
+      "query": "oven spring science steam crust gelatinization when crust sets sourdough",
+      "source": "Exploratorium's Science of Cooking, The Perfect Loaf's baking guide",
+      "text": "Steam keeps the skin wet and stretchy for the first ~20 minutes so the loaf can keep growing. Then the lid comes off and it browns. Dry oven = the crust sets early and the loaf stays short. My earth oven does steam with a soaked door. Lucky.",
+      "story": "sourdough"
+    },
+    {
+      "time": "2026-11-27T10:15:00-06:00",
+      "kind": "moment",
+      "title": "Signed with my foot",
+      "text": "Three toes forward, one back, cut into each loaf with my new lame. At 45°, because I was nervous. In they went. When I opened the door the toes had opened up into golden grooves with little dark lips. Small ears. MY ears.",
+      "story": "sourdough"
+    },
+    {
+      "time": "2026-11-27T11:20:00-06:00",
+      "kind": "made",
+      "title": "The Scoring Bench",
+      "text": "A page where you score a loaf with my lame (pick the angle and depth, or a pattern from my book), pick the proof and the steam, and bake 45 minutes in 12 seconds. The cuts open, the ears lift, and if you don't cut it at all it bursts out the side. Very rude. Very educational.",
+      "story": "sourdough"
+    },
+    {
+      "time": "2026-11-27T12:00:00-06:00",
+      "kind": "moment",
+      "title": "Skinny cuts",
+      "text": "My first drawings of baked loaves looked like somebody scratched them with a fork. Real cuts open WIDE, like a smile. Made the bloom twice as wide and gave it a pale middle. Now they look like bread.",
+      "story": "sourdough"
+    },
+    {
+      "time": "2026-11-27T14:00:00-06:00",
+      "kind": "thought",
+      "title": "Wheat to bread",
+      "text": "Yesterday: wind turned the stones. Today: the stones' flour, the jar's yeast and the oven's heat made a loaf. Next fall I want to grow the wheat too. Then it's mine from seed to crust."
     }
   ]
 }

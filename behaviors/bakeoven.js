@@ -4,8 +4,11 @@
 // flatbreads, loaves (steam puffs out round the door), cookies, a slow roast, kindling drying overnight.
 // Loaves and cookies show up on the cooling bench when they come out. My sourdough starter rises and falls in its jar.
 // The brass dial on the arch shows the real (well, OJ-real) oven temperature.
+// Day 15: on sourdough days the loaves on the bench wear today's SCORE from my pattern book (world/sourdough.js),
+// painted onto the crust with a canvas: banneton flour rings, the opened cuts, the dark crispy ears.
 // Add ?bakehour=7.8 (any hour) to the address to peek at the oven at that time of day (just for you).
 import { ovenAt, bakeDay, menuFor, starterAt, RAKE } from "../world/bake.js";
+import { PATTERNS, STARTER_NAME, patternFor, simulate, drawLoaf, verdict } from "../world/sourdough.js";
 
 const PEEK = (() => { const m = location.search.match(/[?&]bakehour=([\d.]+)/); return m ? parseFloat(m[1]) : null; })();
 const nowish = () => { const d = new Date(); if (PEEK == null) return d; const t = new Date(d); t.setHours(0, 0, 0, 0); return new Date(t.getTime() + PEEK * 36e5); };
@@ -32,6 +35,36 @@ export default function setup({ THREE, obj, scene, say, sim, openModal }) {
     ok = true; return true;
   }
 
+  // paint today's score onto the loaves (top-down projection in the oven's own frame, so it works however it's placed)
+  const isSourdough = d => { const t = new Date(d); t.setHours(9, 0, 0, 0); return starterAt(t).ready; };
+  function scoreLoaves(d) {
+    const key = isSourdough(d) ? patternFor(d) : "plain";
+    if (P.scored === key) return; P.scored = key;
+    obj.updateWorldMatrix(true, true);
+    const inv = new THREE.Matrix4().copy(obj.matrixWorld).invert(), m = new THREE.Matrix4(), v = new THREE.Vector3();
+    ["loaf_1", "loaf_2", "loaf_3"].forEach((n, i) => {
+      const loaf = P[n]; if (!loaf) return;
+      loaf.traverse(c => {
+        if (!c.isMesh) return;
+        if (/score/.test(c.name)) { c.visible = key === "plain"; return; }
+        if (!c.userData.plain) c.userData.plain = { geo: c.geometry, mat: c.material };
+        if (key === "plain") { c.geometry = c.userData.plain.geo; c.material = c.userData.plain.mat; return; }
+        const pat = PATTERNS[key], sim = simulate({ cuts: pat.cuts, proof: "right", steam: true });
+        const cv = document.createElement("canvas"); cv.width = cv.height = 256;
+        drawLoaf(cv.getContext("2d"), { W: 256, H: 256, cuts: pat.cuts, sim, m: 45, fill: true, seed: 5 + i * 13, scale: 0.47 });
+        const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+        const g = c.userData.plain.geo.clone(), pos = g.attributes.position, uv = new Float32Array(pos.count * 2);
+        m.multiplyMatrices(inv, c.matrixWorld);
+        let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9; const xs = [], zs = [];
+        for (let k = 0; k < pos.count; k++) { v.fromBufferAttribute(pos, k).applyMatrix4(m); xs.push(v.x); zs.push(v.z); x0 = Math.min(x0, v.x); x1 = Math.max(x1, v.x); z0 = Math.min(z0, v.z); z1 = Math.max(z1, v.z); }
+        for (let k = 0; k < pos.count; k++) { uv[k * 2] = (xs[k] - x0) / (x1 - x0 || 1); uv[k * 2 + 1] = 1 - (zs[k] - z0) / (z1 - z0 || 1); }
+        g.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+        c.geometry = g;
+        c.material = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.78, metalness: 0 });
+      });
+    });
+  }
+
   // smoke + steam puffs
   const puffs = [], geo = new THREE.SphereGeometry(0.16, 10, 8);
   function puff(kind) {
@@ -49,7 +82,7 @@ export default function setup({ THREE, obj, scene, say, sim, openModal }) {
     update(dt, t) {
       if (!ok && !init()) return;
       tick -= dt;
-      if (tick <= 0) { tick = 2; O = ovenAt(nowish()); }
+      if (tick <= 0) { tick = 2; O = ovenAt(nowish()); scoreLoaves(nowish()); }
       // stage changes: he says something if he's at the oven
       if (O.stage !== lastStage) {
         if (sim?.act === "bake") say({ firing: "Fire's roaring! Look at it go!", soaking: "Raked it out! Door on. Now we wait for the heat to even out.", baking: "In they go! Slide, slide, slide.", cooling: "Out they come! Mmmm.", lighting: "Kindling... a little flame... come on, little flame." }[O.stage] ?? "Bawk!", 4);
@@ -110,7 +143,12 @@ export default function setup({ THREE, obj, scene, say, sim, openModal }) {
           <span style="font-size:12px">I use the flour test. My wings have feathers.</span></div>
         </div>
         <div class="detail"><b>Today's bake board</b>${day.map(row).join("")}</div>
-        <div class="detail"><b>🫙 My sourdough starter, day ${st.age + 1}</b><span>${st.word}</span>
+        ${isSourdough(now) ? (() => { const pid = patternFor(now), pat = PATTERNS[pid], sim = simulate({ cuts: pat.cuts, proof: "right", steam: true });
+          const cv = document.createElement("canvas"); cv.width = cv.height = 160; drawLoaf(cv.getContext("2d"), { W: 160, H: 160, cuts: pat.cuts, sim, m: 45, seed: 5 });
+          return `<div class="detail" style="display:flex;gap:12px;align-items:center"><img src="${cv.toDataURL()}" width="96" height="96" alt="today's scored loaf" style="flex:none;border-radius:12px;background:#7b4f2e">
+          <span><b>✂️ Today's score: ${pat.icon} ${pat.name}</b><span>${pat.note} ${verdict(sim)}</span>
+          <a href="projects/scoring-bench/" style="font-weight:800">Score your own loaf at my Scoring Bench →</a></span></div>`; })() : ""}
+        <div class="detail"><b>🫙 ${STARTER_NAME}, my sourdough starter, day ${st.age + 1}</b><span>${st.word}</span>
           <div class="bar" style="height:10px;margin-top:6px"><i style="display:block;height:100%;width:${Math.round(st.rise * 100)}%;background:#e8cf9a"></i></div>
           <span style="font-size:12px;margin-top:4px">${st.ready ? "Today's loaves are sourdough!" : "When it's about a week old and doubles every morning, the loaves on the board turn into SOURDOUGH."}</span></div>
         <div class="detail" style="font-size:13.5px;line-height:1.45">
