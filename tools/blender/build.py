@@ -2836,6 +2836,133 @@ def millroom():
 
 ASSETS.update({"millroom": millroom})
 
+# ---------------- Day 16: OJ Camera Obscura ----------------
+def obscura():
+    # OJ Camera Obscura (Day 16): a dark little hut with a brass lens in a painted eye on its front (-Y) wall.
+    # Step inside and the yard is on the back wall, upside down, live (behaviors/obscura.js renders it).
+    # A curtain door on the +X side. A little periscope cupola on the roof (like Edinburgh's, 1853). Named parts:
+    # "lens_glass" (glints), "cupola_mirror" (turns slowly).
+    planks = mat("ob_planks", (0.27, 0.3, 0.45), tex="planks", scale=(1.6, 1))
+    trim = mat("ob_trim", (0.95, 0.9, 0.78), rough=0.7)
+    roof = mat("ob_roof", (0.72, 0.3, 0.26), tex="shingles", scale=(3, 2))
+    stone = mat("stone", WOOD, tex="stone", scale=(2, 2))
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    glass = mat("ob_glass", (0.55, 0.75, 0.85), rough=0.05, metal=0.2)
+    cream = mat("ob_cream", (0.97, 0.93, 0.8), rough=0.6)
+    iris = mat("ob_iris", (0.32, 0.55, 0.62), rough=0.6)
+    dark = mat("ob_dark", (0.07, 0.06, 0.07), rough=0.9)
+    curtain = mat("ob_curtain", (0.55, 0.12, 0.16), tex="fabric", scale=(2, 2)) if os.path.exists(f"{TEX}/fabric.png") else mat("ob_curtain", (0.55, 0.12, 0.16), rough=0.95)
+    gold = mat("ob_gold", (0.92, 0.75, 0.32), rough=0.4, metal=0.6)
+    board = mat("ob_board", (0.16, 0.2, 0.18), rough=0.95)
+    chalk = mat("ob_chalk", (0.95, 0.95, 0.9), rough=1)
+    wood = mat("wood", WOOD, tex="wood")
+    W, D, H = 3.4, 3.4, 2.7
+    box("ob_pad", (W + 0.8, D + 0.8, 0.1), (0, 0, 0.05), stone, bevel=0.03)
+    box("ob_body", (W, D, H), (0, 0, 0.1 + H / 2), planks, bevel=0.04)
+    for sx in (-1, 1):
+        for sy in (-1, 1): box("ob_corner", (0.16, 0.16, H + 0.05), (sx * W / 2, sy * D / 2, 0.1 + H / 2), trim, bevel=0.03)
+    box("ob_band", (W + 0.08, D + 0.08, 0.12), (0, 0, 0.16), trim, bevel=0.02)
+    box("ob_eave", (W + 0.2, D + 0.2, 0.14), (0, 0, 0.1 + H), trim, bevel=0.03)
+    # pyramid roof
+    r = cyl("ob_roof", (W + 0.7) / math.sqrt(2), 0.08, 1.5, (0, 0, 0.1 + H + 0.75), roof, rot=(0, 0, math.pi / 4), verts=4, bevel=0.02)
+    # periscope cupola: a little square tower with a slanted mirror hood that peeks out over the yard
+    top = 0.1 + H + 1.2
+    box("ob_cupola", (0.6, 0.6, 0.55), (0, 0, top + 0.2), planks, bevel=0.03)
+    box("ob_cupola_cap", (0.75, 0.75, 0.08), (0, 0, top + 0.5), trim, bevel=0.02)
+    hood = _pivot("cupola_mirror", (0, 0, 0))
+    _kid(box("ob_hood", (0.5, 0.5, 0.45), (0, 0.05, 0.22), roof, bevel=0.03), hood)
+    _kid(box("ob_hood_glass", (0.42, 0.04, 0.32), (0, -0.21, 0.2), glass, bevel=0.01), hood)
+    _kid(sphere("ob_finial", 0.07, (0, 0.05, 0.5), brass), hood)
+    hood.location = (0, 0, top + 0.54)
+    # the painted eye on the front wall, with the lens in its pupil
+    fy = -D / 2 - 0.02; ez = 1.55
+    e = sphere("ob_eye_white", 1, (0, fy, ez), cream, scale=(0.95, 0.03, 0.5), sub=4)
+    sphere("ob_eye_lid", 1, (0, fy + 0.005, ez), gold, scale=(1.02, 0.025, 0.56), sub=4)
+    sphere("ob_eye_iris", 0.36, (0, fy - 0.02, ez), iris, scale=(1, 0.06, 1), sub=4)
+    sphere("ob_eye_pupil", 0.2, (0, fy - 0.035, ez), dark, scale=(1, 0.05, 1), sub=4)
+    for k in range(9):   # little painted lashes on top
+        a = math.radians(35 + k * 13.75)
+        box("ob_lash", (0.035, 0.02, 0.22), (math.cos(a) * 1.0, fy - 0.01, ez + math.sin(a) * 0.55 + 0.08), dark, rot=(0, -(a - math.pi / 2), 0), bevel=0)
+    cyl("ob_lens_tube", 0.13, 0.13, 0.42, (0, fy - 0.22, ez), brass, rot=(math.pi / 2, 0, 0), verts=24)
+    cyl("ob_lens_ring", 0.16, 0.16, 0.05, (0, fy - 0.43, ez), brass, rot=(math.pi / 2, 0, 0), verts=24)
+    cyl("lens_glass", 0.11, 0.11, 0.02, (0, fy - 0.45, ez), glass, rot=(math.pi / 2, 0, 0), verts=24, bevel=0)
+    # lens cap dangling on a chain
+    cyl("ob_chain", 0.01, 0.01, 0.34, (0.15, fy - 0.42, ez - 0.2), mat("ob_iron", (0.25, 0.25, 0.27), rough=0.6, metal=0.5), verts=6, bevel=0)
+    cyl("ob_cap", 0.15, 0.15, 0.04, (0.15, fy - 0.43, ez - 0.4), brass, rot=(math.pi / 2, 0, 0), verts=24)
+    # sign over the eye
+    box("ob_sign", (2.6, 0.06, 0.42), (0, fy - 0.03, 2.5), trim, bevel=0.03)
+    _txt("CAMERA OBSCURA", (0, fy - 0.07, 2.5), (math.pi / 2, 0, 0), 0.24, mat("ob_ink", (0.2, 0.22, 0.36), rough=0.6), 0.01)
+    # curtain door on the +X side
+    dx = W / 2 + 0.02
+    box("ob_doorframe", (0.06, 1.2, 2.0), (dx, 0.3, 1.1), trim, bevel=0.02)
+    box("ob_doorhole", (0.04, 1.0, 1.85), (dx + 0.02, 0.3, 1.05), dark, bevel=0)
+    for i in range(6):   # pleated curtain
+        y = 0.3 - 0.45 + i * 0.18
+        cyl("ob_curtain", 0.09, 0.08, 1.75, (dx + 0.07, y, 1.0), curtain, verts=10, bevel=0)
+    cyl("ob_rod", 0.03, 0.03, 1.2, (dx + 0.08, 0.3, 1.95), brass, rot=(math.pi / 2, 0, 0), verts=10)
+    box("ob_step", (0.6, 1.2, 0.14), (dx + 0.3, 0.3, 0.07), stone, bevel=0.02)
+    # chalkboard on the -X side: "NOW SHOWING"
+    bx = -W / 2 - 0.03
+    box("ob_chalkframe", (0.06, 1.5, 1.0), (bx, 0, 1.4), wood, bevel=0.02)
+    box("ob_chalkboard", (0.04, 1.36, 0.86), (bx - 0.02, 0, 1.4), board, bevel=0)
+    for j, (t, s) in enumerate((("NOW SHOWING:", 0.12), ("THE YARD", 0.16), ("(upside down)", 0.1))):
+        _txt(t, (bx - 0.05, 0, 1.65 - j * 0.24), (math.pi / 2, 0, -math.pi / 2), s, chalk, 0.003)
+
+def obscuraroom():
+    # Inside the Camera Obscura (Day 16). Room is 8 wide x 7 deep. This model sits at room (0,0).
+    # Blender +Y = into the room (three -Z) = the back wall, where the screen hangs. The hole is in the (missing) front wall.
+    # Named parts: "aperture_wheel" (turns to the chosen hole), "easel_board".
+    wood = mat("wood", WOOD, tex="wood")
+    dark = mat("or_frame", (0.22, 0.15, 0.11), tex="wood")
+    gesso = mat("or_gesso", (0.9, 0.88, 0.82), rough=0.95)
+    brass = mat("brass", (0.85, 0.65, 0.25), rough=0.3, metal=0.9)
+    planks = mat("or_planks", (0.45, 0.33, 0.24), tex="planks", scale=(1.2, 1))
+    velvet = mat("or_velvet", (0.35, 0.08, 0.12), rough=1)
+    paper = mat("or_paper", (0.97, 0.95, 0.88), rough=1)
+    # screen frame on the back wall (the live picture is added by the behavior, just in front of the gesso)
+    SY, SZ, SW, SH = 3.46, 1.85, 6.0, 3.0
+    box("or_gesso", (SW, 0.04, SH), (0, SY, SZ), gesso, bevel=0)
+    for z in (SZ - SH / 2 - 0.08, SZ + SH / 2 + 0.08): box("or_frame_h", (SW + 0.36, 0.1, 0.16), (0, SY - 0.03, z), dark, bevel=0.03)
+    for x in (-SW / 2 - 0.1, SW / 2 + 0.1): box("or_frame_v", (0.16, 0.1, SH + 0.32), (x, SY - 0.03, SZ), dark, bevel=0.03)
+    # a velvet rope + two brass posts in front of the screen
+    for x in (-2.2, 2.2):
+        cyl("or_post", 0.06, 0.06, 0.9, (x, 2.3, 0.45), brass, verts=12)
+        cyl("or_postbase", 0.18, 0.2, 0.06, (x, 2.3, 0.03), brass, verts=16)
+        sphere("or_postknob", 0.08, (x, 2.3, 0.92), brass)
+    for i in range(12):
+        x = -2.2 + 4.4 * (i + 0.5) / 12; sag = 0.18 * math.sin(math.pi * (i + 0.5) / 12)
+        cyl("or_rope", 0.035, 0.035, 0.4, (x, 2.3, 0.86 - sag), velvet, rot=(0, math.pi / 2, 0), verts=8, bevel=0)
+    # a long bench facing the screen (I sit at its middle)
+    BY = -0.5
+    box("or_bench_seat", (2.6, 0.55, 0.1), (0, BY, 0.5), planks, bevel=0.02)
+    box("or_bench_back", (2.6, 0.08, 0.5), (0, BY - 0.28, 0.85), planks, bevel=0.02)
+    for x in (-1.15, 1.15):
+        for y in (BY - 0.2, BY + 0.2): box("or_bench_leg", (0.08, 0.08, 0.5), (x, y, 0.25), wood, bevel=0.01)
+    box("or_cushion", (0.7, 0.45, 0.08), (0, BY, 0.58), velvet, bevel=0.03)
+    # a tracing easel to the right, turned toward the screen
+    ex, ey = 2.9, 0.6
+    eas = _pivot("or_easel", (0, 0, 0))
+    for s in (-1, 1): _kid(_beam("or_easel_leg", (s * 0.45, 0, 0), (s * 0.18, 0.05, 2.0), 0.06, 0.06, wood), eas)
+    _kid(_beam("or_easel_back", (0, 0.6, 0), (0, 0.05, 1.9), 0.06, 0.06, wood), eas)
+    _kid(box("or_easel_ledge", (1.2, 0.12, 0.06), (0, -0.06, 0.75), wood, bevel=0.01), eas)
+    _kid(box("easel_board", (1.1, 0.04, 0.85), (0, -0.02, 1.2), mat("or_board", (0.55, 0.4, 0.28), tex="wood"), rot=(-0.08, 0, 0), bevel=0.01), eas)
+    _kid(cyl("or_pencil", 0.02, 0.02, 0.3, (0.3, -0.12, 0.8), mat("or_yellow", (0.95, 0.78, 0.2), rough=0.6), rot=(0, math.pi / 2, 0), verts=6, bevel=0), eas)
+    eas.location = (ex, ey, 0); eas.rotation_euler = (0, 0, math.radians(-35))
+    # the aperture wheel by the front left: a brass disc with four holes (big hole, lens, pinhole, tiny pinhole)
+    cyl("or_wheelpost", 0.07, 0.09, 1.2, (-3.2, -2.4, 0.6), wood, verts=12)
+    wh = _pivot("aperture_wheel", (0, 0, 0))
+    _kid(cyl("or_wheel", 0.42, 0.42, 0.05, (0, 0, 0), brass, rot=(math.pi / 2, 0, 0), verts=40), wh)
+    for k, rr in enumerate((0.11, 0.08, 0.025, 0.012)):
+        a = k * math.pi / 2
+        _kid(cyl("or_hole", rr, rr, 0.06, (math.cos(a) * 0.26, -0.005, math.sin(a) * 0.26), mat("or_black", (0.03, 0.03, 0.03), rough=1), rot=(math.pi / 2, 0, 0), verts=16, bevel=0), wh)
+    _kid(cyl("or_lensdisc", 0.075, 0.075, 0.065, (0, -0.006, 0.26), mat("ob_glass", (0.55, 0.75, 0.85), rough=0.05, metal=0.2), rot=(math.pi / 2, 0, 0), verts=16, bevel=0), wh)
+    wh.location = (-3.2, -2.47, 1.3)
+    box("or_pointer", (0.04, 0.04, 0.16), (-3.2, -2.5, 1.8), mat("or_red", (0.8, 0.15, 0.12), rough=0.5), bevel=0.01)
+    # a dark rug
+    cyl("or_rug", 1.9, 1.9, 0.02, (0, 0.4, 0.01), mat("or_rugc", (0.18, 0.2, 0.32), tex="fabric", scale=(3, 3)) if os.path.exists(f"{TEX}/fabric.png") else mat("or_rugc", (0.18, 0.2, 0.32), rough=1), verts=40, bevel=0)
+
+ASSETS.update({"obscura": obscura, "obscuraroom": obscuraroom})
+
 only = [a for a in sys.argv[sys.argv.index("--") + 1:] if not a.startswith("--")] if "--" in sys.argv else list(ASSETS)
 only = only or list(ASSETS)
 for name in only:

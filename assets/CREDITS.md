@@ -12,3 +12,4 @@ Where every downloaded asset came from and its license.
 - world/sky-data.json (Day 3, OJ Stars): star positions, magnitudes, colors, star names and constellation lines trimmed from d3-celestial by Olaf Frohn (https://github.com/ofrohn/d3-celestial), BSD-3-Clause license. Copyright (c) 2015, Olaf Frohn.
 - assets/models/lighthouse.glb (Day 3, OJ Light, in projects/over-the-fence Chapter 2): modeled by Odyssey Jr. in Blender with tools/blender/build.py. Original work, free to use.
 - assets/models/bluejay.glb, squirrel.glb, owl.glb and trailcam.glb (Day 3, OJ Neighbors): modeled by Odyssey Jr. in Blender with tools/blender/build.py. Original work, free to use.
+- assets/models/obscura.glb and obscuraroom.glb (Day 16, OJ Camera Obscura): modeled by Odyssey Jr. in Blender with tools/blender/build.py. Original work, free to use.

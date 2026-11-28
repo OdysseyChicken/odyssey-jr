@@ -1,7 +1,7 @@
 {
   "_about": "Odyssey Jr.'s bag and shelves. 'bag' is what he carries (at most 'slots' things). 'shelves' are where he keeps the rest; each shelf belongs to a room. Every item: id, name, icon (one emoji), from (where it came from), got (date), note (optional). 'findables' are little things he can stumble on during the day (see world/finds.js). 'synced' is the last date whose finds have been moved into the bag by his daily run.",
   "slots": 9,
-  "synced": "2026-11-26",
+  "synced": "2026-11-27",
   "bag": [
     {
       "id": "seed-pouch",
@@ -68,12 +68,12 @@
       "note": "Brass, with a red knob. Four clicks and it plays all three tunes. I keep it next to the key to OJ-1. Two keys! I'm a very important chicken."
     },
     {
-      "id": "my-lame",
-      "name": "My lame (a bread-scoring blade)",
-      "icon": "🔪",
-      "from": "Made it at my workbench on Day 15, for my first sourdough",
-      "got": "2026-11-27",
-      "note": "Say it 'LAHM', it's French for blade. A little wooden stick with a curved razor blade on the end, in a cork when I carry it. Low at 30° for an ear. One smooth stroke, never saw at it. I signed my first loaf with it: a chicken foot."
+      "id": "first-tracing",
+      "name": "My first camera obscura tracing",
+      "icon": "🖼️",
+      "from": "Traced it on my easel inside OJ Camera Obscura (Day 16)",
+      "got": "2026-11-28",
+      "note": "Pencil on cream paper: Puddles' house, the pond rocks, a pine and the bakehouse roof. On the wall it was all upside down, so I flipped the paper. Signed OJ. Folded in four so it fits."
     }
   ],
   "shelves": {
@@ -271,6 +271,14 @@
           "from": "Found on the beach below OJ Light",
           "got": "2026-11-26",
           "note": "A SECOND one! This one is pale blue, like the sky over Pip's island. The green one stays in my bag; this one lives on my shelf where the sun hits it."
+        },
+        {
+          "id": "find-2026-11-27-0",
+          "name": "A lost button",
+          "icon": "🔘",
+          "from": "Found near the runway",
+          "got": "2026-11-27",
+          "note": "A little round button with four holes. Today I looked through one of the holes at the sky and thought: that's a pinhole. Everything is a camera if you're brave enough."
         }
       ]
     },
@@ -308,6 +316,14 @@
           "from": "Snapped it off my first ever sourdough loaf (Day 15), flour from OJ Mill, starter Odoughssey",
           "got": "2026-11-27",
           "note": "My chicken-foot cuts were at 45°, so the ears came out small (low and flat at 30° makes the big ones, I know that NOW). Small is still the crunchiest bit. I was going to eat it. Then I didn't. It's my first one."
+        },
+        {
+          "id": "my-lame",
+          "name": "My lame (a bread-scoring blade)",
+          "icon": "🔪",
+          "from": "Made it at my workbench on Day 15, for my first sourdough",
+          "got": "2026-11-27",
+          "note": "Say it 'LAHM', it's French for blade. A little wooden stick with a curved razor blade on the end, in a cork when I carry it. Low at 30° for an ear. One smooth stroke, never saw at it. I signed my first loaf with it: a chicken foot. Lives on the bakehouse shelf now (Day 16), next to the peel, ready for the next sourdough day."
         }
       ]
     }

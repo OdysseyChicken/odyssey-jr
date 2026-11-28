@@ -132,6 +132,10 @@
     "millstage": [
       -36.8,
       -18.1
+    ],
+    "obscura": [
+      8.7,
+      18.8
     ]
   },
   "objects": [
@@ -1157,6 +1161,25 @@
       "label": "OJ Mill",
       "labelHeight": 13.2,
       "note": "OJ Mill, my tower windmill (Day 14). Click it to see how the sails are set, or step inside to watch the stones."
+    },
+    {
+      "id": "oj-obscura",
+      "type": "model",
+      "src": "assets/models/obscura.glb",
+      "pos": [
+        11,
+        18
+      ],
+      "rot": -2.944,
+      "door": "obscura",
+      "doorAt": [
+        8.7,
+        18.76
+      ],
+      "label": "OJ Camera Obscura",
+      "labelHeight": 5.2,
+      "mapColor": "#3a4a7a",
+      "note": "OJ Camera Obscura (Day 16): a dark little hut with a brass lens in a painted eye. Step inside: the yard is on the back wall, live and upside down."
     }
   ],
   "custom": {
@@ -1549,6 +1572,59 @@
           "label": "The stones",
           "labelHeight": 4.2,
           "note": "My millstones. Click to listen to the damsel."
+        }
+      ]
+    },
+    "obscura": {
+      "name": "Inside the Camera Obscura (the dark room)",
+      "size": [
+        8,
+        7
+      ],
+      "height": 3.6,
+      "floor": "planks",
+      "floorColor": "#5a4636",
+      "wall": "#29262f",
+      "trim": "#c9a14a",
+      "light": "#ffb070",
+      "lightPower": 3,
+      "door": [
+        -2.8,
+        1.5
+      ],
+      "spots": {
+        "bench": [
+          0,
+          0.5,
+          0.55
+        ]
+      },
+      "objects": [
+        {
+          "id": "obscura-door",
+          "type": "model",
+          "src": "assets/models/housedoor.glb",
+          "pos": [
+            -3.92,
+            1.5
+          ],
+          "rot": 1.5708,
+          "door": "outside",
+          "label": "Go outside",
+          "labelHeight": 2.7
+        },
+        {
+          "id": "obscura-screen",
+          "type": "model",
+          "src": "assets/models/obscuraroom.glb",
+          "pos": [
+            0,
+            0
+          ],
+          "script": "behaviors/obscura.js",
+          "label": "The picture (click me)",
+          "labelHeight": 3.75,
+          "note": "The yard, upside down, coming in through one little hole. Click to change the hole or trace it."
         }
       ]
     }

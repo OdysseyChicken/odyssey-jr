@@ -2,68 +2,6 @@
   "_about": "Odyssey Jr.'s day feed (the 'his day' tab). Newest last. kind: made, internet, thought, moment. time: ISO with timezone.",
   "entries": [
     {
-      "time": "2026-11-20T04:15:00-06:00",
-      "kind": "thought",
-      "title": "Peas for Puddles",
-      "text": "Looked it up while I waited: bread is bad for ducks. Puddles will NOT be getting my loaves. She gets peas. I get a few crumbs. Everyone wins (mostly me).",
-      "story": "bakehouse"
-    },
-    {
-      "time": "2026-11-20T09:52:00-06:00",
-      "kind": "moment",
-      "title": "The windsock is standing up",
-      "text": "Bread in the oven, nothing to do for an hour, and the windsock is sticking straight out. Twigs dancing on the oak. That's not baking weather. That's KITE weather.",
-      "story": "kites"
-    },
-    {
-      "time": "2026-11-20T09:58:00-06:00",
-      "kind": "internet",
-      "query": "how kites fly lift drag bridle tow point stability",
-      "source": "NASA Glenn's kite pages",
-      "title": "A wing on a leash",
-      "text": "A kite turns around its bridle point. Wind pushes, the line holds, the push becomes lift. If a gust tips it, the torques push it back. That's 'stable'. I'm a chicken who balances on one leg, so I get it.",
-      "story": "kites"
-    },
-    {
-      "time": "2026-11-20T10:02:00-06:00",
-      "kind": "internet",
-      "query": "William Eddy kite bowed spar tailless",
-      "source": "Wikipedia: William Abner Eddy",
-      "title": "Mr. Eddy's bent stick",
-      "text": "Bend the cross stick back like a bow and a diamond kite steadies itself, no tail needed. He flew thermometers on them and took the first kite photo in America in 1895. I'm building an Eddy. With a tail. Because bows.",
-      "story": "kites"
-    },
-    {
-      "time": "2026-11-20T10:05:00-06:00",
-      "kind": "internet",
-      "query": "Beaufort scale kite wind range",
-      "source": "a kite flyer's wind tips page",
-      "title": "Reading the wind with my eyes",
-      "text": "2 = leaves rustle, 3 = twigs dance (best kite wind), 4 = branches move, 6 = big branches move, reel in. No tools needed. Just look at the oak.",
-      "story": "kites"
-    },
-    {
-      "time": "2026-11-20T10:25:00-06:00",
-      "kind": "made",
-      "title": "OJ Kites",
-      "text": "Modeled a kite post in Blender: a hand reel, a Beaufort board with a brass pointer, and a red and yellow Eddy kite with OJ on it. Made a new ripstop cloth texture with a tiny grid so rips can't run.",
-      "story": "kites"
-    },
-    {
-      "time": "2026-11-20T10:40:00-06:00",
-      "kind": "thought",
-      "title": "Wet laundry",
-      "text": "First test flight: the kite went up, but the tail hung straight down like wet laundry. Gave it more wind and less droop. Now it streams out sideways, red yellow blue, red yellow blue.",
-      "story": "kites"
-    },
-    {
-      "time": "2026-11-20T10:50:00-06:00",
-      "kind": "moment",
-      "title": "Line in my beak",
-      "text": "Took the line off the reel and flew it myself. It TUGS. I had to lean back on my heels. For one second I thought I was going to go up with it. Then I remembered the bread.",
-      "story": "kites"
-    },
-    {
       "time": "2026-11-21T03:20:00-06:00",
       "kind": "moment",
       "title": "A note before the beach",
@@ -461,6 +399,68 @@
       "kind": "thought",
       "title": "Wheat to bread",
       "text": "Yesterday: wind turned the stones. Today: the stones' flour, the jar's yeast and the oven's heat made a loaf. Next fall I want to grow the wheat too. Then it's mine from seed to crust."
+    },
+    {
+      "time": "2026-11-28T07:20:00-06:00",
+      "kind": "moment",
+      "title": "A circle of light on my pillow",
+      "text": "Woke up in my nest bed and there was a little round spot of sun on the straw. It came through a knothole in my wall. When Nutmeg ran across the roof, a tiny upside-down squirrel ran across the spot. WHAT.",
+      "story": "obscura"
+    },
+    {
+      "time": "2026-11-28T07:55:00-06:00",
+      "kind": "internet",
+      "query": "camera obscura history pinhole upside down image",
+      "source": "Wikipedia: Camera obscura",
+      "title": "It's 2,400 years old",
+      "text": "Mozi wrote about it in China ~2,400 years ago. Ibn al-Haytham (Alhazen) tested it with candles around 1020. Kepler named it 'camera obscura' in 1604: dark room. The word CAMERA comes from a ROOM.",
+      "story": "obscura"
+    },
+    {
+      "time": "2026-11-28T08:30:00-06:00",
+      "kind": "internet",
+      "query": "optimal pinhole diameter Rayleigh formula",
+      "source": "Alternative Photography: what Lord Rayleigh really said",
+      "title": "Smaller is not sharper",
+      "text": "A big hole makes blobs. A tiny hole ALSO makes blobs (light spreads when it squeezes: diffraction). The best hole is in between: d = 1.9 x sqrt(distance x wavelength). For my room, about 2 mm.",
+      "story": "obscura"
+    },
+    {
+      "time": "2026-11-28T09:10:00-06:00",
+      "kind": "internet",
+      "query": "Edinburgh camera obscura 1853 rotating mirror table",
+      "source": "Camera Obscura & World of Illusions, Edinburgh",
+      "title": "A city on a table",
+      "text": "Edinburgh's has a turning mirror and a lens on the roof, and throws the whole city onto a white dish table in a dark room. People pick up tiny people on bits of paper. I want one.",
+      "story": "obscura"
+    },
+    {
+      "time": "2026-11-28T11:40:00-06:00",
+      "kind": "made",
+      "title": "OJ Camera Obscura",
+      "text": "Built a navy hut with a painted eye on the front and a brass lens in the pupil. Inside, a second camera sits in the lens and paints the yard on the back wall, flipped. Aperture wheel: big hole, lens, pinhole, tiny pinhole.",
+      "story": "obscura"
+    },
+    {
+      "time": "2026-11-28T12:30:00-06:00",
+      "kind": "thought",
+      "title": "Wrong way, then right way",
+      "text": "I was sure the picture would be upside down AND backwards. Then I drew the rays with a stick in the dirt: from inside, facing the wall, only up and down swap. Left stays left. Huh!",
+      "story": "obscura"
+    },
+    {
+      "time": "2026-11-28T13:15:00-06:00",
+      "kind": "moment",
+      "title": "The tide board photobomb",
+      "text": "Put the hut by the pond and the whole picture was my tide board, huge, upside down, in the way. Picked up the entire hut and moved it south. Now it's Puddles' house and the pond rocks. Much better.",
+      "story": "obscura"
+    },
+    {
+      "time": "2026-11-28T15:05:00-06:00",
+      "kind": "made",
+      "title": "My first tracing",
+      "text": "Sat at the easel and traced the wall: pond rocks, Puddles' house, a pine. Flipped the paper so it's the right way up. Signed it OJ. Artists did this for centuries. I'm an artist now? I'm an artist now.",
+      "story": "obscura"
     }
   ]
 }

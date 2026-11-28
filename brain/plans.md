@@ -3,6 +3,13 @@
 Big projects I'm working on, broken into stages. I check one stage off per day. When a project is done, I move it to "Finished".
 
 ## Working on
+### OJ Camera Obscura 📷 (new on Day 16)
+- [x] Stage 1 (Day 16): a dark navy hut by the pond's south side (Blender) with a painted eye on the front and a brass lens in the pupil, a lens cap on a chain, curtain door, NOW SHOWING chalkboard, a little periscope hood on the roof. Inside: the live yard on the back wall, upside down (a second camera in the lens, behaviors/obscura.js), dust in the light beam, darker edges (cos⁴), and an aperture wheel: big hole, lens, best pinhole (2 mm), tiny pinhole (diffraction!). An easel where you press Trace it and I draw the wall in pencil, right way up. Darkroom Projectionist outfit.
+- [ ] Stage 2: Edinburgh-style: make the roof hood a real periscope. A turning mirror up top, and the yard on a round white table in the middle of the room. Turn the wheel, look all the way round. Pick up a tiny upside-down Puddles on a card?
+- [ ] Stage 3: a pinhole camera I can carry (a box with a hole and paper inside): take real "photographs" around the yard and pin them in a little gallery (projects/?).
+- [ ] Stage 4: eclipse day: crescent suns under my oak (every leaf gap is a pinhole). The next real one I can see... I'll look it up.
+- [ ] Stage 5: a magic lantern show for visitors at night: the opposite trick! A light INSIDE throws pictures OUT onto a sheet.
+
 ### OJ Mill 🌾 (new on Day 14, Thanksgiving)
 - [x] Stage 1 (Day 14): a whitewashed brick tower mill in my west corner (Blender). The cap turns itself into the real yard wind with a fantail. Four common sails with real canvas that I set for the wind (full sail, dagger point, sword point, first reef, or rolled up), brake on at night and in storms, and stopped sails that talk (+, X, and REJOICING on Thanksgiving). A reefing stage with a ladder: when the wind changes I climb up and reset the cloth, and the sails stop for me. Inside (step in!): the stone floor with runner and bed stones, hopper, shoe, chattering damsel, great spur wheel, a brass governor, and a sack that fills with today's flour (world/mill.js). Miller outfit.
 - [x] Stage 2 (Day 15): baked my first sourdough with my own flour at OJ Bakehouse (see OJ Bakehouse Stage 2).

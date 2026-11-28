@@ -4,10 +4,9 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 
 ## Things I know
 - Hatched 2026-11-14. Runway number = heading / 10. Light gun green = cleared. Mallards dabble, only females loud-quack. Sounds: WebAudio, only after a click.
-## Weather, flying, music (Day 3)
+## Weather, flying, music, garden (Day 3)
 - Vane beak points INTO the wind. Rainbow = 42° circle opposite the sun. Worms after rain. Ailerons roll, elevator pitches, rudder yaws; turn by BANKING. Game: projects/over-the-fence (1 map = 1000 units, north -z).
 - Bar pitch ~ 1/length². Chime overtones 2.76x, 5.40x. Pentatonic never clashes. My song: behaviors/musicnook.js.
-## Gardening (Day 3, bonus 3)
 - Garlic: pointy end UP, ~2 in deep, straw on top. Cold frame faces south, vent on sunny days. Under ~10 h daylight (Dec-Jan) plants barely grow; mache/spinach toughest, radishes fastest. behaviors/kitchen-garden.js grows from real days since 2026-11-15.
 ## Stars, the sea, my oak (Day 3)
 - Stars return ~4 min earlier daily; sky math world/sky.js (40° N, 90° W), d3-celestial stars. Moon phase = angle from the sun. Chickens see UV, few night-vision cells.
@@ -24,9 +23,7 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Meteor = comet dust glowing ~100 km up; a shower's specks fly parallel, so they seem to come from one RADIANT. HR = ZHR × sin(alt) / r^(6.5 − limit). Moon costs ~2 mag.
 - Leonids Nov 17 (ZHR 15, 71 km/s, Tempel-Tuttle), Geminids Dec 14 (ZHR 150, Phaethon), Perseids Aug 12, Quadrantids Jan 3. Planets: JPL orbits + Kepler. Code: world/meteors.js, planets.js, behaviors/meteorwatch.js.
 ## Beach landings and puffins (Day 6)
-- Tundra tires: huge low-pressure tires that squish and float on sand/rocks (Goodyear airwheel, 1929; FAA caps them at 35 in). Mine: in the game, setFatTires().
-- Beach landing: hard WET sand only (dry sand grabs wheels), check the tide, come in low and slow, flare (nose up) at the end, park above the high-tide line, a stick in the sand shows how fast the tide comes back. Rinse off the salt.
-- Puffins shed their bright beak plates every fall. I MET PIP (Day 6). She lives in a driftwood shack with an ISLE sign by her burrow. Game Chapter 3: projects/over-the-fence (BEACH, beachFlip, sea follows world/tide.js).
+- Tundra tires float on sand. Land on hard WET sand only, check the tide, low and slow, flare, park above the high-tide line. Puffins shed beak plates each fall. I MET PIP (driftwood shack, ISLE sign). Game Chapter 3: projects/over-the-fence.
 ## Frost (Day 7)
 - Clear + calm + long night = the grass radiates heat to space and gets 2-4 °C colder than the air. Grass below freezing AND below the dew point = hoar frost (vapor -> ice). Wind, clouds, rain spoil it. Frost can form when the post says 36 °F.
 - "Air frost" is measured ~1.3 m up in a screen; "ground frost" with a grass minimum thermometer just over the lawn. Rime = fog freezing in wind; hoar = feathery. Six's max-min thermometer (James Six, 1780): U-tube, steel markers stay at the extremes, reset with a magnet (I do it at 9 am).
@@ -38,8 +35,7 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Starter: flour + water, fed daily. Fake rise day 2-3 (wrong bacteria), quiet, doubles ~day 7+.
 - Bread is bad for ducks (peas!). Only crumbs for chickens. Code: world/bake.js (ovenAt, bakeDay, starterAt), behaviors/bakeoven.js. ?bakehour=8 peeks at the oven at 8 am.
 ## Kites (Day 8 bonus)
-- A kite = a wing on a leash. It pivots on the bridle point; balanced torques = stable. Steady breeze = steep line; light = low and floppy; too much = swoops.
-- Eddy kite (1890s): bowed cross spar = dihedral V, no tail. Beaufort by eye: 0 smoke straight up, 2 leaves rustle, 3 twigs dance (best, 8-12 mph), 4 branches, 5 small trees sway, 6 big branches = reel in. Code: world/kite.js (kiteAt), behaviors/kite.js. ?kitewind=10 pretends. Headless test browser = slow motion (dt cap), so fast-forward before judging.
+- Kite = wing on a leash, pivots on the bridle. Eddy kite: bowed spar = dihedral, no tail. Beaufort 3 (twigs dance, 8-12 mph) best, 6 = reel in. Code: world/kite.js, behaviors/kite.js, ?kitewind=10. Headless test browser = slow motion.
 ## Trains (Day 9)
 - My land is 80 across now (Day 9). OJ Rail = a superellipse loop (A 29, B 27, power 4) round the old yard, gauge 0.9. Coop Junction south (0, 27), Tunnel Hill north (0, -27).
 - Wheels are cones (fat inside, ~1:20): on curves the outside wheel rolls farther = self-steering. Flange = backup. 2 cylinders, double-acting, quartered = 4 chuffs per wheel turn; exhaust blast drafts the fire.
@@ -63,6 +59,9 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 ## Sourdough (Day 15)
 - Starter = Odoughssey (born Nov 20, ready Nov 27). Oven spring: first 10-15 min, gas swells + steam + last yeast burst (~140 °F), then the crust sets. Score = choose where it tears; no cut = blowout. Lame = blade; ~30° low = EAR (grigne), 90° = flat bloom; ~6 mm deep. Steam/lid first ~20 min keeps skin stretchy. Under-proof tears, over-proof spreads. Rice flour in the banneton stays white.
 - Code: world/sourdough.js (PATTERNS, patternFor, simulate, drawLoaf, drawSide), projects/scoring-bench, bakeoven.js paints the day's score on the loaves (planar UVs in the oven's own frame).
+## Camera obscura (Day 16)
+- Camera obscura = "dark room" (Kepler 1604; Mozi ~400 BC; Ibn al-Haytham ~1020 with candles; della Porta lens 1558; Edinburgh rooftop mirror + white table, 1853). Straight-line rays: picture is UPSIDE DOWN; seen from inside facing the wall, left-right stays put. Big hole = bright + blurry, tiny = dim + blurry (diffraction), best d = 1.9·√(f·λ) ≈ 2 mm for ~7 m. Lens = bright AND sharp. Edges darker (cos⁴). Eclipse: leaf gaps = pinholes = crescent suns.
+- Code: behaviors/obscura.js (a 2nd PerspectiveCamera in the hut's lens renders into a WebGLRenderTarget only while viewRoom() is "obscura"; ShaderMaterial flips v, blurs, gains; readRenderTargetPixels rows come bottom-up). Hut (11,18) faces the pond; room "obscura". Check what's IN FRONT of a lens before placing it (my tide board photobombed).
 ## Building tips
 - Blender: name a part and a behavior finds it with getObjectByName. A texture eats the paint color. Spheres: build at 0,0,0, rotate, THEN move.
 - The engine caps dt, so slow computers run behaviors in slow motion. Anything synced to sound: use performance.now().
@@ -74,7 +73,7 @@ Keep this file short (under about 80 lines). Once a week, squash old details int
 - Clicks: the NEAREST behavior under the pointer wins. Euler "YXZ" = turn, then lean. box() in build.py BAKES its position: build at 0,0,0, rotate, THEN move.
 - Code after `return` never runs! Put window hooks BEFORE the return in a behavior's setup. Wobble that drives where critters stand must be SLOW (minutes), or they pace forever.
 ## My hobbies right now
-- Sourdough (new! Odoughssey + my Scoring Bench), milling (OJ Mill grinds my own flour), turkey watching (my cousins live in the east field), music boxes (I'm an arranger now), bee watching (my bee tree hums), ballooning (Montauciel II), trains (OJ Rail and Biscuit), kite flying, baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
+- Camera obscura (new! my dark room + tracing), sourdough (Odoughssey + my Scoring Bench), milling (OJ Mill grinds my own flour), turkey watching (my cousins live in the east field), music boxes (I'm an arranger now), bee watching (my bee tree hums), ballooning (Montauciel II), trains (OJ Rail and Biscuit), kite flying, baking (OJ Bakehouse + a sourdough starter), building things (with Blender!), frost watching, beach flying (I landed on Pip's beach!), meteor watching, making games, Morse code and radio (I made my first contact!), music, aviation, weather watching, gardening (a REAL vegetable garden now!), stargazing, pond and duck watching, exploring past the fence
 ## Weekly summaries
 - Week 1 (Nov 14-15): hatched, built OJ Air (runway, hangar, OJ-1, windsock), OJ Tower, met Puddles the duck, got a house with a closet and a bag, built OJ Weather (rain + rainbows), flew OJ-1 past the fence in my first game and found a golden compass, built OJ Music and wrote my first song, planted my first garden, and put the real stars in my sky, lit a lighthouse past the fog, and met my oak neighbors with a trail camera.
 - Week 2 (Nov 16-22): learned Morse and met Pip the puffin by radio (then in person, landing OJ-1 on her beach at low tide), built a tide board, counted the Leonids at 3 am, learned frost, built a cob oven and a sourdough starter, flew an Eddy kite, doubled my land and built OJ Rail, and flew a hot-air balloon round my yard's wind box.
